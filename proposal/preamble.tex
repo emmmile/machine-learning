@@ -1,0 +1,71 @@
+
+
+% Preamble for english writing
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+%\usepackage{algorithmic}
+\usepackage{color}
+\usepackage{enumerate}
+\usepackage{stmaryrd}
+\usepackage{hyperref}
+\usepackage{graphicx}
+
+%\usepackage{tkz-graph}
+
+%\usepackage[nottoc, notlof, notlot]{tocbibind}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Commandes ajoutées
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%ensmembles
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+
+
+\newcommand{\intv}[2]{\llbracket #1, #2 \rrbracket} %intervalle d'entiers
+\newcommand{\bracket}[1]{{\langle #1 \rangle}} %parenthèses angulaires
+\newcommand{\gO}{\mathcal{O}} %grand O
+\newenvironment{itemiz}{\renewcommand\labelitemi{$\blacktriangleright$}\begin{itemize}}{\end{itemize}}
+
+\newcommand{\rg}{\text{rg}}
+\newcommand{\bad}{\textbf{/!\backslash}}
+
+\newcommand{\crk}{\text{cut-rank}}
+
+\newcommand{\ie}{\emph{i.e.}\ }
+\newcommand{\eg}{\emph{e.g.}\ }
+\newcommand{\cf}{\emph{c.f.}\ }
+
+% Theorems etc.
+\newtheorem{Thm}{Theorem}[section]
+\newtheorem{Cor}[Thm]{Corollary}
+\newtheorem{Lem}[Thm]{Lemma}
+\newtheorem{Pro}[Thm]{Proposition}
+
+\theoremstyle{remark}
+\newtheorem{Rem}[Thm]{Remark}
+\newtheorem{Not}[Thm]{Notation}
+\newtheorem{Exa}[Thm]{Example}
+
+\theoremstyle{definition}
+\newtheorem{Def}[Thm]{Definition}
+
+\newcommand{\mytitle}[1]{
+\begin{center}
+\vspace{7cm}
+\hrule
+\vspace{0.5cm}
+\huge{\textsc{#1}}
+\vspace{0.5cm}
+\hrule
+\vspace{1cm}
+\end{center}}
+
+

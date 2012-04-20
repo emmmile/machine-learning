@@ -1,0 +1,156 @@
+\documentclass{article}
+\input{preamble.tex}
+\usepackage{pgfgantt} % for gantt diagram
+\usepackage{rotating} % for rotating gantt diagram
+
+\title{Machine Learning Project Proposal\\\textbf{Evolutionnary Computing on\\Turing machines}}
+\author{Jean-Florent Raymond\\\href{mailto:Jean-Florent.Raymond.8795@student.uu.se}{\texttt{Jean-Florent.Raymond.8795@student.uu.se}}}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{The Busy Beaver}
+
+\paragraph{Introduction} Given an number of states and a number of symbols, a \emph{busy beaver} is a deterministic Turing machine that, when started on a blank tape, performs ``the most operations'' before halting among all Turing machines with the same numbers of states and symbols. Performing ``the most operations'' can be definded in many ways, for instance it can mean
+\begin{itemize}
+\item doing the most steps ;
+\item stopping with the most non-blank symbols written on the tape.
+\end{itemize}
+
+All the Turing machines we will consider here are deterministic. Let $\mathcal{T}_{m,n}$ be the set of deterministic Turing machines with an alphabet of $m$ symbols who uses $n$ states and $\mathcal{T} = \cup_{n,m \in \N} \mathcal{T}_{n,m}$.
+
+
+\paragraph{Busy Beaver and Max-step Functions}
+Let $\sigma : \mathcal{T} \to \N \cup \{-\infty\}$ be the function who, given a Turing machine $M$, returns
+\begin{itemize}
+\item either the number of non-blank symbols that $M$, started on a blank tape, leaves on the tape after execution if $M$ halts ;
+\item or minus infinity else.
+\end{itemize}
+
+Let the \emph{busy beaver function} $\Sigma$ be defined as follows
+\[
+\Sigma : \left |
+\begin{array}{l}
+\N \times \N \to \N\\
+(m,n) \mapsto \max_{M \in \mathcal{T}_{m,n}} \sigma(M)
+\end{array}
+\right .
+\]
+
+Similarly, let $s : \mathcal{T} \to \N \cup \{-\infty\}$ be the function who, given a Turing machine $M$, returns
+\begin{itemize}
+\item either the number of steps that $M$ performs when started on a blank tape, if $M$ halts ;
+\item of infinity else.
+\end{itemize}
+
+And let \emph{max-step function} $S$ be defined by
+\[
+S : \left |
+\begin{array}{l}
+  \N \times \N \to \N\\
+(m,n) \mapsto \max_{M \in \mathcal{T}_{m,n}} s(M)
+\end{array}
+\right .
+\]
+
+
+Note that these four function are not computable because the opposite case would means that we can decide the halting problem \cite{rado}.
+
+
+\section{Finding Machines That Reaches Bounds}
+
+The goal of this project is to find, at least for small values of $m$ and $n$, Turing machines that reaches $\Sigma(m,n)$ or $S(m,n)$, \ie finding a machine $M \in \mathcal{T}_{m,n}$ such that $\sigma(M) = \Sigma(m,n)$ or $s(M) = S(m,n)$.
+
+Such machines have already been found \cite{rado} but only for small values of $m$ and $n$ because $S$ and $\Sigma$ functions grows very fast \cite{rado}, what makes tests difficult.
+
+
+\paragraph{How ?} This will be done using evolutionary computing techniques on a population of Turing machines comming from the same class $\mathcal{T}_{m,n}$, for fixed $m$ and $n$. Operations of crossover and mutations are made from the transition tables (the alphabet and the number of states will remain unchanged).
+
+\paragraph{Fitness Function}
+The main problem is to define a good fitness function. The value to maximize here is the number of steps before halting (for the max-step case), in order to reach the bound.
+
+But we cannot says that between a machine $M$ which halts after $p$ steps and a machine $M'$ which continues to run after $p$ steps, $M'$ is better w.r.t.\ max-step because we don't know if $M'$ will stop and we have no general way to know it (since the halting problem is undecidable \cite{turing}).
+
+However, for fixed $p \in \N$, we are able to say if a given machine will stop in less than $p$ steps. To know it, we only run the machine during $p$ steps and watch if it is on a halting state at this time.
+
+The approach we want to try here is depends on what bound we want to reach :
+\begin{itemize}
+\item for small values of $n,m \in \N$, values of $\Sigma$ and $S$ are known \cite{rado} so a suitable fitness function is a function who, given a Turing machine $M$ that we already run on $p$ steps without leading it in the halting state, returns $- \infty$ if $p > S(m,n)$ and $\frac{1}{S(m,n) - p}$ else. With this function, Turing machines which overtake the bound are highly penalized (because we know they will never halt) and a machine who run longer (but less than $S(m,n)$) without halting than an other one get a better grade.
+\item for values of $n, m \in \N$ for which $\Sigma$ and $S$ are not known, we can, for growing values of $p \in \N$, find machines who halts after $p$ steps with a fitness function of the same kind as before. Then the more $p$ will be high, the more we will approximate the bound if we still find machines for this $p$.
+\end{itemize}
+
+\section{Work  Packages}
+
+The project will be splitted in several work packages :
+\begin{enumerate}
+\item Virtual Machine 
+  \begin{itemize}
+  \item defining a convenient way to represent Turing machines ;
+  \item writing a basic virtual machine to run Turing machines ;
+  \item adding the ability to load and save machine states in a file and to log activity ;
+  \item adding abilities of step counting and of running until the machine halts (if it halts).
+  \end{itemize}
+\item Evolutionary Computing Tool
+  \begin{itemize}
+  \item defining operations on Turing machines (crossover, mutations) ;
+  \item defining a fitness function ;
+  \item writing a program who generates a random initial population and who follows it until it leads to something interesting.
+  \end{itemize}
+\item Testing
+  \begin{itemize}
+  \item testing all the parts of the program we write the ensure that we will not do hours of useless computation during the experiments ;
+  \item launching the experiments.
+  \end{itemize}
+\item Analyse
+  \begin{itemize}
+  \item analysing the results : Do we found what we were looking for ? Do we discover other things ?
+  \item analysing the approach : Was evolutionary computing a good idea for this problem, and why ?
+  \end{itemize}
+\item Writing documentation.
+\end{enumerate}
+
+The schedule for this project can be found on figure \ref{fig:sc}, page \pageref{fig:sc}.
+
+\begin{sidewaysfigure}[p]
+  \centering
+  
+  \begin{tikzpicture}[scale = 0.8]
+    \begin{ganttchart}[vgrid]{37}
+      \gantttitle{April}{8}\gantttitle{May}{29} \\
+      \gantttitlelist{17,...,21}{7}\gantttitlelist{22}{2}\\
+      \gantttitlelist[title label font={\tiny}]{23,...,30}{1}
+      \gantttitlelist[title label font={\tiny}]{1,...,29}{1}\\
+
+      \ganttgroup{Virtual Machine}{1}{19} \\
+      \ganttbar{Defining the encoding}{1}{4} \\
+      \ganttbar{Basic VM}{5}{13} \\
+      \ganttbar{Adding functionalities}{14}{19} \\
+
+      \ganttgroup{Evolutionary Computing Tool}{1}{19} \\
+      \ganttbar{Defining the operations, etc.}{1}{3} \\
+      \ganttbar{Implementing the tool}{4}{19} \\
+
+      \ganttgroup{Testing}{1}{37} \\
+      \ganttbar{Testing our code}{1}{37} \\
+      \ganttbar{Launching the experiments}{20}{37} \\
+
+      \ganttgroup{Writing Documentation}{1}{37}
+
+    \end{ganttchart}  
+  \end{tikzpicture}
+
+  \caption{Schedule}
+  \label{fig:sc}
+\end{sidewaysfigure}
+
+
+
+
+\section{Related Work}
+The work of Shen Lin and Tibor Rado on busy bever was based on reducing the space search with normalization techniques and then on examining patterns on the tape \cite{rado}.
+
+\bibliographystyle{acm}
+\bibliography{proposal_turing}
+
+\end{document}
