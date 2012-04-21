@@ -4,10 +4,8 @@
 \usepackage{rotating} % for rotating gantt diagram
 
 \title{Machine Learning Project Proposal\\\textbf{Evolutionnary Computing on\\Turing machines}}
-\author{Jean-Florent Raymond\\\href{mailto:jean-florent.raymond.8795@student.uu.se}{\texttt{jean-florent.raymond.8795@student.uu.se}}\\
-\\
-Emilio Del Tessandoro\\
-\href{mailto:emilio.deltessa@gmail.com}{\texttt{emilio.deltessa@gmail.com}}}
+\author{Jean-Florent Raymond\\\href{mailto:jean-florent.raymond.8795@student.uu.se}{\texttt{jean-florent.raymond.8795@student.uu.se}} \and Emilio Del Tessandoro\\
+\href{mailto:emilio.del_tessandoro.4062@student.uu.se }{\texttt{emilio.del\_tessandoro.4062@student.uu.se }}}
 \date{\today}
 
 \begin{document}
@@ -103,6 +101,11 @@ The project will be split in several work packages:
   \item defining a fitness function;
   \item writing a program which generates a random initial population and which follows it until it leads to something interesting.
   \end{itemize}
+\item Particle Swarm Optimization Tool
+  \begin{itemize}
+  \item discuss feasibility of such approach, eventually defining the search space and differences with the normal PSO approach;
+  \item implementation related to the Turing machines work previously realized. 
+  \end{itemize}
 \item Testing
   \begin{itemize}
   \item testing all the parts of the program we write the ensure that we will not do hours of useless computation during the experiments;
@@ -138,6 +141,10 @@ The schedule for this project can be found on figure \ref{fig:sc}, page \pageref
       \ganttgroup{Evolutionary Computing Tool}{1}{19} \\
       \ganttbar{Defining the operations, etc.}{1}{3} \\
       \ganttbar{Implementing the tool}{4}{19} \\
+      
+      \ganttgroup{PSO Tool}{8}{19} \\
+      \ganttbar{Discuss and define such approach}{8}{12} \\
+      \ganttbar{Implementing the tool}{13}{19} \\
 
       \ganttgroup{Testing}{1}{37} \\
       \ganttbar{Testing our code}{1}{37} \\
