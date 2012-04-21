@@ -4,7 +4,10 @@
 \usepackage{rotating} % for rotating gantt diagram
 
 \title{Machine Learning Project Proposal\\\textbf{Evolutionnary Computing on\\Turing machines}}
-\author{Jean-Florent Raymond\\\href{mailto:Jean-Florent.Raymond.8795@student.uu.se}{\texttt{Jean-Florent.Raymond.8795@student.uu.se}}}
+\author{Jean-Florent Raymond\\\href{mailto:jean-florent.raymond.8795@student.uu.se}{\texttt{jean-florent.raymond.8795@student.uu.se}}\\
+\\
+Emilio Del Tessandoro\\
+\href{mailto:emilio.deltessa@gmail.com}{\texttt{emilio.deltessa@gmail.com}}}
 \date{\today}
 
 \begin{document}
@@ -18,11 +21,11 @@
 \item stopping with the most non-blank symbols written on the tape.
 \end{itemize}
 
-All the Turing machines we will consider here are deterministic. Let $\mathcal{T}_{m,n}$ be the set of deterministic Turing machines with an alphabet of $m$ symbols who uses $n$ states and $\mathcal{T} = \cup_{n,m \in \N} \mathcal{T}_{n,m}$.
+All the Turing machines we will consider here are deterministic. Let $\mathcal{T}_{m,n}$ be the set of deterministic Turing machines with an alphabet of $m$ symbols which uses $n$ states and $\mathcal{T} = \cup_{n,m \in \N} \mathcal{T}_{n,m}$.
 
 
 \paragraph{Busy Beaver and Max-step Functions}
-Let $\sigma : \mathcal{T} \to \N \cup \{-\infty\}$ be the function who, given a Turing machine $M$, returns:
+Let $\sigma : \mathcal{T} \to \N \cup \{-\infty\}$ be the function which, given a Turing machine $M$, returns:
 \begin{itemize}
 \item either the number of non-blank symbols that $M$, started on a blank tape, left on the tape after execution if $M$ halts;
 \item or minus infinity else.
@@ -38,7 +41,7 @@ Let the \emph{busy beaver function} $\Sigma$ be defined as follows:
 \right .
 \]
 
-Similarly, let $s : \mathcal{T} \to \N \cup \{-\infty\}$ be the function who, given a Turing machine $M$, returns
+Similarly, let $s : \mathcal{T} \to \N \cup \{-\infty\}$ be the function which, given a Turing machine $M$, returns
 \begin{itemize}
 \item either the number of steps that $M$ performs when started on a blank tape, if $M$ halts ;
 \item of infinity else.
@@ -54,9 +57,7 @@ S : \left |
 \right .
 \]
 
-Note that these four function are not computable because otherwise it would means that we can decide the halting problem \cite{rado}. Moreover there exists some relations between $S$ and $\Sigma$; for example is immediate that $S(m,n) \geq \Sigma(m,n)$, because writing a non blank on the tape require the execution of step, this becomes useful
-
-%Maybe I would add the fact that there is no direct connection between S and \Sigma. I mean, is not possible to find the S-busy-beaver if you found for example the \Sigma-busy beaver.
+Note that these four function are not computable because otherwise it would means that we can decide the halting problem \cite{rado}. Moreover there exists some relations between $S$ and $\Sigma$; for example is immediate that $\forall m,n \in \N,\ S(m,n) \geq \Sigma(m,n)$, because writing $p$ non-blank symbols on the tape require at least the execution of $p$ steps. But there is no direct connection between $S$-busy beavers and $\Sigma$-busy beavers, \ie we cannot deduce one if we find the other one.
 
 \section{Finding Machines That Reaches Bounds}
 
@@ -76,9 +77,9 @@ However, for fixed $p \in \N$, we are able to say if a given machine will stop i
 
 The approach we want to try here is depends on what bound we want to reach:
 \begin{itemize}
-\item for small values of $n,m \in \N$, values of $\Sigma$ and $S$ are known \cite{rado} so a suitable fitness function is a function who, given a Turing machine $M$ that we already run on $p$ steps without leading it in the halting state, returns $- \infty$ if $p > S(m,n)$ and $\frac{1}{S(m,n) - p}$ else. With this function, Turing machines which overtake the bound are highly penalized (because we know they will never halt) and a machine who run longer (but less than $S(m,n)$) without halting than an other one get a better grade.
+\item for small values of $n,m \in \N$, values of $\Sigma$ and $S$ are known \cite{rado} so a suitable fitness function is a function which, given a Turing machine $M$ that we already run on $p$ steps without leading it in the halting state, returns $- \infty$ if $p > S(m,n)$ and $\frac{1}{S(m,n) - p}$ else. With this function, Turing machines which overtake the bound are highly penalized (because we know they will never halt) and a machine which run longer (but less than $S(m,n)$) without halting than an other one get a better grade.
 
-\item for values of $n, m \in \N$ for which $\Sigma$ and $S$ are not known, we can, for growing values of $p \in \N$, find machines who halts after $p$ steps with a fitness function of the same kind as before. Then the more $p$ will be high, the more we will approximate the bound if we still find machines for this $p$.
+\item for values of $n, m \in \N$ for which $\Sigma$ and $S$ are not known, we can, for growing values of $p \in \N$, find machines which halts after $p$ steps with a fitness function of the same kind as before. Then the more $p$ will be high, the more we will approximate the bound if we still find machines for this $p$.
 \end{itemize}
 
 %I agree on this distincion but.. Are we sure we can deal with the case n > 5?
@@ -100,7 +101,7 @@ The project will be split in several work packages:
   \begin{itemize}
   \item defining operations on Turing machines (crossover, mutations);
   \item defining a fitness function;
-  \item writing a program who generates a random initial population and who follows it until it leads to something interesting.
+  \item writing a program which generates a random initial population and which follows it until it leads to something interesting.
   \end{itemize}
 \item Testing
   \begin{itemize}
