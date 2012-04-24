@@ -13,7 +13,7 @@ all: main
 main: main.o
 	$(LINK) $(LFLAGS) $(LIBS) *.o -o main
 
-main.o: main.cpp turing-machine.hpp action.hpp random.hpp state.hpp
+main.o: main.cpp turing-machine.hpp action.hpp random.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
 clean:
