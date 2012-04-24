@@ -1,8 +1,9 @@
 *~
 *#*
-*o
-*aux
-*log
-*blg
-*out
-*bbl
+*.o
+*.aux
+*.log
+*.blg
+*.out
+*.bbl
+*.pro*
