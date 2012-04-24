@@ -10,9 +10,12 @@ using namespace std;
 typedef unsigned int uint;
 typedef unsigned char uchar;
 
-// returns a string identifier for the direction
-#define getdir( b ) \
-	( b ? "R" : "L" )
+// returns a char identifier for the direction (used in printing)
+#define print_dir( b )			( b ? 'R' : 'L' )
+// returns a char identifier for the state (used in printing)
+#define print_state( s )		char( 'A' + s )
+// returns a char identifier for the symbol (used in printing)
+#define print_sym( s )			char( '0' + s )
 
 template<uint NStates, uint NSymbols, class TState = uchar, class TSymbol = uchar>
 class action {
@@ -59,9 +62,9 @@ public:
 	}
 
 	friend ostream& operator<< ( ostream& os, const action& a ) {
-		return os << (uint) a.symbol
-			  << getdir( a.dir )
-			  << (uint) a.state;
+		return os << print_sym( a.symbol )
+			  << print_dir( a.dir )
+			  << print_state( a.state );
 	}
 };
 

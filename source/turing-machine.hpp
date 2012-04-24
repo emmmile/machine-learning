@@ -2,15 +2,16 @@
 #define TURINGMACHINE_HPP
 
 #include "action.hpp"
-#include "state.hpp"
 
 
 template<uint NStates, uint NSymbols, class TState = uchar, class TSymbol = uchar>
 class turing_machine {
-	state<NStates, NSymbols, TState, TSymbol> states [NStates];
+	//state<NStates, NSymbols, TState, TSymbol> states [NStates];
+	action<NStates, NSymbols, TState, TSymbol> actions [NStates][NSymbols];
 public:
 	typedef action<NStates, NSymbols, TState, TSymbol> action_type;
-
+	typedef TSymbol symbol_type;
+	typedef TState state_type;
 
 	turing_machine( ) {
 	}
@@ -21,7 +22,8 @@ public:
 
 	turing_machine& random_shuffle ( Random& gen ) {
 		for ( TState i = 0; i < NStates; ++i )
-			states[i].random_shuffle( gen );
+			for ( TSymbol j = 0; j < NSymbols; ++j )
+				actions[i][j].random_shuffle( gen );
 		return *this;
 	}
 
@@ -33,18 +35,22 @@ public:
 	// the same
 	action_type& step ( const TState s, const TSymbol sym ) {
 		assert( s < NStates && sym < NSymbols );
-		return states[s][sym];
+		return actions[s][sym];
 	}
 
 	friend ostream& operator<< ( ostream& os, const turing_machine& tm ) {
 		os << "   ";
-		// only works for small numbers!
+		// only works for small number of states/symbols!
 		for ( TSymbol i = 0; i < NSymbols; ++i )
-			os << (uint) i << ":  ";
+			os << print_sym( i ) << ":  ";
 			os << endl;
 
-		for ( TState i = 0; i < NStates; ++i )
-			os << (uint) i << ": " << tm.states[i] << endl;
+		for ( TState i = 0; i < NStates; ++i ) {
+			os << print_state( i ) << ": ";
+			for ( TSymbol j = 0; j < NSymbols; ++j )
+				os << tm.actions[i][j] << " ";
+			os << endl;
+		}
 
 		return os;
 	}
