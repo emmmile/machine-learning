@@ -1,52 +1,22 @@
+
 #include <iostream>
+#include "turing-machine.hpp"
 using namespace std;
-typedef unsigned char uchar;
 
 
-
-template<uint NSymbols, uint NStates, class TSymbol = uchar, class TState = uchar>
-class action {
-	bool direction;
-	TSymbol symbol;
-	TState nextstate;
-
-	void mutate ( ) {
-		symbol = random() % NSymbols;
-		state = random() % NStates;
-	}
-};
-
-
-
-
-template<uint NSymbols, uint NStates, class TSymbol = uchar, class TState = uchar>
-class state {
-	action<NSymbols, NStates, TSymbol, TState> actions [NSymbols];
-};
-
-
-
-
-template<uint NSymbols, uint NStates, class TSymbol = uchar, class TState = uchar>
-class turing_machine {
-	state<NSymbols, NStates, TSymbol, TState> states [NStates];
-
-	//circular array, std::vector or std::deque for the tape?
-};
-
-
-
+// Random is class that I normally use when I need random numbers.
+// it uses boost random generators that, they say, are a lot better on
+// high dimensions problems (and actually are also very very fast and
+// also thread safe in this way :P)
 
 int main() {
-	turing_machine<2, 6> a;
-	turing_machine<22, 65> b;
-	turing_machine<2, 2, bool, bool> c;
-	turing_machine<2, 2> d;
+	// usage is quite simple
+	Random gen;
+	turing_machine<8, 9> a ( gen );
+	turing_machine<2, 2> b;
 
-	cout << sizeof( a ) << endl << sizeof( b ) << endl << sizeof( c ) << endl << sizeof( d ) << endl;
-
-
+	cout << a << endl;
+	cout << b << endl;
 
 	return 0;
 }
-
