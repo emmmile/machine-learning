@@ -6,6 +6,7 @@
 
 #define INIT_TAPE_SIZE 100
 #define TAPE_RESIZE_STEP 50
+#define EXPECTED_S 6 // expected max number of steps when known
 
 typedef unsigned long int _int; // maybe we will need more than uint (e.g. unsigned long long int)
 
@@ -38,23 +39,42 @@ public:
       tape.push_front(0); // ... we add one cell at the beginning
     else --hp; // go left
 
+    ++nb_shifts;
+
     return a;
   }
 
+  double update_fit() {
+    // update the value of fitness and return it
+    if (nb_shifts < EXPECTED_S)
+      fitness = 1.0 / (EXPECTED_S - nb_shifts);
+    // ^- may be changed for a better one
+    else if (nb_shifts == EXPECTED_S && current_state == NStates)
+      // we found it !
+      clog << "=== FOUND MACHINE ===\n"
+	   << NStates << " states, " << NSymbols << "symbols\n"
+	   << "halts after " << nb_shifts << endl
+	   << machine;
+    else
+      fitness = 0.0;
+
+    return fitness;
+  }
+
   // these methods returns the private member variables,
-  TState get_state ( ) {
+  TState get_state() {
     return current_state;
   }
 
-  _int get_age ( ) {
+  _int get_age() {
     return age;
   }
 
-  _int get_nb_shifts ( ) {
+  _int get_nb_shifts() {
     return nb_shifts;
   }
 
-  double get_fitness ( ) {
+  double get_fitness() {
     return fitness;
   } 
 };
