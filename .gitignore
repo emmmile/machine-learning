@@ -7,3 +7,5 @@
 *.out
 *.bbl
 *.pro*
+
+source/main
