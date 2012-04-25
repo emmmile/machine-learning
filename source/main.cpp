@@ -1,6 +1,5 @@
-
 #include <iostream>
-#include "turing-machine.hpp"
+#include "living-tm.hpp"
 using namespace std;
 
 
