@@ -73,7 +73,7 @@ public:
     return fitness;
   }
 
-  // these methods returns the private member variables,
+  // these 4 methods returns the private member variables,
   TState get_state() {
     return current_state;
   }
@@ -88,7 +88,23 @@ public:
 
   double get_fitness() {
     return fitness;
-  } 
+  }
+
+  friend ostream& operator<< ( ostream& os, const living_tm& ltm ) {
+
+  os << "======\n"
+     << "Age:\t" << ltm.age << endl
+     << "Current state:\t" << ltm.current_state << endl
+     << "Current symbol:\t" << ltm.tape[ltm.hp] << endl
+     << "Tape size:\t" << ltm.tape.size() << endl
+     << "Number of steps computed so far:\t" << ltm.nb_shifts << endl
+     << "Last computed fitness:\t" << ltm.fitness << endl
+     << "Transition table:" << ltm.machine
+     << "\n======";
+    
+    return os;
+  }
+
 };
 
 #endif // LIVINGTM_HPP
