@@ -11,7 +11,7 @@
 #define TAPE_RESIZE_STEP 50
 #define EXPECTED_S 6 // expected max number of steps when known
 
-typedef unsigned long int _int; // maybe we will need more than uint (e.g. unsigned long long int)
+typedef unsigned int _int; // maybe we will need more than this (e.g. unsigned long long int)
 
 template<uint NStates, uint NSymbols, class TState = uchar, class TSymbol = uchar>
 class living_tm {
@@ -25,14 +25,37 @@ class living_tm {
 
 public:
   typedef action<NStates, NSymbols, TState, TSymbol> action_type;
+  typedef turing_machine<NStates, NSymbols, uint, uint> tm_type;
 
   living_tm() {
     age = 0;
+    current_state = 0;
     tape.resize(INIT_TAPE_SIZE, 0);
     hp = INIT_TAPE_SIZE / 2;
     nb_shifts = 0;
     fitness = update_fit();
   }
+
+  living_tm(tm_type tm) {
+    machine = tm;
+    age = 0;
+    current_state = 0;
+    tape.resize(INIT_TAPE_SIZE, 0);
+    hp = INIT_TAPE_SIZE / 2;
+    nb_shifts = 0;
+    fitness = update_fit();
+  }
+  
+ living_tm(Random& gen) {
+   machine.random_shuffle(gen);
+    age = 0;
+    current_state = 0;
+    tape.resize(INIT_TAPE_SIZE, 0);
+    hp = INIT_TAPE_SIZE / 2;
+    nb_shifts = 0;
+    fitness = update_fit();
+  }
+ 
 
   action_type do_step() {
     // execute one step
@@ -73,7 +96,7 @@ public:
     return fitness;
   }
 
-  // these 4 methods returns the private member variables,
+  // these 5 methods returns the private member variables,
   TState get_state() {
     return current_state;
   }
@@ -92,15 +115,19 @@ public:
 
   friend ostream& operator<< ( ostream& os, const living_tm& ltm ) {
 
-  os << "======\n"
-     << "Age:\t" << ltm.age << endl
-     << "Current state:\t" << ltm.current_state << endl
-     << "Current symbol:\t" << ltm.tape[ltm.hp] << endl
-     << "Tape size:\t" << ltm.tape.size() << endl
-     << "Number of steps computed so far:\t" << ltm.nb_shifts << endl
+  os << "=========================\n"
+     << "Number of symbols:\t" << NSymbols << endl
+     << "Number of states:\t" << NStates << endl
+     << "Age:\t\t\t" << ltm.age << endl
+     << "Current state:\t\t" << (int) ltm.current_state << endl
+     << "Current symbol:\t\t" << (int) ltm.tape[ltm.hp] << endl
+     << "Head position:\t\t" << ltm.hp << endl
+     << "Tape size:\t\t" << ltm.tape.size() << endl
+     << "Computed steps so far:\t" << ltm.nb_shifts << endl
      << "Last computed fitness:\t" << ltm.fitness << endl
-     << "Transition table:" << ltm.machine
-     << "\n======";
+     << "Transition table:\n"
+     << ltm.machine 
+     << "=========================\n";
     
     return os;
   }

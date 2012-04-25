@@ -14,6 +14,10 @@ int main() {
 	// usage is quite simple
 	Random gen;
 
+	living_tm<2,4> t (gen);
+
+	cout << t;
+	/*
 	// random initialization
 	tm t ( gen );
 	tm s ( gen );
@@ -36,7 +40,7 @@ int main() {
 
 	// this should cause an error
 	//t( 8, 2 );
-
+	*/
 
 	return 0;
 }
