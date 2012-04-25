@@ -3,18 +3,17 @@
 
 
 #include <iostream>
-#include <iomanip>
-#include <stdlib.h>
+#include <string>
 using namespace std;
 
 
-typedef unsigned int uint;
+typedef unsigned int  uint;
 typedef unsigned char uchar;
 
 
 inline uint ndigits ( uint n ) {
-	uint out = 0;
-	for ( ; n; n /= 10 ) out++;
+	uint out = 1;
+	for ( ; n > 9; n /= 10 ) out++;
 	return out;
 }
 

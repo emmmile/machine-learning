@@ -15,6 +15,16 @@ class action {
 	bool dir;		// assume false == LEFT, true == RIGHT
 	TSymbol symbol;		// symbol to write on the tape
 	TState state;		// next state
+
+	// choose uniformly one of the other possibilities
+	inline TSymbol change_symbol ( Random& gen ) {
+		return ( symbol + 1 + ( gen.integer() % ( NSymbols - 1 ) ) ) % NSymbols;
+	}
+
+	inline TState change_state ( Random& gen ) {
+		return ( state + 1 + ( gen.integer() % ( NStates - 1 ) ) ) % NStates;
+	}
+
 public:
 	action ( ) {
 		dir = false;
@@ -36,6 +46,24 @@ public:
 		dir = gen.integer() % 2;
 		symbol = gen.integer() % NSymbols;
 		state = gen.integer() % NStates;
+
+		return *this;
+	}
+
+	//mutation affects only one of the variables (XXX or all the variables??)
+	//mutation can also leave the action unhaltered, is ok??
+	action& mutate ( Random& gen ) {
+		uint dice = gen.integer() % 3;
+		// in this way we modify something for sure
+		if ( dice == 0 ) dir = !dir;
+		if ( dice == 1 ) symbol = change_symbol( gen );
+		if ( dice == 2 ) state = change_state( gen );
+
+		/* this can leave the action unmodified because actually can
+		// choose also the current value
+		if ( dice == 0 ) dir = gen.integer() % 2;
+		if ( dice == 1 ) symbol = gen.integer() % NSymbols;
+		if ( dice == 2 ) state = gen.integer() % NStates;*/
 
 		return *this;
 	}
