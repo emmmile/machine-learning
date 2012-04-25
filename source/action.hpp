@@ -5,19 +5,12 @@
 #include <iomanip>
 #include <stdlib.h>
 #include "random.hpp"
+#include "utils.hpp"
 using namespace std;
 
-typedef unsigned int uint;
-typedef unsigned char uchar;
 
-// returns a char identifier for the direction (used in printing)
-#define print_dir( b )			( b ? 'R' : 'L' )
-// returns a char identifier for the state (used in printing)
-#define print_state( s )		char( 'A' + s )
-// returns a char identifier for the symbol (used in printing)
-#define print_sym( s )			char( '0' + s )
 
-template<uint NStates, uint NSymbols, class TState = uchar, class TSymbol = uchar>
+template<uint NStates, uint NSymbols, class TState, class TSymbol>
 class action {
 	bool dir;		// assume false == LEFT, true == RIGHT
 	TSymbol symbol;		// symbol to write on the tape
@@ -62,9 +55,9 @@ public:
 	}
 
 	friend ostream& operator<< ( ostream& os, const action& a ) {
-		return os << print_sym( a.symbol )
+		return os << setw( ndigits( NSymbols - 1 ) ) << print_sym( a.symbol )
 			  << print_dir( a.dir )
-			  << print_state( a.state );
+			  << setw( ndigits( NStates - 1 ) + 1 ) << print_state( a.state );
 	}
 };
 

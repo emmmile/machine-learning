@@ -4,6 +4,8 @@
 #include "action.hpp"
 
 
+
+
 template<uint NStates, uint NSymbols, class TState = uchar, class TSymbol = uchar>
 class turing_machine {
 	//state<NStates, NSymbols, TState, TSymbol> states [NStates];
@@ -39,14 +41,16 @@ public:
 	}
 
 	friend ostream& operator<< ( ostream& os, const turing_machine& tm ) {
-		os << "   ";
-		// only works for small number of states/symbols!
+		uint wst = ndigits(NStates - 1);
+		uint wsy = ndigits(NSymbols - 1);
+
+		os << string( wst + 2, ' ' );
 		for ( TSymbol i = 0; i < NSymbols; ++i )
-			os << print_sym( i ) << ":  ";
+			os << setw( wsy + 1 ) << print_sym( i ) << ":" << string( wst + 1, ' ' );
 			os << endl;
 
 		for ( TState i = 0; i < NStates; ++i ) {
-			os << print_state( i ) << ": ";
+			os << setw( wst + 1 ) << print_state( i ) << ": ";
 			for ( TSymbol j = 0; j < NSymbols; ++j )
 				os << tm.actions[i][j] << " ";
 			os << endl;

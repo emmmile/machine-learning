@@ -24,11 +24,11 @@ int main() {
 	// get an action
 	tm::action_type a = t( state, tape_symbol ); // same as t.step( state, tape_symbol );
 
-	cout << "From state " << print_state( state )
+	/*cout << "From state " << print_state( state )
 	     << ", having " << print_sym( tape_symbol ) << " on the tape, "
 	     << "we go in state " << print_state( a.next_state() ) << ", writing "
 	     << print_sym( a.next_symbol() ) << " and moving "
-	     << print_dir( a.direction() ) << endl;
+	     << print_dir( a.direction() ) << endl;*/
 
 	// this should cause an error
 	//t( 8, 2 );
