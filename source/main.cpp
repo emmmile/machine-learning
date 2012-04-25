@@ -9,7 +9,7 @@ using namespace std;
 // also thread safe in this way :P)
 
 int main() {
-	typedef turing_machine<9, 8> tm;
+  //	typedef turing_machine<9, 8> tm;
 
 	// usage is quite simple
 	Random gen;
@@ -17,6 +17,16 @@ int main() {
 	living_tm<2,4> t (gen);
 
 	cout << t;
+	
+	int s = 1;
+	while (s) {
+	  cout << "How many steps (0 for stop) ? ";
+	  cin >> s;
+	  for (int i = 0 ; i < s ; ++i)
+	    t.do_step();
+	  cout << t;
+	}
+
 	/*
 	// random initialization
 	tm t ( gen );

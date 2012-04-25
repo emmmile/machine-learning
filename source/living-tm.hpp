@@ -15,7 +15,7 @@ typedef unsigned int _int; // maybe we will need more than this (e.g. unsigned l
 
 template<uint NStates, uint NSymbols, class TState = uchar, class TSymbol = uchar>
 class living_tm {
-  turing_machine<NStates, NSymbols, uint, uint> machine;
+  turing_machine<NStates, NSymbols, TState, TSymbol> machine;
   TState current_state;
   _int age; // age of the machine (number of evolution steps since creation)
   deque<TSymbol> tape; // tape of the machine
@@ -60,7 +60,7 @@ public:
   action_type do_step() {
     // execute one step
 
-    action_type a = machine(get_state(), tape[hp]);
+    action_type a = machine.step(current_state, tape[hp]);
 
     tape[hp] = a.next_symbol();
     current_state = a.next_state();
