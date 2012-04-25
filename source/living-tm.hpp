@@ -1,10 +1,13 @@
 #ifndef LIVINGTM_HPP
 #define LIVINGTM_HPP
-
+/* Definition of the class living_tm about living machines, ie the ones
+ * we will run (not only the transition table but also the tape, the
+ * head position, etc.)
+ */
 #include <deque>
 #include "turing-machine.hpp"
 
-#define INIT_TAPE_SIZE 100
+#define INIT_TAPE_SIZE 101
 #define TAPE_RESIZE_STEP 50
 #define EXPECTED_S 6 // expected max number of steps when known
 
@@ -19,8 +22,17 @@ class living_tm {
   _int hp; // head pointer (index in tape)
   _int nb_shifts; // number of shifts (or steps) done without halting so far
   double fitness; // last computed value of the fitness function
+
 public:
   typedef action<NStates, NSymbols, TState, TSymbol> action_type;
+
+  living_tm() {
+    age = 0;
+    tape.resize(INIT_TAPE_SIZE, 0);
+    hp = INIT_TAPE_SIZE / 2;
+    nb_shifts = 0;
+    fitness = update_fit();
+  }
 
   action_type do_step() {
     // execute one step
