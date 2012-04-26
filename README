@@ -1,14 +1,28 @@
-# README
+88888888888 888     888 8888888b.  8888888888 888     888 
+    888     888     888 888   Y88b 888        888     888 
+    888     888     888 888    888 888        888     888 
+    888     888     888 888   d88P 8888888    Y88b   d88P 
+    888     888     888 8888888P"  888         Y88b d88P  
+    888     888     888 888 T88b   888          Y88o88P   
+    888     Y88b. .d88P 888  T88b  888           Y888P    
+    888      "Y88888P"  888   T88b 8888888888     Y8P
 
-## What is turev ?
+                Evoluting Turing machines
 
-Turev is a project aimed to find [busy beavers](http://en.wikipedia.org/wiki/Busy_beaver). It uses evolutionary computing on a population of Turing machines with same characteristics.
+
+I) What is turev ?
+
+Turev is a project aimed to find busy beavers (http://en.wikipedia.org/wiki/Busy_beaver ). It uses evolutionary computing on a population of Turing machines with same characteristics.
 Turev is written in C++.
 
-## Does it Work ?
+II) Does it Work ?
 
 We just started the developpement so we have no results for the moment.
 
-## Can I Try It ?
+III) Can I Try It ?
 
 Of course. Just run `git clone git@github.com:emmmile/machine-learning.git` to copy the files on your computer, and then `make`. If you are lucky, it will compile fine without missing dependencies.
+
+IV) How Can I Get More Info About It ?
+
+You can read our wiki (https://github.com/emmmile/machine-learning/wiki ). You can also click on `Watch` at the right top of the webpage https://github.com/emmmile/machine-learning .
