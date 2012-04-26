@@ -9,9 +9,20 @@ using namespace std;
 // also thread safe in this way :P)
 
 int main() {
-  //	typedef turing_machine<9, 8> tm;
 
-	// usage is quite simple
+	/* test the new data structures
+	int array[10];fill( array, array + 10, 9999 );
+	typeholder<int> a( 3.2 );
+	a = 2;
+	state<uchar> b = 7;
+	cout << a << " " << array[b] << endl;
+
+	for ( state<uchar,7> i = 0; i < 10; ++i ) {
+		cout << i << endl;
+	}*/
+
+
+
 	Random gen;
 
 	living_tm<3,5> t (gen);

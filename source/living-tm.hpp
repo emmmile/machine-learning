@@ -13,9 +13,12 @@
 
 typedef unsigned int _int; // maybe we will need more than this (e.g. unsigned long long int)
 
-template<uint NStates, uint NSymbols, class TState = uchar, class TSymbol = uchar>
+template<uint NStates, uint NSymbols,
+	 class TState = state<uchar,NStates>,
+	 class TSymbol = symbol<uchar,NSymbols>,
+	 class TDirection = direction>
 class living_tm {
-  turing_machine<NStates, NSymbols, TState, TSymbol> machine;
+  turing_machine<NStates, NSymbols, TState, TSymbol, TDirection> machine;
   TState current_state;
   _int age; // age of the machine (number of evolution steps since creation)
   deque<TSymbol> tape; // tape of the machine
@@ -24,8 +27,8 @@ class living_tm {
   double fitness; // last computed value of the fitness function
 
 public:
-  typedef action<NStates, NSymbols, TState, TSymbol> action_type;
-  typedef turing_machine<NStates, NSymbols, uint, uint> tm_type;
+  typedef action<NStates, NSymbols, TState, TSymbol, TDirection> action_type;
+  typedef turing_machine<NStates, NSymbols, TState, TSymbol, TDirection> tm_type;
 
   living_tm() {
     age = 0;
@@ -62,7 +65,7 @@ public:
      */
 
     action_type a;
-    bool running = (current_state < NStates);
+    bool running = current_state.isrunning();
     // ^- if the machine is running or not
 
     for (_int i = 0 ; i < nsteps && running ; ++i) {
@@ -73,7 +76,7 @@ public:
       tape[hp] = a.next_symbol();
       current_state = a.next_state();
       
-      if (a.direction()) {
+      if (a.direction().isright()) {
 	// go right
 	if (hp == tape.size() - 1) // if we reach the end of the tape ...
 	  tape.resize(tape.size() + TAPE_RESIZE_STEP, 0); // ... we expand it;
@@ -84,7 +87,7 @@ public:
       
       ++nb_shifts;
       
-      running = current_state < NStates;
+      running = current_state.isrunning();
     }
     return running;
   }

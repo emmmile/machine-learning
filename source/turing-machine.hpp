@@ -16,9 +16,12 @@ enum crossover_type {
 
 // TState and TSymbol are now used only for storing (inside the action class),
 // for iterating over the elements I actually use uints
-template<uint NStates, uint NSymbols, class TState = uchar, class TSymbol = uchar>
+template<uint NStates, uint NSymbols,
+	 class TState = state<uchar,NStates>,
+	 class TSymbol = symbol<uchar,NSymbols>,
+	 class TDirection = direction>
 class turing_machine {
-	action<NStates, NSymbols, TState, TSymbol> actions [NStates * NSymbols];
+	action<NStates, NSymbols, TState, TSymbol, TDirection> actions [NStates * NSymbols];
 
 	inline uint size ( ) {
 		return NStates * NSymbols;
@@ -51,9 +54,10 @@ class turing_machine {
 	}
 
 public:
-	typedef action<NStates, NSymbols, TState, TSymbol> action_type;
+	typedef action<NStates, NSymbols, TState, TSymbol, TDirection> action_type;
 	typedef TSymbol symbol_type;
 	typedef TState state_type;
+	typedef TDirection direction_type;
 
 	turing_machine( ) {
 	}
@@ -110,17 +114,15 @@ public:
 
 
 	friend ostream& operator<< ( ostream& os, const turing_machine& tm ) {
-		uint wst = ndigits( NStates - 1 );
-		uint wsy = ndigits( NSymbols - 1 );
+		os << setw( action_type::maxwidth() - TState::maxwidth() - 2 ) << " ";
 
-		os << string( wst + 2, ' ' );
-		for ( uint i = 0; i < NSymbols; ++i )
-			os << setw( wsy + 1 ) << print_sym( i ) << ":" << string( wst + 1, ' ' );
+		for ( TSymbol i = 0; i < NSymbols; ++i )
+			os << setw( action_type::maxwidth() ) << i << ":";
 			os << endl;
 
-		for ( uint i = 0; i < NStates; ++i ) {
-			os << setw( wst + 1 ) << print_state( i ) << ": ";
-			for ( uint j = 0; j < NSymbols; ++j )
+		for ( TState i = 0; i < NStates; ++i ) {
+			os << setw( i.maxwidth() ) << i << ": ";
+			for ( TSymbol j = 0; j < NSymbols; ++j )
 				os << tm.actions[i * NSymbols + j] << " ";
 			os << endl;
 		}
