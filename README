@@ -1,0 +1,14 @@
+# README
+
+## What is turev ?
+
+Turev is a project aimed to find [busy beavers](http://en.wikipedia.org/wiki/Busy_beaver). It uses evolutionary computing on a population of Turing machines with same characteristics.
+Turev is written in C++.
+
+## Does it Work ?
+
+We just started the developpement so we have no results for the moment.
+
+## Can I Try It ?
+
+Of course. Just run `git clone git@github.com:emmmile/machine-learning.git` to copy the files on your computer, and then `make`. If you are lucky, it will compile fine without missing dependencies.
