@@ -1,7 +1,6 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
-
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -13,7 +12,7 @@ typedef unsigned int  uint;
 typedef unsigned char uchar;
 
 
-// to make it more fast I simply check with constants
+// to make it more fast I simply check with these constants
 static const uint ndigits10 ( uint n ) {
 	if ( n < 10 )		return 1;
 	else if ( n < 100 )	return 2;
@@ -21,10 +20,6 @@ static const uint ndigits10 ( uint n ) {
 	else if ( n < 10000 )	return 4;
 	else			return 5;
 }
-
-
-
-
 
 
 
@@ -42,9 +37,6 @@ public:
 	// and should allow to read the value (inside the class) as usual
 	operator T() const { return _value; }
 };
-
-
-
 
 
 
@@ -66,15 +58,9 @@ public:
 	bool ishalt ( ) const { return this->_value == NStates; }
 	bool isrunning ( ) const { return this->_value != NStates; }
 
-	static const uint maxwidth ( ) {
-		return ndigits10( NStates - 1 ) + 1;
-	}
-
 	friend ostream& operator<< ( ostream& os, const state& a ) {
-		stringstream tmp;
-		if ( a.ishalt() )	tmp << left << "H";
-		else			tmp << "S" << (uint) a._value;
-		return os << tmp.str();
+		if ( a.ishalt() )	return os << "H";
+		else			return os << (uint) a._value;
 	}
 };
 
@@ -82,26 +68,16 @@ public:
 
 
 
-
-
-// same thing for the NSymbols, but actually here I use this constant
-// only for printing reasons
 template<class T, T NSymbols = integer_traits<T>::const_max>
 class symbol : public typeholder<T> {
 public:
 	symbol( ) : typeholder<T> ( ) { }
 	symbol( const T& value ) : typeholder<T>( value ) { }
 
-	static const uint maxwidth ( ) {
-		return ndigits10( NSymbols - 1 );
-	}
-
 	friend ostream& operator<< ( ostream& os, const symbol& s ) {
-		return (os << (uint) s._value);
+		return os << (uint) s._value;
 	}
 };
-
-
 
 
 
@@ -114,12 +90,8 @@ public:
 	bool isleft ( ) const { return !_value; }
 	bool isright ( ) const { return _value; }
 
-	static const uint maxwidth ( ) {
-		return 1;
-	}
-
 	friend ostream& operator<< ( ostream& os, const direction& d ) {
-		return (os << ( d._value ? "R" : "L" ));
+		return os << ( d._value ? "R" : "L" );
 	}
 };
 

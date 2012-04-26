@@ -114,16 +114,22 @@ public:
 
 
 	friend ostream& operator<< ( ostream& os, const turing_machine& tm ) {
-		os << setw( action_type::maxwidth() - TState::maxwidth() - 2 ) << " ";
+		uint symw = ndigits10( NSymbols );	// symbol max width
+		uint stw = ndigits10( NStates );	// state max width
+		uint aw = symw + stw + 2;		// action max width
+
+		os << setw( aw - stw - 2 ) << " ";
 
 		for ( TSymbol i = 0; i < NSymbols; ++i )
-			os << setw( action_type::maxwidth() ) << i << ":";
+			os << setw( aw ) << i << ":";
 			os << endl;
 
 		for ( TState i = 0; i < NStates; ++i ) {
-			os << setw( i.maxwidth() ) << i << ": ";
+			os << "S" << setw( stw ) << i << ": ";
 			for ( TSymbol j = 0; j < NSymbols; ++j )
-				os << tm.actions[i * NSymbols + j] << " ";
+				os << tm.actions[i * NSymbols + j].next_symbol()
+				   << tm.actions[i * NSymbols + j].direction()
+				   << "S" << tm.actions[i * NSymbols + j].next_state() << " ";
 			os << endl;
 		}
 

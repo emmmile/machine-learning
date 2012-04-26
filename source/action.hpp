@@ -81,16 +81,6 @@ public:
 	TState next_state( ) const {
 		return state;
 	}
-
-	static const uint maxwidth ( ) {
-		return TDirection::maxwidth() + TState::maxwidth() + TSymbol::maxwidth();
-	}
-
-	friend ostream& operator<< ( ostream& os, const action& a ) {
-		return os << setw( TSymbol::maxwidth() ) << a.symbol
-			  << a.dir
-			  << setw( TState::maxwidth() ) << left << a.state << right;
-	}
 };
 
 

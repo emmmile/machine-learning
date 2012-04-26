@@ -13,11 +13,12 @@
 
 typedef unsigned int _int; // maybe we will need more than this (e.g. unsigned long long int)
 
-template<uint NStates, uint NSymbols,
-	 class TState = state<uchar,NStates>,
-	 class TSymbol = symbol<uchar,NSymbols>,
-	 class TDirection = direction>
+template<uint NStates, uint NSymbols>
 class living_tm {
+  typedef state<uchar,NStates> TState;
+  typedef symbol<uchar,NSymbols> TSymbol;
+  typedef direction TDirection;
+
   turing_machine<NStates, NSymbols, TState, TSymbol, TDirection> machine;
   TState current_state;
   _int age; // age of the machine (number of evolution steps since creation)
@@ -27,8 +28,8 @@ class living_tm {
   double fitness; // last computed value of the fitness function
 
 public:
-  typedef action<NStates, NSymbols, TState, TSymbol, TDirection> action_type;
   typedef turing_machine<NStates, NSymbols, TState, TSymbol, TDirection> tm_type;
+  typedef typename tm_type::action_type action_type;
 
   living_tm() {
     age = 0;
