@@ -14,15 +14,16 @@ int main() {
 	// usage is quite simple
 	Random gen;
 
-	living_tm<2,4> t (gen);
+	living_tm<3,5> t (gen);
 
 	cout << t;
 	
 	int s = 1;
-	while (s) {
+	bool running = true;
+	while (s && running) {
 	  cout << "How many steps (0 for stop) ? ";
 	  cin >> s;
-	  t.do_nsteps(s);
+	  running = t.do_nsteps(s);
 	  cout << t;
 	}
 
