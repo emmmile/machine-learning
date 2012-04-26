@@ -22,7 +22,7 @@ class action {
 	}
 
 	inline TState change_state ( Random& gen ) {
-		return ( state + 1 + ( gen.integer() % ( NStates - 1 ) ) ) % NStates;
+		return ( state + 1 + ( gen.integer() % NStates ) ) % (NStates + 1);
 	}
 
 public:
@@ -45,7 +45,7 @@ public:
 	action& random_shuffle ( Random& gen ) {
 		dir = gen.integer() % 2;
 		symbol = gen.integer() % NSymbols;
-		state = gen.integer() % NStates;
+		state = gen.integer() % ( NStates + 1 );
 
 		return *this;
 	}

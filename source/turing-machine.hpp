@@ -2,6 +2,7 @@
 #define TURINGMACHINE_HPP
 
 #include "action.hpp"
+#include <assert.h>
 
 enum crossover_type {
 	TWO_POINT,		// choose 2 actions at random and swap what is in between
