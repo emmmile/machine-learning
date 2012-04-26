@@ -22,8 +22,7 @@ int main() {
 	while (s) {
 	  cout << "How many steps (0 for stop) ? ";
 	  cin >> s;
-	  for (int i = 0 ; i < s ; ++i)
-	    t.do_step();
+	  t.do_nsteps(s);
 	  cout << t;
 	}
 

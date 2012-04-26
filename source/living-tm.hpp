@@ -55,28 +55,38 @@ public:
     nb_shifts = 0;
     fitness = update_fit();
   }
- 
 
-  action_type do_step() {
-    // execute one step
+  bool do_nsteps(_int nsteps) {
+    /* execute nsteps steps, return true is the machine is still
+     * running, false else
+     */
 
-    action_type a = machine.step(current_state, tape[hp]);
+    action_type a;
+    bool running = (current_state < NStates);
+    // ^- if the machine is running or not
 
-    tape[hp] = a.next_symbol();
-    current_state = a.next_state();
+    for (_int i = 0 ; i < nsteps && running ; ++i) {
 
-    if (a.direction()) {
+      // get the next action to do :
+      a = machine.step(current_state, tape[hp]);
+      
+      tape[hp] = a.next_symbol();
+      current_state = a.next_state();
+      
+      if (a.direction()) {
 	// go right
 	if (hp == tape.size() - 1) // if we reach the end of the tape ...
-	  tape.resize(tape.size() + TAPE_RESIZE_STEP); // ... we expand it;
+	  tape.resize(tape.size() + TAPE_RESIZE_STEP, 0); // ... we expand it;
 	++hp;
-    } else if (!hp) // if we reach the beginning of the tape ...
-      tape.push_front(0); // ... we add one cell at the beginning
-    else --hp; // go left
-
-    ++nb_shifts;
-
-    return a;
+      } else if (!hp) // if we reach the beginning of the tape ...
+	tape.push_front(0); // ... we add one cell at the beginning
+      else --hp; // go left
+      
+      ++nb_shifts;
+      
+      running = current_state < NStates;
+    }
+    return running;
   }
 
   double update_fit() {

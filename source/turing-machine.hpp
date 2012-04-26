@@ -76,6 +76,9 @@ public:
 
 	// the same
 	action_type& step ( const TState s, const TSymbol sym ) {
+	  // the following assert will fail is we ask the action relative to
+	  // any symbol if we are in state NState (halt state) but the function
+	  // do_step (of living_tm) take care of this
 		assert( s < NStates && sym < NSymbols );
 		return actions[s * NSymbols + sym];
 	}
