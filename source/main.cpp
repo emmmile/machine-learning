@@ -4,16 +4,19 @@
 using namespace std;
 
 
-// Random is class that I normally use when I need random numbers.
-// it uses boost random generators that, they say, are a lot better on
-// high dimensions problems (and actually are also very very fast and
-// also thread safe in this way :P)
-
 int main() {
+	Random gen;
+	living_tm<> t (3, 8, gen);
+
+	cout << t;
+	t.do_nsteps( 200000000 );
+
+	return 0;
+
 
   /*
    * Test of serialization
-   */
+   *
 
 	// usage is quite simple
 	Random gen;
@@ -43,5 +46,5 @@ int main() {
     }
 	cout << t2;
 
-	return 0;
+	return 0;*/
 }
