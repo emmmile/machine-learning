@@ -13,9 +13,9 @@
 
 typedef unsigned int _int; // maybe we will need more than this (e.g. unsigned long long int)
 
-template<uint NStates, uint NSymbols, class TState = uchar, class TSymbol = uchar>
+template<class TState = uchar, class TSymbol = uchar>
 class living_tm {
-  turing_machine<NStates, NSymbols, TState, TSymbol> machine;
+  turing_machine<TState, TSymbol> machine;
   TState current_state;
   _int age; // age of the machine (number of evolution steps since creation)
   deque<TSymbol> tape; // tape of the machine
@@ -24,10 +24,10 @@ class living_tm {
   double fitness; // last computed value of the fitness function
 
 public:
-  typedef action<NStates, NSymbols, TState, TSymbol> action_type;
-  typedef turing_machine<NStates, NSymbols, uint, uint> tm_type;
+  typedef action<TState, TSymbol> action_type;
+  typedef turing_machine<uint, uint> tm_type;
 
-  living_tm() {
+  living_tm(TState NSt, TSymbol NSym) : machine( NSt, NSym ) {
     age = 0;
     current_state = 0;
     tape.resize(INIT_TAPE_SIZE, 0);
@@ -36,8 +36,7 @@ public:
     fitness = update_fit();
   }
 
-  living_tm(tm_type tm) {
-    machine = tm;
+  living_tm(tm_type tm) : machine( tm ) {
     age = 0;
     current_state = 0;
     tape.resize(INIT_TAPE_SIZE, 0);
@@ -46,8 +45,7 @@ public:
     fitness = update_fit();
   }
   
- living_tm(Random& gen) {
-   machine.random_shuffle(gen);
+  living_tm(TState NSt, TSymbol NSym, Random& gen) : machine( NSt, NSym, gen ) {
     age = 0;
     current_state = 0;
     tape.resize(INIT_TAPE_SIZE, 0);
@@ -62,7 +60,7 @@ public:
      */
 
     action_type a;
-    bool running = (current_state < NStates);
+    bool running = (current_state < machine.states());
     // ^- if the machine is running or not
 
     for (_int i = 0 ; i < nsteps && running ; ++i) {
@@ -84,7 +82,7 @@ public:
       
       ++nb_shifts;
       
-      running = current_state < NStates;
+      running = current_state < machine.states();
     }
     return running;
   }
@@ -94,10 +92,10 @@ public:
     if (nb_shifts < EXPECTED_S)
       fitness = 1.0 / (EXPECTED_S - nb_shifts);
     // ^- may be changed for a better one
-    else if (nb_shifts == EXPECTED_S && current_state == NStates)
+    else if (nb_shifts == EXPECTED_S && current_state == machine.states())
       // we found it !
       clog << "=== FOUND MACHINE ===\n"
-	   << NStates << " states, " << NSymbols << "symbols\n"
+	   << machine.states() << " states, " << machine.symbols() << "symbols\n"
 	   << "halts after " << nb_shifts << endl
 	   << machine;
     else
@@ -126,8 +124,8 @@ public:
   friend ostream& operator<< ( ostream& os, const living_tm& ltm ) {
 
   os << "=========================\n"
-     << "Number of symbols:\t" << NSymbols << endl
-     << "Number of states:\t" << NStates << endl
+     << "Number of symbols:\t" <<  ltm.machine.symbols() << endl
+     << "Number of states:\t" <<  ltm.machine.states() << endl
      << "Age:\t\t\t" << ltm.age << endl
      << "Current state:\t\t" << (int) ltm.current_state << endl
      << "Current symbol:\t\t" << (int) ltm.tape[ltm.hp] << endl
@@ -136,9 +134,9 @@ public:
      << "Computed steps so far:\t" << ltm.nb_shifts << endl
      << "Last computed fitness:\t" << ltm.fitness << endl
      << "Transition table:\n"
-     << ltm.machine 
+     << ltm.machine
      << "=========================\n";
-    
+
     return os;
   }
 

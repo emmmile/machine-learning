@@ -10,18 +10,18 @@ using namespace std;
 
 
 
-template<uint NStates, uint NSymbols, class TState, class TSymbol>
+template<class TState, class TSymbol>
 class action {
 	bool dir;		// assume false == LEFT, true == RIGHT
 	TSymbol symbol;		// symbol to write on the tape
 	TState state;		// next state
 
 	// choose uniformly one of the other possibilities
-	inline TSymbol change_symbol ( Random& gen ) {
+	inline TSymbol change_symbol ( uint NSymbols, Random& gen ) {
 		return ( symbol + 1 + ( gen.integer() % ( NSymbols - 1 ) ) ) % NSymbols;
 	}
 
-	inline TState change_state ( Random& gen ) {
+	inline TState change_state ( uint NStates, Random& gen ) {
 		return ( state + 1 + ( gen.integer() % NStates ) ) % (NStates + 1);
 	}
 
@@ -32,8 +32,8 @@ public:
 		state = 0;
 	}
 
-	action ( Random& gen ) {
-		this->random_shuffle( gen );
+	action (uint NStates, uint NSymbols, Random& gen ) {
+		this->random_shuffle( NStates, NSymbols, gen );
 	}
 
 	action ( const action& a ) {
@@ -42,7 +42,7 @@ public:
 		state = a.state;
 	}
 
-	action& random_shuffle ( Random& gen ) {
+	action& random_shuffle ( uint NStates, uint NSymbols, Random& gen ) {
 		dir = gen.integer() % 2;
 		symbol = gen.integer() % NSymbols;
 		state = gen.integer() % ( NStates + 1 );
@@ -52,12 +52,12 @@ public:
 
 	//mutation affects only one of the variables (XXX or all the variables??)
 	//mutation can also leave the action unhaltered, is ok??
-	action& mutate ( Random& gen ) {
+	action& mutate ( uint NStates, uint NSymbols, Random& gen ) {
 		uint dice = gen.integer() % 3;
 		// in this way we modify something for sure
 		if ( dice == 0 ) dir = !dir;
-		if ( dice == 1 ) symbol = change_symbol( gen );
-		if ( dice == 2 ) state = change_state( gen );
+		if ( dice == 1 ) symbol = change_symbol( NSymbols, gen );
+		if ( dice == 2 ) state = change_state( NStates, gen );
 
 		/* this can leave the action unmodified because actually can
 		// choose also the current value
@@ -80,12 +80,6 @@ public:
 
 	TState next_state( ) const {
 		return state;
-	}
-
-	friend ostream& operator<< ( ostream& os, const action& a ) {
-		return os << setw( ndigits( NSymbols - 1 ) ) << print_sym( a.symbol )
-			  << print_dir( a.dir )
-			  << setw( ndigits( NStates - 1 ) + 1 ) << print_state( a.state );
 	}
 };
 

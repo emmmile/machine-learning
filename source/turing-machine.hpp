@@ -3,6 +3,7 @@
 
 #include "action.hpp"
 #include <assert.h>
+#include <vector>
 
 enum crossover_type {
 	TWO_POINT,		// choose 2 actions at random and swap what is in between
@@ -16,9 +17,11 @@ enum crossover_type {
 
 // TState and TSymbol are now used only for storing (inside the action class),
 // for iterating over the elements I actually use uints
-template<uint NStates, uint NSymbols, class TState = uchar, class TSymbol = uchar>
+template<class TState = uchar, class TSymbol = uchar>
 class turing_machine {
-	action<NStates, NSymbols, TState, TSymbol> actions [NStates * NSymbols];
+	vector<action<TState, TSymbol> > actions;
+	TState NStates;
+	TSymbol NSymbols;
 
 	inline uint size ( ) {
 		return NStates * NSymbols;
@@ -51,24 +54,31 @@ class turing_machine {
 	}
 
 public:
-	typedef action<NStates, NSymbols, TState, TSymbol> action_type;
+	typedef action<TState, TSymbol> action_type;
 	typedef TSymbol symbol_type;
 	typedef TState state_type;
 
-	turing_machine( ) {
+	turing_machine( TState NSt, TSymbol NSym ) : actions( NSt * NSym ), NStates(NSt), NSymbols(NSym) {
 	}
 
-	turing_machine( Random& gen ) {
+	turing_machine( TState NSt, TSymbol NSym, Random& gen ) : actions( NSt * NSym ), NStates(NSt), NSymbols(NSym) {
 		this->random_shuffle( gen );
 	}
 
 	turing_machine& random_shuffle ( Random& gen ) {
 		for ( uint i = 0; i < size(); ++i )
-			actions[i].random_shuffle( gen );
+			actions[i].random_shuffle( NStates, NSymbols, gen );
 		return *this;
 	}
 
 
+	uint states() const {
+		return NStates;
+	}
+
+	uint symbols() const {
+		return NStates;
+	}
 
 	// returns the action relative to the symbol sym, if we are in state s
 	action_type& operator() ( const TState s, const TSymbol sym ) {
@@ -110,18 +120,20 @@ public:
 
 
 	friend ostream& operator<< ( ostream& os, const turing_machine& tm ) {
-		uint wst = ndigits( NStates - 1 );
-		uint wsy = ndigits( NSymbols - 1 );
+		uint wst = ndigits( tm.NStates - 1 );
+		uint wsy = ndigits( tm.NSymbols - 1 );
 
 		os << string( wst + 2, ' ' );
-		for ( uint i = 0; i < NSymbols; ++i )
+		for ( uint i = 0; i < tm.NSymbols; ++i )
 			os << setw( wsy + 1 ) << print_sym( i ) << ":" << string( wst + 1, ' ' );
 			os << endl;
 
-		for ( uint i = 0; i < NStates; ++i ) {
+		for ( uint i = 0; i < tm.NStates; ++i ) {
 			os << setw( wst + 1 ) << print_state( i ) << ": ";
-			for ( uint j = 0; j < NSymbols; ++j )
-				os << tm.actions[i * NSymbols + j] << " ";
+			for ( uint j = 0; j < tm.NSymbols; ++j )
+				os << print_sym(tm.actions[i *  tm.NSymbols + j].next_symbol() )
+				 << print_dir(tm.actions[i *  tm.NSymbols + j].direction())
+				 << print_state( tm.actions[i *  tm.NSymbols + j].next_state()) << " ";
 			os << endl;
 		}
 
