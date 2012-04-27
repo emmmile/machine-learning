@@ -6,7 +6,7 @@ using namespace std;
 
 int main() {
 	Random gen;
-	living_tm<> t (3, 8, gen);
+	living_tm<3,8> t (gen);
 
 	cout << t;
 	t.do_nsteps( 200000000 );
