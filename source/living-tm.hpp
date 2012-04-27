@@ -4,16 +4,24 @@
  * we will run (not only the transition table but also the tape, the
  * head position, etc.)
  */
+
+#include <fstream>
 #include <deque>
+#include <boost/archive/text_oarchive.hpp> // for serialization
+#include <boost/archive/text_iarchive.hpp> // idem
 #include "turing-machine.hpp"
 
 #define INIT_TAPE_SIZE 101
 #define TAPE_RESIZE_STEP 50
 #define EXPECTED_S 6 // expected max number of steps when known
 
-typedef unsigned int _int; // maybe we will need more than this (e.g. unsigned long long int)
+typedef unsigned int _int;
+// ^- maybe we will need more than this (e.g. unsigned long long int)
 
-template<uint NStates, uint NSymbols, class TState = uchar, class TSymbol = uchar>
+template<uint NStates,
+	 uint NSymbols,
+	 class TState = uchar,
+	 class TSymbol = uchar>
 class living_tm {
   turing_machine<NStates, NSymbols, TState, TSymbol> machine;
   TState current_state;
@@ -22,6 +30,19 @@ class living_tm {
   _int hp; // head pointer (index in tape)
   _int nb_shifts; // number of shifts (or steps) done without halting so far
   double fitness; // last computed value of the fitness function
+
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar)
+  {
+    ar & machine;
+    ar & current_state;
+    ar & age;
+    ar & tape;
+    ar & hp;
+    ar & nb_shifts;
+    ar & fitness;
+  }
 
 public:
   typedef action<NStates, NSymbols, TState, TSymbol> action_type;

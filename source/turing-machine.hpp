@@ -50,6 +50,15 @@ class turing_machine {
 		return swap_actions( beg, end, a );
 	}
 
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar)
+  {
+    ar & NSymbols;
+    ar & NStates;
+    ar & actions;
+  }
+
 public:
 	typedef action<NStates, NSymbols, TState, TSymbol> action_type;
 	typedef TSymbol symbol_type;
