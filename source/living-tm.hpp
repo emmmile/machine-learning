@@ -7,8 +7,6 @@
 
 #include <fstream>
 #include <deque>
-#include <boost/archive/text_oarchive.hpp> // for serialization
-#include <boost/archive/text_iarchive.hpp> // idem
 #include "turing-machine.hpp"
 
 #define INIT_TAPE_SIZE 101
@@ -33,9 +31,9 @@ class living_tm {
 
   friend class boost::serialization::access;
   template<class Archive>
-  void serialize(Archive & ar)
+  void serialize(Archive & ar, const unsigned int version)
   {
-    ar & machine;
+    //    ar & machine;
     ar & current_state;
     ar & age;
     ar & tape;

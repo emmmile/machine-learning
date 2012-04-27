@@ -1,8 +1,16 @@
 #ifndef TURINGMACHINE_HPP
 #define TURINGMACHINE_HPP
 
-#include "action.hpp"
 #include <assert.h>
+#include <boost/archive/text_oarchive.hpp> // for serialization
+#include <boost/archive/text_iarchive.hpp> // idem
+#include <boost/serialization/access.hpp> // idem
+#include <boost/serialization/serialization.hpp> // idem
+#include <boost/serialization/vector.hpp> // idem
+#include <boost/serialization/deque.hpp> // idem
+
+
+#include "action.hpp"
 
 enum crossover_type {
 	TWO_POINT,		// choose 2 actions at random and swap what is in between
@@ -49,16 +57,16 @@ class turing_machine {
 		uint end = size() - 1;
 		return swap_actions( beg, end, a );
 	}
-
+  /*
   friend class boost::serialization::access;
   template<class Archive>
-  void serialize(Archive & ar)
+  void serialize(Archive & ar, const unsigned int version)
   {
     ar & NSymbols;
     ar & NStates;
     ar & actions;
   }
-
+  */
 public:
 	typedef action<NStates, NSymbols, TState, TSymbol> action_type;
 	typedef TSymbol symbol_type;
