@@ -4,9 +4,7 @@ DEFINES       =
 CXXFLAGS      = -O3 -pipe -ffast-math -funroll-loops -march=i686 -Wall
 LINK          = g++
 LFLAGS        = -O3 -s
-LIBS          =
-#NO_COLOR      = \e[0m
-#COLOR         = \e[0;92m
+LIBS          = -lboost_serialization
 
 ECHO = printf
 CAT = cat

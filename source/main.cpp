@@ -11,6 +11,10 @@ using namespace std;
 
 int main() {
 
+  /*
+   * Test of serialization
+   */
+
 	// usage is quite simple
 	Random gen;
 	living_tm<3,5> t (gen);
@@ -20,6 +24,8 @@ int main() {
 
 	cout << t;
 	
+	t.do_nsteps(50);
+
 	{
 	  boost::archive::text_oarchive oa(ofs);
 	  // write class instance to archive
@@ -35,6 +41,7 @@ int main() {
 	  // read class state from archive
 	  ia >> t2;
     }
+	cout << t2;
 
 	return 0;
 }

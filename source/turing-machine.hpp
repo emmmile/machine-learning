@@ -4,8 +4,6 @@
 #include <assert.h>
 #include <boost/archive/text_oarchive.hpp> // for serialization
 #include <boost/archive/text_iarchive.hpp> // idem
-#include <boost/serialization/access.hpp> // idem
-#include <boost/serialization/serialization.hpp> // idem
 #include <boost/serialization/vector.hpp> // idem
 #include <boost/serialization/deque.hpp> // idem
 
@@ -57,16 +55,16 @@ class turing_machine {
 		uint end = size() - 1;
 		return swap_actions( beg, end, a );
 	}
-  /*
+  
   friend class boost::serialization::access;
   template<class Archive>
   void serialize(Archive & ar, const unsigned int version)
   {
-    ar & NSymbols;
-    ar & NStates;
+    // it would be good to serialize NStates and NSymbols to,
+    //but it's constants so it fails
     ar & actions;
   }
-  */
+
 public:
 	typedef action<NStates, NSymbols, TState, TSymbol> action_type;
 	typedef TSymbol symbol_type;

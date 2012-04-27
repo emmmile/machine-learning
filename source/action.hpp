@@ -25,6 +25,15 @@ class action {
 		return ( state + 1 + ( gen.integer() % NStates ) ) % (NStates + 1);
 	}
 
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version)
+  {
+    ar & dir;
+    ar & symbol;
+    ar & state;
+  }
+
 public:
 	action ( ) {
 		dir = false;

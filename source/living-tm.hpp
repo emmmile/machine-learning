@@ -33,7 +33,7 @@ class living_tm {
   template<class Archive>
   void serialize(Archive & ar, const unsigned int version)
   {
-    //    ar & machine;
+    ar & machine;
     ar & current_state;
     ar & age;
     ar & tape;
