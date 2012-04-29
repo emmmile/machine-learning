@@ -67,8 +67,8 @@ public:
     fitness = update_fit();
   }
   
- living_tm(Random& gen) {
-   machine.random_shuffle(gen);
+  living_tm(Random& gen) {
+    machine.random_shuffle(gen);
     age = 0;
     current_state = 0;
     tape.resize(INIT_TAPE_SIZE, 0);
