@@ -52,16 +52,23 @@ public:
 template<class T, T NStates = integer_traits<T>::const_max>
 class state : public typeholder<T> {
 public:
-	state( ) : typeholder<T> ( ) { }
-	state( const T& value ) : typeholder<T>( value ) { }
-
-	bool ishalt ( ) const { return this->_value == NStates; }
-	bool isrunning ( ) const { return this->_value != NStates; }
-
-	friend ostream& operator<< ( ostream& os, const state& a ) {
-		if ( a.ishalt() )	return os << "H";
-		else			return os << (uint) a._value;
-	}
+  state( ) : typeholder<T> ( ) { }
+  state( const T& value ) : typeholder<T>( value ) { }
+  
+  bool ishalt ( ) const { return this->_value == NStates; }
+  bool isrunning ( ) const { return this->_value != NStates; }
+  
+  friend ostream& operator<< ( ostream& os, const state& a ) {
+    if ( a.ishalt() )	return os << "H";
+    else			return os << (uint) a._value;
+  }
+  
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version)
+  {
+    ar & this->_value;
+  }
 };
 
 
@@ -71,12 +78,19 @@ public:
 template<class T, T NSymbols = integer_traits<T>::const_max>
 class symbol : public typeholder<T> {
 public:
-	symbol( ) : typeholder<T> ( ) { }
-	symbol( const T& value ) : typeholder<T>( value ) { }
-
-	friend ostream& operator<< ( ostream& os, const symbol& s ) {
-		return os << (uint) s._value;
-	}
+  symbol( ) : typeholder<T> ( ) { }
+  symbol( const T& value ) : typeholder<T>( value ) { }
+  
+  friend ostream& operator<< ( ostream& os, const symbol& s ) {
+    return os << (uint) s._value;
+  }
+  
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version)
+  {
+    ar & this->_value;
+  }
 };
 
 
@@ -84,15 +98,23 @@ public:
 
 class direction : public typeholder<bool> {
 public:
-	direction( ) : typeholder<bool> ( ) { }
-	direction( const bool& value ) : typeholder<bool>( value ) { }
+  direction( ) : typeholder<bool> ( ) { }
+  direction( const bool& value ) : typeholder<bool>( value ) { }
+  
+  bool isleft ( ) const { return !_value; }
+  bool isright ( ) const { return _value; }
+  
+  friend ostream& operator<< ( ostream& os, const direction& d ) {
+    return os << ( d._value ? "R" : "L" );
+  }
+  
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version)
+  {
+    ar & _value;
+  }
 
-	bool isleft ( ) const { return !_value; }
-	bool isright ( ) const { return _value; }
-
-	friend ostream& operator<< ( ostream& os, const direction& d ) {
-		return os << ( d._value ? "R" : "L" );
-	}
 };
 
 #endif // UTILS_HPP
