@@ -10,9 +10,9 @@ using namespace std;
 
 
 
-template<uint NStates, uint NSymbols, class TState, class TSymbol>
+template<uint NStates, uint NSymbols, class TState, class TSymbol, class TDirection>
 class action {
-	bool dir;		// assume false == LEFT, true == RIGHT
+	TDirection dir;		// assume false == LEFT, true == RIGHT
 	TSymbol symbol;		// symbol to write on the tape
 	TState state;		// next state
 
@@ -79,7 +79,7 @@ public:
 
 	// these methods returns the private member variables,
 	// if you want to avoid them, simply make the 3 variables public
-	bool direction( ) const {
+	TDirection direction( ) const {
 		return dir;
 	}
 
@@ -89,12 +89,6 @@ public:
 
 	TState next_state( ) const {
 		return state;
-	}
-
-	friend ostream& operator<< ( ostream& os, const action& a ) {
-		return os << setw( ndigits( NSymbols - 1 ) ) << print_sym( a.symbol )
-			  << print_dir( a.dir )
-			  << setw( ndigits( NStates - 1 ) + 1 ) << print_state( a.state );
 	}
 };
 

@@ -22,9 +22,12 @@ enum crossover_type {
 
 // TState and TSymbol are now used only for storing (inside the action class),
 // for iterating over the elements I actually use uints
-template<uint NStates, uint NSymbols, class TState = uchar, class TSymbol = uchar>
+template<uint NStates, uint NSymbols,
+	 class TState = state<uchar,NStates>,
+	 class TSymbol = symbol<uchar,NSymbols>,
+	 class TDirection = direction>
 class turing_machine {
-	action<NStates, NSymbols, TState, TSymbol> actions [NStates * NSymbols];
+	action<NStates, NSymbols, TState, TSymbol, TDirection> actions [NStates * NSymbols];
 
 	inline uint size ( ) {
 		return NStates * NSymbols;
@@ -66,9 +69,10 @@ class turing_machine {
   }
 
 public:
-	typedef action<NStates, NSymbols, TState, TSymbol> action_type;
+	typedef action<NStates, NSymbols, TState, TSymbol, TDirection> action_type;
 	typedef TSymbol symbol_type;
 	typedef TState state_type;
+	typedef TDirection direction_type;
 
 	turing_machine( ) {
 	}
@@ -125,18 +129,22 @@ public:
 
 
 	friend ostream& operator<< ( ostream& os, const turing_machine& tm ) {
-		uint wst = ndigits( NStates - 1 );
-		uint wsy = ndigits( NSymbols - 1 );
+		uint symw = ndigits10( NSymbols );	// symbol max width
+		uint stw = ndigits10( NStates );	// state max width
+		uint aw = symw + stw + 2;		// action max width
 
-		os << string( wst + 2, ' ' );
-		for ( uint i = 0; i < NSymbols; ++i )
-			os << setw( wsy + 1 ) << print_sym( i ) << ":" << string( wst + 1, ' ' );
+		os << setw( aw - stw - 2 ) << " ";
+
+		for ( TSymbol i = 0; i < NSymbols; ++i )
+			os << setw( aw ) << i << ":";
 			os << endl;
 
-		for ( uint i = 0; i < NStates; ++i ) {
-			os << setw( wst + 1 ) << print_state( i ) << ": ";
-			for ( uint j = 0; j < NSymbols; ++j )
-				os << tm.actions[i * NSymbols + j] << " ";
+		for ( TState i = 0; i < NStates; ++i ) {
+			os << "S" << setw( stw ) << i << ": ";
+			for ( TSymbol j = 0; j < NSymbols; ++j )
+				os << tm.actions[i * NSymbols + j].next_symbol()
+				   << tm.actions[i * NSymbols + j].direction()
+				   << "S" << tm.actions[i * NSymbols + j].next_state() << " ";
 			os << endl;
 		}
 

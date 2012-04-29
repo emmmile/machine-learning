@@ -5,18 +5,9 @@ using namespace std;
 
 
 int main() {
-	Random gen;
-	living_tm<3,8> t (gen);
-
-	cout << t;
-	t.do_nsteps( 200000000 );
-
-	return 0;
-
-
   /*
    * Test of serialization
-   *
+   */
 
 	// usage is quite simple
 	Random gen;
@@ -46,5 +37,5 @@ int main() {
     }
 	cout << t2;
 
-	return 0;*/
+	return 0;
 }
