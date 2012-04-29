@@ -59,15 +59,30 @@ class turing_machine {
 		return swap_actions( beg, end, a );
 	}
   
-  friend class boost::serialization::access;
-  template<class Archive>
-  void serialize(Archive & ar, const unsigned int version)
-  {
-    // it would be good to serialize NStates and NSymbols to,
-    //but it's constants so it fails
-    ar & actions;
-  }
+        friend class boost::serialization::access;
+        template<class Archive>
+        void save(Archive & ar, const unsigned int version) const {
+          // it would be good to serialize NStates and NSymbols to,
+          //but it's constants so it fails
+          uint states = NStates;
+          uint symbols = NSymbols;
+          ar & states;
+          ar & symbols;
+          ar & actions;
+        }
 
+        template<class Archive>
+        void load(Archive & ar, const unsigned int version) {
+          // it would be good to serialize NStates and NSymbols to,
+          //but it's constants so it fails
+          uint states, symbols;
+          ar & states;
+          ar & symbols;
+          assert( states == NStates && symbols == NSymbols );
+          ar & actions;
+        }
+
+        BOOST_SERIALIZATION_SPLIT_MEMBER()
 public:
 	typedef action<NStates, NSymbols, TState, TSymbol, TDirection> action_type;
 	typedef TSymbol symbol_type;
