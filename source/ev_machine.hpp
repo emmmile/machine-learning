@@ -18,6 +18,7 @@ class population {
   _int age;
 
 public:
+  typedef living_tm<NStates, NSymbols> ltm_type;
 
   population() {
     age = 0;
@@ -32,6 +33,26 @@ public:
     for (int i = 0; i < INIT_POPULATION_SIZE; ++i)
       machines[i] = new living_tm<NStates, NSymbols> (gen);
   }
+
+  ltm_type operator[](const uint i) {
+    // return the i-th machine in the population
+    assert(i < machines.size());
+    return *machines[i];
+  }
+
+  void push_back(const ltm_type& ltm) {
+    // add the living_tm ltm in the population (at the end of the array)
+    ltm_type new_machine = new ltm_type (ltm);
+    machines = push_back(&new_machine);
+  }
+
+  void erase(const uint i) {
+    // remove the i-th machine from the population
+    assert(i < machines.size());
+    delete *machines[i];
+    machines.erase(i);
+  }
+
 };
 
 

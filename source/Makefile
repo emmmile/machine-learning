@@ -36,7 +36,7 @@ $(NAME): header $(NAME).o
 	@$(LINK) $(LFLAGS) -o $@ $(OBJ) $(LIBS) $(ERR_HANDLING)
 	$(ERR_PRINTING)
 
-%.o: %.cpp turing-machine.hpp action.hpp random.hpp utils.hpp living-tm.hpp
+%.o: %.cpp turing-machine.hpp action.hpp random.hpp utils.hpp living-tm.hpp ev_machine.hpp
 	@$(ECHO) "Compiling $<... \t"
 	@$(CXX) $(CXXFLAGS) $(INCPATH) -c -o $@ $< $(ERR_HANDLING)
 	$(ERR_PRINTING)
