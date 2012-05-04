@@ -29,7 +29,8 @@ template<uint NStates, uint NSymbols,
 class turing_machine {
   action<NStates, NSymbols, TState, TSymbol, TDirection> actions [NStates * NSymbols];
 
-  inline uint size ( ) {
+  // returns the number of actions (used in crossovers)
+  inline static const uint size ( ) {
     return NStates * NSymbols;
   }
 
@@ -133,6 +134,11 @@ public:
   }
 
 
+
+  // returns the number of different machines (random initialization happens in this space)
+  inline static const uint spacesize ( ) {
+    return size() * 2 * NSymbols * (NStates + 1);
+  }
 
   friend ostream& operator<< ( ostream& os, const turing_machine& tm ) {
     uint symw = ndigits10( NSymbols );	// symbol max width

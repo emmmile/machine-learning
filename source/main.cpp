@@ -11,7 +11,7 @@ int main() {
 
   // usage is quite simple
   Random gen;
-  living_tm<3,5> t (gen);
+  living_tm<6,2> t (gen);
 
   // create and open a character archive for output
   std::ofstream ofs("backup_file");
@@ -23,7 +23,7 @@ int main() {
   oa << t;
   ofs.close();
 
-  living_tm<4,5> t2;
+  living_tm<6,2> t2;
 
   // create and open an archive for input
   std::ifstream ifs("backup_file");
@@ -31,6 +31,11 @@ int main() {
   // read class state from archive
   ia >> t2;
   cout << t2;
+
+  cout << turing_machine<5,5>::spacesize() << endl;
+  cout << turing_machine<3,2>::spacesize() << endl;
+  cout << turing_machine<6,2>::spacesize() << endl;
+  cout << turing_machine<7,9>::spacesize() << endl;
 
   return 0;
 }
