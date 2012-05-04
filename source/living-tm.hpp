@@ -121,6 +121,7 @@ public:
      << NStates << " states, " << NSymbols << "symbols\n"
      << "halts after " << nb_shifts << endl
      << machine;
+    fitness = 1;
     else
       fitness = 0.0;
 
@@ -161,6 +162,29 @@ public:
      << "=========================\n";
     
     return os;
+  }
+
+  friend bool operator<(const living_tm& ltm_left, const living_tm& ltm_right) {
+    // update fitnesses and compare machines relatively to their fitness
+    ltm_right.update_fit();
+    ltm_left.update_fit();
+    return ltm_left.get_fitness() < ltm_right.get_fitness();
+  }
+
+  friend bool operator>(const living_tm& ltm_left, const living_tm& ltm_right) {
+    return ltm_right < ltm_left;
+  }
+
+  friend bool operator<=(const living_tm& ltm_left, const living_tm& ltm_right) {
+    return ltm_left < ltm_right || ltm_left.get_fitness() == ltm_right.get_fitness();
+    // ^- evaluation of the first part of the clause will update fitness and make
+    // the second part of the clause relevant
+  }
+
+  friend bool operator>=(const living_tm& ltm_left, const living_tm& ltm_right) {
+    return ltm_left > ltm_right || ltm_left.get_fitness() == ltm_right.get_fitness();
+    // ^- evaluation of the first part of the clause will update fitness and make
+    // the second part of the clause relevant
   }
 
 };
