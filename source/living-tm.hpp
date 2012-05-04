@@ -33,8 +33,7 @@ class living_tm {
 
   friend class boost::serialization::access;
   template<class Archive>
-  void serialize(Archive & ar, const unsigned int version)
-  {
+  void serialize(Archive & ar, const unsigned int version) {
     ar & machine;
     ar & current_state;
     ar & age;

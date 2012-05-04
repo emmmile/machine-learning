@@ -15,20 +15,17 @@ template<uint NStates,
 	 >
 class population {
   vector<living_tm<NStates, NSymbols>*> machines;
-  _int age;
 
 public:
   typedef living_tm<NStates, NSymbols> ltm_type;
 
   population() {
-    age = 0;
     machines.resize(INIT_POPULATION_SIZE);
     for (int i = 0; i < INIT_POPULATION_SIZE; ++i)
       machines[i] = new living_tm<NStates, NSymbols>;
   }
 
   population(Random& gen) {
-    age = 0;
     machines.resize(INIT_POPULATION_SIZE);
     for (int i = 0; i < INIT_POPULATION_SIZE; ++i)
       machines[i] = new living_tm<NStates, NSymbols> (gen);
@@ -53,7 +50,17 @@ public:
     machines.erase(i);
   }
 
+  void nsteps_for_all(_int n) {
+    // do n step on all machines of the population
+    for(int i = 0; i < machines.size() ; ++i)
+      *machines[i].do_nsteps(n);
+  }
 
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version) {
+    ar & machines;
+  }
 
 };
 
