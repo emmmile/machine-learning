@@ -14,11 +14,11 @@ typedef unsigned char uchar;
 
 // to make it more fast I simply check with these constants
 static const uint ndigits10 ( uint n ) {
-	if ( n < 10 )		return 1;
-	else if ( n < 100 )	return 2;
-	else if ( n < 1000 )	return 3;
-	else if ( n < 10000 )	return 4;
-	else			return 5;
+  if ( n < 10 )         return 1;
+  else if ( n < 100 )   return 2;
+  else if ( n < 1000 )  return 3;
+  else if ( n < 10000 ) return 4;
+  else                  return 5;
 }
 
 
@@ -26,16 +26,22 @@ static const uint ndigits10 ( uint n ) {
 template<class T>
 class typeholder {
 protected:
-	T _value;
+  T _value;
 public:
-	typeholder( ) { _value = 0; }
-	typeholder( const T& value ) : _value( value ) { }
+  typeholder( ) { _value = 0; }
+  typeholder( const T& value ) : _value( value ) { }
 
-	T& operator++ ( ) { return ++_value; }
+  T& operator++ ( ) { return ++_value; }
 
-	// this overloads the cast operator
-	// and should allow to read the value (inside the class) as usual
-	operator T() const { return _value; }
+  // this overloads the cast operator
+  // and should allow to read the value (inside the class) as usual
+  operator T() const { return _value; }
+
+  friend class boost::serialization::access;
+  template<class Archive>
+  void serialize(Archive & ar, const unsigned int version) {
+    ar & this->_value;
+  }
 };
 
 
@@ -60,14 +66,7 @@ public:
   
   friend ostream& operator<< ( ostream& os, const state& a ) {
     if ( a.ishalt() )	return os << "H";
-    else			return os << (uint) a._value;
-  }
-  
-  friend class boost::serialization::access;
-  template<class Archive>
-  void serialize(Archive & ar, const unsigned int version)
-  {
-    ar & this->_value;
+    else		return os << (uint) a._value;
   }
 };
 
@@ -83,13 +82,6 @@ public:
   
   friend ostream& operator<< ( ostream& os, const symbol& s ) {
     return os << (uint) s._value;
-  }
-  
-  friend class boost::serialization::access;
-  template<class Archive>
-  void serialize(Archive & ar, const unsigned int version)
-  {
-    ar & this->_value;
   }
 };
 
@@ -107,14 +99,6 @@ public:
   friend ostream& operator<< ( ostream& os, const direction& d ) {
     return os << ( d._value ? "R" : "L" );
   }
-  
-  friend class boost::serialization::access;
-  template<class Archive>
-  void serialize(Archive & ar, const unsigned int version)
-  {
-    ar & _value;
-  }
-
 };
 
 #endif // UTILS_HPP

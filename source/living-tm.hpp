@@ -95,12 +95,12 @@ public:
       current_state = a.next_state();
       
       if (a.direction().isright()) {
-	// go right
-	if (hp == tape.size() - 1) // if we reach the end of the tape ...
-	  tape.resize(tape.size() + TAPE_RESIZE_STEP, 0); // ... we expand it;
-	++hp;
+  // go right
+  if (hp == tape.size() - 1) // if we reach the end of the tape ...
+    tape.resize(tape.size() + TAPE_RESIZE_STEP, 0); // ... we expand it;
+  ++hp;
       } else if (!hp) // if we reach the beginning of the tape ...
-	tape.push_front(0); // ... we add one cell at the beginning
+  tape.push_front(0); // ... we add one cell at the beginning
       else --hp; // go left
       
       ++nb_shifts;
@@ -118,9 +118,9 @@ public:
     else if (nb_shifts == EXPECTED_S && current_state == NStates)
       // we found it !
       clog << "=== FOUND MACHINE ===\n"
-	   << NStates << " states, " << NSymbols << "symbols\n"
-	   << "halts after " << nb_shifts << endl
-	   << machine;
+     << NStates << " states, " << NSymbols << "symbols\n"
+     << "halts after " << nb_shifts << endl
+     << machine;
     else
       fitness = 0.0;
 
