@@ -115,14 +115,14 @@ public:
     if (nb_shifts < EXPECTED_S)
       fitness = 1.0 / (EXPECTED_S - nb_shifts);
     // ^- may be changed for a better one
-    else if (nb_shifts == EXPECTED_S && current_state == NStates)
+    else if (nb_shifts == EXPECTED_S && current_state == NStates) {
       // we found it !
       clog << "=== FOUND MACHINE ===\n"
-     << NStates << " states, " << NSymbols << "symbols\n"
-     << "halts after " << nb_shifts << endl
-     << machine;
-    fitness = 1;
-    else
+	   << NStates << " states, " << NSymbols << "symbols\n"
+	   << "halts after " << nb_shifts << endl
+	   << machine;
+      fitness = 1.0;
+    } else
       fitness = 0.0;
 
     return fitness;
