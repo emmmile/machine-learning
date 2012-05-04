@@ -33,8 +33,7 @@ class living_tm {
 
   friend class boost::serialization::access;
   template<class Archive>
-  void serialize(Archive & ar, const unsigned int version)
-  {
+  void serialize(Archive & ar, const unsigned int version) {
     ar & machine;
     ar & current_state;
     ar & age;
@@ -115,13 +114,14 @@ public:
     if (nb_shifts < EXPECTED_S)
       fitness = 1.0 / (EXPECTED_S - nb_shifts);
     // ^- may be changed for a better one
-    else if (nb_shifts == EXPECTED_S && current_state == NStates)
+    else if (nb_shifts == EXPECTED_S && current_state == NStates) {
       // we found it !
       clog << "=== FOUND MACHINE ===\n"
-     << NStates << " states, " << NSymbols << "symbols\n"
-     << "halts after " << nb_shifts << endl
-     << machine;
-    else
+	   << NStates << " states, " << NSymbols << "symbols\n"
+	   << "halts after " << nb_shifts << endl
+	   << machine;
+      fitness = 1.0;
+    } else
       fitness = 0.0;
 
     return fitness;
@@ -161,6 +161,29 @@ public:
      << "=========================\n";
     
     return os;
+  }
+
+  friend bool operator<(const living_tm& ltm_left, const living_tm& ltm_right) {
+    // update fitnesses and compare machines relatively to their fitness
+    ltm_right.update_fit();
+    ltm_left.update_fit();
+    return ltm_left.get_fitness() < ltm_right.get_fitness();
+  }
+
+  friend bool operator>(const living_tm& ltm_left, const living_tm& ltm_right) {
+    return ltm_right < ltm_left;
+  }
+
+  friend bool operator<=(const living_tm& ltm_left, const living_tm& ltm_right) {
+    return ltm_left < ltm_right || ltm_left.get_fitness() == ltm_right.get_fitness();
+    // ^- evaluation of the first part of the clause will update fitness and make
+    // the second part of the clause relevant
+  }
+
+  friend bool operator>=(const living_tm& ltm_left, const living_tm& ltm_right) {
+    return ltm_left > ltm_right || ltm_left.get_fitness() == ltm_right.get_fitness();
+    // ^- evaluation of the first part of the clause will update fitness and make
+    // the second part of the clause relevant
   }
 
 };
