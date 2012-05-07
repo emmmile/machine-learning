@@ -1,5 +1,4 @@
 #include <iostream>
-#include <fstream>
 #include "living-tm.hpp"
 #include "ev_machine.hpp"
 using namespace std;
@@ -14,23 +13,11 @@ int main() {
   Random gen;
   living_tm<6,2> t (gen);
 
-  // create and open a character archive for output
-  std::ofstream ofs("backup_file");
-  cout << t;
-
   t.do_nsteps(50);
-  boost::archive::text_oarchive oa(ofs);
-  // write class instance to archive
-  oa << t;
-  ofs.close();
+  cout << t;
+  t.save( "backup_file" );
 
-  living_tm<6,2> t2;
-
-  // create and open an archive for input
-  std::ifstream ifs("backup_file");
-  boost::archive::text_iarchive ia(ifs);
-  // read class state from archive
-  ia >> t2;
+  living_tm<6,2> t2( "backup_file" );
   cout << t2;
 
   cout << turing_machine<5,5>::spacesize() << endl;

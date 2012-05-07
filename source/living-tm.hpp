@@ -65,6 +65,10 @@ public:
     nb_shifts = 0;
     fitness = update_fit();
   }
+
+  living_tm(const char* filename) {
+    load( filename );
+  }
   
   living_tm(Random& gen) {
     machine.random_shuffle(gen);
@@ -161,6 +165,21 @@ public:
      << "=========================\n";
     
     return os;
+  }
+
+  void save ( const char* filename ) const {
+    ofstream ofs( filename );
+    boost::archive::text_oarchive oa( ofs );
+    // write class instance to archive
+    oa << *this;
+    ofs.close();
+  }
+
+  void load ( const char* filename ) {
+    ifstream ifs( filename );
+    boost::archive::text_iarchive ia( ifs );
+    // read class state from archive
+    ia >> *this;
   }
 
   friend bool operator<(const living_tm& ltm_left, const living_tm& ltm_right) {

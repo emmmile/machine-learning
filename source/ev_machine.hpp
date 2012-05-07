@@ -38,10 +38,10 @@ public:
   }
 
   inline ltm_type at(const uint i) {
-    return *machines[i]
+    return *machines[i];
   }
 
-  inline size_type size() {
+  inline size_t size() {
     return machines.size();
   }
 
@@ -78,7 +78,7 @@ public:
     // the max of gen.integer()
   }
 
-  void crossover ( turing_machine& a, Random& gen, crossover_type type = TWO_POINT ) {
+  void crossover ( ltm_type& a, Random& gen, crossover_type type = TWO_POINT ) {
     int i_ltm1 = gen.integer() % size(),
       i_ltm2 = gen.integer() % size();
     at(i_ltm1).crossover(at(i_ltm2),gen,type);
