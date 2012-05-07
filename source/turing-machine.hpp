@@ -136,8 +136,8 @@ public:
 
 
   // returns the number of different machines (random initialization happens in this space)
-  inline static const uint spacesize ( ) {
-    return size() * 2 * NSymbols * (NStates + 1);
+  inline static double spacesize ( ) {
+    return pow( 2 * NSymbols * (NStates + 1), size() );
   }
 
   friend ostream& operator<< ( ostream& os, const turing_machine& tm ) {
