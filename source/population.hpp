@@ -1,8 +1,8 @@
-/* Name : ev_machine.hpp
+/* Name : population.hpp
  * Description : Evolution simulator for Turing machines
  */
-#ifndef EVMACHINE_HPP
-#define EVMACHINE_HPP
+#ifndef POPULATION_HPP
+#define POPULATION_HPP
 
 #include "living-tm.hpp"
 #define INIT_POPULATION_SIZE 100
@@ -31,31 +31,36 @@ public:
       machines[i] = new living_tm<NStates, NSymbols> (gen);
   }
 
-  ltm_type operator[](const uint i) {
+  ltm_type& operator[](const uint i) {
     // return the i-th machine in the population
     assert(i < machines.size());
     return *machines[i];
   }
 
-  inline ltm_type at(const uint i) {
+  // XXX this is like operator[] ?
+  inline ltm_type& at(const uint i) {
     return *machines[i];
   }
 
-  inline size_t size() {
+  inline size_t size() const {
     return machines.size();
   }
 
+  // XXX maybe here you can take directly a pointer?
   void push_back(const ltm_type& ltm) {
     // add the living_tm ltm in the population (at the end of the array)
     ltm_type new_machine = new ltm_type (ltm);
-    machines = push_back(&new_machine);
+    machines.push_back(new_machine);
   }
 
   void erase(const uint i) {
     // remove the i-th machine from the population
     assert(i < size());
-    delete at(i);
-    machines.erase(i);
+    delete machines[i];
+    // here is better to first move the empty slot at the end
+    swap( machines[i], machines.back() );
+    // and then remove from the end, since we have O(1) there (and no constraints on the order)
+    machines.pop_back();
   }
 
   void nsteps_for_all(_int n) {
@@ -67,7 +72,7 @@ public:
   void erase_halt() {
     // remove from the population all already halted machines
     for(int i = 0; i < size() ; ++i)
-      if (at(i).get_state() == NStates)
+      if (at(i).get_state().ishalt())
 	erase(i);
   }
 
@@ -94,4 +99,4 @@ public:
 };
 
 
-#endif // EVMACHINE_HPP
+#endif // POPULATION_HPP
