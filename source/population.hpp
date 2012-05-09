@@ -15,19 +15,20 @@ template<uint NStates,
 	 >
 class population {
   vector<living_tm<NStates, NSymbols>*> machines;
+  Random gen;
 
 public:
   typedef living_tm<NStates, NSymbols> ltm_type;
 
   population() {
     machines.resize(INIT_POPULATION_SIZE);
-    for (int i = 0; i < INIT_POPULATION_SIZE; ++i)
-      machines[i] = new living_tm<NStates, NSymbols>;
+    for (uint i = 0; i < machines.size(); ++i)
+      machines[i] = new living_tm<NStates, NSymbols> (gen);
   }
 
-  population(Random& gen) {
-    machines.resize(INIT_POPULATION_SIZE);
-    for (int i = 0; i < INIT_POPULATION_SIZE; ++i)
+  population(uint pop_size) {
+    machines.resize(pop_size);
+    for (uint i = 0; i < machines.size(); ++i)
       machines[i] = new living_tm<NStates, NSymbols> (gen);
   }
 
@@ -70,17 +71,25 @@ public:
 	erase(i);
   }
 
-  void mutate(Random& gen) {
+  void mutate(uint i) {
+    this[i].mutate(gen);
+  }
+
+  void mutate() {
     this[gen.integer() % size()].mutate(gen);
     // ^- I hope that the max of gen.integer() is greater than size()...
     // not equiprobabilistic since size does not always divide
     // the max of gen.integer()
   }
 
-  void crossover ( ltm_type& a, Random& gen, crossover_type type = TWO_POINT ) {
+  inline void crossover(uint i_ltm1, uint i_ltm2, crossover_type type = TWO_POINT) {
+        this[i_ltm1].crossover(this[i_ltm2], gen, type);
+  }
+
+  void crossover(crossover_type type = TWO_POINT) {
     int i_ltm1 = gen.integer() % size(),
       i_ltm2 = gen.integer() % size();
-    this[i_ltm1].crossover(this[i_ltm2], gen, type);
+    crossover(i_ltm1, i_ltm2, type);
   }
 
   friend class boost::serialization::access;

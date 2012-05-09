@@ -22,7 +22,7 @@ int main() {
 
 
   // population test
-  population<6,2> p( gen );
+  population<6,2> p;
 
   //p.run();
 
