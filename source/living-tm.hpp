@@ -98,6 +98,10 @@ public:
     fitness = update_fit();
   }
 
+  living_tm(const ltm_type& ltm) : living_tm( ltm.machine ) {
+    cout << "custom copy constructor\n";
+  }
+
   living_tm(const char* filename) {
     load( filename );
   }
@@ -177,7 +181,7 @@ public:
     return nb_shifts;
   }
 
-  double get_fitness() {
+  double get_fitness() const {
     return fitness;
   }
 
