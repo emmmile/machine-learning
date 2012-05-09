@@ -31,14 +31,8 @@ public:
       machines[i] = new living_tm<NStates, NSymbols> (gen);
   }
 
-  ltm_type& operator[](const uint i) {
+  inline ltm_type& operator[](const uint i) {
     // return the i-th machine in the population
-    assert(i < machines.size());
-    return *machines[i];
-  }
-
-  // XXX this is like operator[] ?
-  inline ltm_type& at(const uint i) {
     return *machines[i];
   }
 
@@ -46,7 +40,6 @@ public:
     return machines.size();
   }
 
-  // XXX maybe here you can take directly a pointer?
   void push_back(const ltm_type& ltm) {
     // add the living_tm ltm in the population (at the end of the array)
     ltm_type new_machine = new ltm_type (ltm);
@@ -66,18 +59,19 @@ public:
   void nsteps_for_all(_int n) {
     // do n step on all machines of the population
     for(int i = 0; i < size() ; ++i)
-      at(i).do_nsteps(n);
+      //machines[i]->do_nsteps(n);
+      this[i].do_nsteps(n);
   }
 
   void erase_halt() {
     // remove from the population all already halted machines
     for(int i = 0; i < size() ; ++i)
-      if (at(i).get_state().ishalt())
+      if (this[i].ishalt())
 	erase(i);
   }
 
   void mutate(Random& gen) {
-    at(gen.integer() % size()).mutate(gen);
+    this[gen.integer() % size()].mutate(gen);
     // ^- I hope that the max of gen.integer() is greater than size()...
     // not equiprobabilistic since size does not always divide
     // the max of gen.integer()
@@ -86,8 +80,7 @@ public:
   void crossover ( ltm_type& a, Random& gen, crossover_type type = TWO_POINT ) {
     int i_ltm1 = gen.integer() % size(),
       i_ltm2 = gen.integer() % size();
-    at(i_ltm1).crossover(at(i_ltm2),gen,type);
-
+    this[i_ltm1].crossover(this[i_ltm2], gen, type);
   }
 
   friend class boost::serialization::access;
