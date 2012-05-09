@@ -90,6 +90,18 @@ public:
 
   }
 
+  void mutate_with_probability ( uint i, const double& p, Random& gen ) {
+	  assert( i < machines.size() );
+	  if ( gen.real() >= p ) return;
+
+	  machines[i].mutate( gen );
+  }
+
+  void run ( uint generations ) {
+	  // TODO
+	  // and also TODO the ltm_type mutate/crossover
+  }
+
   friend class boost::serialization::access;
   template<class Archive>
   void serialize(Archive & ar, const unsigned int version) {
