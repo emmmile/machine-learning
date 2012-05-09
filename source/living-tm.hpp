@@ -17,6 +17,37 @@ typedef unsigned int _int;
 // ^- maybe we will need more than this (e.g. unsigned long long int)
 
 
+
+
+
+// these are needed to use the functions inside living-tm.hpp or arbitrary external functions
+template<class I>
+struct Fitness {
+  inline double operator() ( I& i ) {
+    // default fitness function in living-tm
+    return i.update_fit();
+  }
+};
+
+template<class I>
+struct Mutate {
+  inline void operator() ( I& i, Random& gen ) {
+    // default mutate function in living-tm
+    i.mutate( gen );
+  }
+};
+
+template<class I>
+struct Crossover {
+  inline void operator() ( I& a, I& b, Random& gen, crossover_type type = TWO_POINT ) {
+    // default crossover function in living-tm
+    a.crossover( b, gen, type );
+  }
+};
+
+
+
+
 template<uint NStates, uint NSymbols>
 class living_tm {
   typedef state<uchar,NStates> TState;
@@ -99,18 +130,19 @@ public:
       current_state = a.next_state();
       
       if (a.direction().isright()) {
-  // go right
-  if (hp == tape.size() - 1) // if we reach the end of the tape ...
-    tape.resize(tape.size() + TAPE_RESIZE_STEP, 0); // ... we expand it;
-  ++hp;
-      } else if (!hp) // if we reach the beginning of the tape ...
-  tape.push_front(0); // ... we add one cell at the beginning
+        // go right
+        if (hp == tape.size() - 1) // if we reach the end of the tape ...
+          tape.resize(tape.size() + TAPE_RESIZE_STEP, 0); // ... we expand it;
+        ++hp;
+            } else if (!hp) // if we reach the beginning of the tape ...
+        tape.push_front(0); // ... we add one cell at the beginning
       else --hp; // go left
       
       ++nb_shifts;
       
       running = current_state.isrunning();
     }
+
     return running;
   }
 
@@ -149,13 +181,17 @@ public:
     return fitness;
   }
 
-  void mutate(Random& gen) {
-    machine = machine.mutate( gen );
+
+
+  // wrappers for the functions in turing-machine.hpp
+  void crossover ( living_tm& a, Random& gen, crossover_type type = TWO_POINT ) {
+    this->machine.crossover( a.machine, gen, type );
+    // TODO we need also to reset the tape!!!
   }
 
-  ltm_type& crossover ( ltm_type& a, Random& gen, crossover_type type = TWO_POINT ) {
-    ltm_type child = new ltm_type (machine.crossover(a.machine, gen, type));
-    return child;
+  void mutate ( Random& gen ) {
+    machine.mutate( gen );
+    // TODO we need also to reset the tape!!!
   }
 
   friend ostream& operator<< ( ostream& os, const living_tm& ltm ) {
@@ -194,8 +230,10 @@ public:
 
   friend bool operator<(const living_tm& ltm_left, const living_tm& ltm_right) {
     // update fitnesses and compare machines relatively to their fitness
-    ltm_right.update_fit();
-    ltm_left.update_fit();
+    // this cannot be done if they are const arguments, and I think is better to assume
+    // that when comparing the fitness is already updated
+    //ltm_right.update_fit();
+    //ltm_left.update_fit();
     return ltm_left.get_fitness() < ltm_right.get_fitness();
   }
 

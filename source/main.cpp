@@ -3,28 +3,24 @@
 #include "population.hpp"
 using namespace std;
 
+typedef living_tm<6,2> ltm;
+
+
+double externalFitnessFunction( ltm& a ) {
+  return 1.0;
+}
 
 int main() {
-  Random gen;
-
-  // serialization test
-  living_tm<6,2> t (gen);
-
-  t.do_nsteps(50);
-  cout << t;
-  t.save( "backup_file" );
-
-  living_tm<6,2> t2( "backup_file" );
-  cout << t2;
-
   // space size test
   cout << turing_machine<6,2>::spacesize() << endl;
 
 
-  // population test
-  population<6,2> p;
+  // population test to show that you can easily pass external fitness functions
+  population<ltm> p;
+  p.run( 1, externalFitnessFunction );
+  p.run( 1 );
 
-  //p.run();
+  //population<int> another;
 
   return 0;
 }

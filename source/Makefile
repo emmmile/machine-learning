@@ -1,7 +1,7 @@
 NAME = 		main
 CXX =		g++
 DEFINES = 
-CXXFLAGS =	-O3 -pipe -ffast-math -funroll-loops -march=i686 -Wall
+CXXFLAGS =	-O3 -pipe -ffast-math -funroll-loops -march=i686 -Wall -std=c++11
 LINK =		g++
 LFLAGS =	-O3 -s
 LIBS =		-lboost_serialization
