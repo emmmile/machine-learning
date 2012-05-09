@@ -133,8 +133,6 @@ public:
     return *this;
   }
 
-
-
   // returns the number of different machines (random initialization happens in this space)
   inline static double spacesize ( ) {
     return pow( 2 * NSymbols * (NStates + 1), size() );

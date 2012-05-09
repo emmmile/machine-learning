@@ -15,30 +15,25 @@ template<uint NStates,
 	 >
 class population {
   vector<living_tm<NStates, NSymbols>*> machines;
+  Random gen;
 
 public:
   typedef living_tm<NStates, NSymbols> ltm_type;
 
   population() {
     machines.resize(INIT_POPULATION_SIZE);
-    for (int i = 0; i < INIT_POPULATION_SIZE; ++i)
-      machines[i] = new living_tm<NStates, NSymbols>;
-  }
-
-  population(Random& gen) {
-    machines.resize(INIT_POPULATION_SIZE);
-    for (int i = 0; i < INIT_POPULATION_SIZE; ++i)
+    for (uint i = 0; i < machines.size(); ++i)
       machines[i] = new living_tm<NStates, NSymbols> (gen);
   }
 
-  ltm_type& operator[](const uint i) {
-    // return the i-th machine in the population
-    assert(i < machines.size());
-    return *machines[i];
+  population(uint pop_size) {
+    machines.resize(pop_size);
+    for (uint i = 0; i < machines.size(); ++i)
+      machines[i] = new living_tm<NStates, NSymbols> (gen);
   }
 
-  // XXX this is like operator[] ?
-  inline ltm_type& at(const uint i) {
+  inline ltm_type& operator[](const uint i) {
+    // return the i-th machine in the population
     return *machines[i];
   }
 
@@ -46,7 +41,6 @@ public:
     return machines.size();
   }
 
-  // XXX maybe here you can take directly a pointer?
   void push_back(const ltm_type& ltm) {
     // add the living_tm ltm in the population (at the end of the array)
     ltm_type new_machine = new ltm_type (ltm);
@@ -66,28 +60,36 @@ public:
   void nsteps_for_all(_int n) {
     // do n step on all machines of the population
     for(int i = 0; i < size() ; ++i)
-      at(i).do_nsteps(n);
+      //machines[i]->do_nsteps(n);
+      this[i].do_nsteps(n);
   }
 
   void erase_halt() {
     // remove from the population all already halted machines
     for(int i = 0; i < size() ; ++i)
-      if (at(i).get_state().ishalt())
+      if (this[i].ishalt())
 	erase(i);
   }
 
-  void mutate(Random& gen) {
-    at(gen.integer() % size()).mutate(gen);
+  void mutate(uint i) {
+    this[i].mutate(gen);
+  }
+
+  void mutate() {
+    this[gen.integer() % size()].mutate(gen);
     // ^- I hope that the max of gen.integer() is greater than size()...
     // not equiprobabilistic since size does not always divide
     // the max of gen.integer()
   }
 
-  void crossover ( ltm_type& a, Random& gen, crossover_type type = TWO_POINT ) {
+  inline void crossover(uint i_ltm1, uint i_ltm2, crossover_type type = TWO_POINT) {
+        this[i_ltm1].crossover(this[i_ltm2], gen, type);
+  }
+
+  void crossover(crossover_type type = TWO_POINT) {
     int i_ltm1 = gen.integer() % size(),
       i_ltm2 = gen.integer() % size();
-    at(i_ltm1).crossover(at(i_ltm2),gen,type);
-
+    crossover(i_ltm1, i_ltm2, type);
   }
 
   void mutate_with_probability ( uint i, const double& p, Random& gen ) {

@@ -46,6 +46,7 @@ class living_tm {
 public:
   typedef turing_machine<NStates, NSymbols, TState, TSymbol, TDirection> tm_type;
   typedef typename tm_type::action_type action_type;
+  typedef living_tm<NStates, NSymbols> ltm_type;
 
   living_tm() {
     age = 0;
@@ -146,6 +147,15 @@ public:
 
   double get_fitness() {
     return fitness;
+  }
+
+  void mutate(Random& gen) {
+    machine = machine.mutate( gen );
+  }
+
+  ltm_type& crossover ( ltm_type& a, Random& gen, crossover_type type = TWO_POINT ) {
+    ltm_type child = new ltm_type (machine.crossover(a.machine, gen, type));
+    return child;
   }
 
   friend ostream& operator<< ( ostream& os, const living_tm& ltm ) {
