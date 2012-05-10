@@ -46,6 +46,11 @@ public:
     pcrossover = pc;
   }
 
+  ~population( ) {
+    for (uint i = 0; i < individuals.size(); ++i)
+      delete individuals[i];
+  }
+
   inline I& operator[](const uint i) {
     // return the i-th machine in the population
     return *individuals[i];
@@ -88,25 +93,8 @@ public:
   void run ( uint generations, F fitness = F(), M mutate = M(), C crossover = C() ) {
 
     for ( uint i = 0; i < generations; ++i ) {
-      // genetic operators step
-      for ( uint j = 0; j < individuals.size(); ++j ) {
-
-        if ( gen.real() < pmutation ) {
-          // executes mutation
-          mutate( *individuals[j], gen );
-        }
-
-        if ( gen.real() < pcrossover ) {
-          // executes crossover
-          // TODO which other individual use for crossover?
-          // TODO if you want to keep the old individuals we need to create copies before,
-          // since the crossover function modifies the two individuals passed as arguments
-          // TODO not all these copies need to have the tape "full" (the new individuals
-          // for sure needs to be re-evaluated!)
-          uint another = gen.integer() % individuals.size();
-          crossover( *individuals[j], *individuals[another], gen, TWO_POINT );
-        }
-      }
+      // this executes the genetic operators
+      genetic_operators( mutate, crossover );
 
       // this should execute the (probabilistic) selection step, using the provided fitness function
       // eventually deleting some individuals from the population
@@ -114,12 +102,41 @@ public:
     }
   }
 
+  template<typename M, typename C>
+  void genetic_operators( M mutate, C crossover ) {
+    uint lastSize = individuals.size();
+
+    // important: the size increases during execution, so we have to stop
+    // when we finish the OLD (current) population
+    for ( uint j = 0; j < lastSize; ++j ) {
+      if ( gen.real() < pmutation ) {
+        // creates a copy (in our case with a new, empty, tape)
+        I* newone = new I( *individuals[j] );
+        // executes mutation on the NEW copy and push it to the end
+        mutate( *newone, gen );
+        individuals.push_back( newone );
+      }
+
+      if ( gen.real() < pcrossover ) {
+        // executes crossover
+        // TODO which other individual use for crossover?
+        uint another = gen.integer() % individuals.size();
+
+        I* newone = new I( *individuals[j] );
+        I* newtwo = new I( *individuals[another] );
+        crossover( *newone, *newtwo, gen, TWO_POINT );
+        individuals.push_back( newone );
+        individuals.push_back( newtwo );
+      }
+    }
+  }
+
   // probabilistic selection, this is where we need to execute the machines and see how they
   // behave. The fitness function should cause a re-execution if the machine has changed, nothing
   // if the machine hasn't been mutated or crossover-ed, and more steps if the machine has been left
   // behind (I would leave this case at the end, because it seems to me the more complicated to implement).
-  template<typename F = Fitness<I> >
-  void selection ( F fitness = F() ) {
+  template<typename F>
+  void selection ( F fitness ) {
 
     double best = 0.0;
     uint bestIndividual = 0;
@@ -134,10 +151,13 @@ public:
         bestIndividual = j;
         best = f;
       }
+    }
 
-      sort( individuals.begin(), individuals.end(), compareIndividuals );
-      // TODO remove some individuals. Implement elitism? It's ok sorting all individuals?
-      //if ( ??? ) erase( i );
+    sort( individuals.begin(), individuals.end(), compareIndividuals );
+
+    for (uint j = 0; j < individuals.size(); ++j){
+      if ( )
+        erase(j);
     }
 
     cout << "Best fitness is " << best << ".\n";

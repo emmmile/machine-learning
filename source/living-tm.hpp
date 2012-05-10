@@ -98,8 +98,8 @@ public:
     fitness = update_fit();
   }
 
-  living_tm(const ltm_type& ltm) : living_tm( ltm.machine ) {
-    cout << "custom copy constructor\n";
+  living_tm(const ltm_type& ltm)
+    : living_tm( ltm.machine ) {
   }
 
   living_tm(const char* filename) {
