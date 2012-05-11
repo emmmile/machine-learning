@@ -22,5 +22,10 @@ int main() {
 
   //population<int> another;
 
+  // test of the predicate. Try commenting/uncommenting the generation function in ltm!
+  cout << (has_generation_fun<ltm>::value ?
+          "ltm has a generation function." :
+          "ltm doesn't have a generation function.") << endl;
+
   return 0;
 }

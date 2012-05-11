@@ -20,34 +20,6 @@ typedef unsigned int _int;
 
 
 
-// these are needed to use the functions inside living-tm.hpp or arbitrary external functions
-template<class I>
-struct Fitness {
-  inline double operator() ( I& i ) {
-    // default fitness function in living-tm
-    return i.update_fit();
-  }
-};
-
-template<class I>
-struct Mutate {
-  inline void operator() ( I& i, Random& gen ) {
-    // default mutate function in living-tm
-    i.mutate( gen );
-  }
-};
-
-template<class I>
-struct Crossover {
-  inline void operator() ( I& a, I& b, Random& gen, crossover_type type = TWO_POINT ) {
-    // default crossover function in living-tm
-    a.crossover( b, gen, type );
-  }
-};
-
-
-
-
 template<uint NStates, uint NSymbols>
 class living_tm {
   typedef state<uchar,NStates> TState;
@@ -60,7 +32,7 @@ class living_tm {
   deque<TSymbol> tape; // tape of the machine
   _int hp; // head pointer (index in tape)
   _int nb_shifts; // number of shifts (or steps) done without halting so far
-  double fitness; // last computed value of the fitness function
+  double lastFitness; // last computed value of the fitness function
 
   friend class boost::serialization::access;
   template<class Archive>
@@ -71,7 +43,7 @@ class living_tm {
     ar & tape;
     ar & hp;
     ar & nb_shifts;
-    ar & fitness;
+    ar & lastFitness;
   }
 
 public:
@@ -85,7 +57,7 @@ public:
     tape.resize(INIT_TAPE_SIZE, 0);
     hp = INIT_TAPE_SIZE / 2;
     nb_shifts = 0;
-    fitness = update_fit();
+    lastFitness = fitness();
   }
 
   living_tm(tm_type tm) {
@@ -95,7 +67,7 @@ public:
     tape.resize(INIT_TAPE_SIZE, 0);
     hp = INIT_TAPE_SIZE / 2;
     nb_shifts = 0;
-    fitness = update_fit();
+    lastFitness = fitness();
   }
 
   living_tm(const ltm_type& ltm)
@@ -113,7 +85,7 @@ public:
     tape.resize(INIT_TAPE_SIZE, 0);
     hp = INIT_TAPE_SIZE / 2;
     nb_shifts = 0;
-    fitness = update_fit();
+    lastFitness = fitness();
   }
 
   bool do_nsteps(_int nsteps) {
@@ -150,10 +122,10 @@ public:
     return running;
   }
 
-  double update_fit() {
+  double fitness() {
     // update the value of fitness and return it
     if (nb_shifts < EXPECTED_S)
-      fitness = 1.0 / (EXPECTED_S - nb_shifts);
+      lastFitness = 1.0 / (EXPECTED_S - nb_shifts);
     // ^- may be changed for a better one
     else if (nb_shifts == EXPECTED_S && current_state == NStates) {
       // we found it !
@@ -161,11 +133,11 @@ public:
 	   << NStates << " states, " << NSymbols << "symbols\n"
 	   << "halts after " << nb_shifts << endl
 	   << machine;
-      fitness = 1.0;
+      lastFitness = 1.0;
     } else
-      fitness = 0.0;
+      lastFitness = 0.0;
 
-    return fitness;
+    return lastFitness;
   }
 
   // these 5 methods returns the private member variables,
@@ -182,7 +154,7 @@ public:
   }
 
   double get_fitness() const {
-    return fitness;
+    return lastFitness;
   }
 
 
@@ -198,6 +170,10 @@ public:
     // TODO we need also to reset the tape!!!
   }
 
+//  void generation ( uint generation ) {
+//    cout << "generation " << generation << endl;
+//  }
+
   friend ostream& operator<< ( ostream& os, const living_tm& ltm ) {
 
   os << "=========================\n"
@@ -209,7 +185,7 @@ public:
      << "Head position:\t\t" << ltm.hp << endl
      << "Tape size:\t\t" << ltm.tape.size() << endl
      << "Computed steps so far:\t" << ltm.nb_shifts << endl
-     << "Last computed fitness:\t" << ltm.fitness << endl
+     << "Last computed fitness:\t" << ltm.lastFitness << endl
      << "Transition table:\n"
      << ltm.machine 
      << "=========================\n";
