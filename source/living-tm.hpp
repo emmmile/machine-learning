@@ -8,10 +8,11 @@
 #include <fstream>
 #include <deque>
 #include "turing-machine.hpp"
+#include "limits.hpp"
 
 #define INIT_TAPE_SIZE 101
-#define TAPE_RESIZE_STEP 50
-#define EXPECTED_S 6 // expected max number of steps when known
+//#define TAPE_RESIZE_STEP 50
+//#define EXPECTED_S 6 // expected max number of steps when known
 
 typedef unsigned int _int;
 // ^- maybe we will need more than this (e.g. unsigned long long int)
@@ -32,7 +33,7 @@ class living_tm {
   deque<TSymbol> tape; // tape of the machine
   _int hp; // head pointer (index in tape)
   _int nb_shifts; // number of shifts (or steps) done without halting so far
-  double lastFitness; // last computed value of the fitness function
+  //double lastFitness; // last computed value of the fitness function
 
   friend class boost::serialization::access;
   template<class Archive>
@@ -43,7 +44,7 @@ class living_tm {
     ar & tape;
     ar & hp;
     ar & nb_shifts;
-    ar & lastFitness;
+    //ar & lastFitness;
   }
 
 public:
@@ -57,7 +58,7 @@ public:
     tape.resize(INIT_TAPE_SIZE, 0);
     hp = INIT_TAPE_SIZE / 2;
     nb_shifts = 0;
-    lastFitness = fitness();
+    //lastFitness = fitness();
   }
 
   living_tm(tm_type tm) {
@@ -67,7 +68,7 @@ public:
     tape.resize(INIT_TAPE_SIZE, 0);
     hp = INIT_TAPE_SIZE / 2;
     nb_shifts = 0;
-    lastFitness = fitness();
+    //lastFitness = fitness();
   }
 
   living_tm(const ltm_type& ltm)
@@ -85,7 +86,7 @@ public:
     tape.resize(INIT_TAPE_SIZE, 0);
     hp = INIT_TAPE_SIZE / 2;
     nb_shifts = 0;
-    lastFitness = fitness();
+    //lastFitness = fitness();
   }
 
   bool do_nsteps(_int nsteps) {
@@ -108,9 +109,10 @@ public:
       if (a.direction().isright()) {
         // go right
         if (hp == tape.size() - 1) // if we reach the end of the tape ...
-          tape.resize(tape.size() + TAPE_RESIZE_STEP, 0); // ... we expand it;
+          //tape.resize(tape.size() + TAPE_RESIZE_STEP, 0); // ... we expand it;
+          tape.push_back(0);
         ++hp;
-            } else if (!hp) // if we reach the beginning of the tape ...
+      } else if (!hp) // if we reach the beginning of the tape ...
         tape.push_front(0); // ... we add one cell at the beginning
       else --hp; // go left
       
@@ -123,21 +125,13 @@ public:
   }
 
   double fitness() {
-    // update the value of fitness and return it
-    if (nb_shifts < EXPECTED_S)
-      lastFitness = 1.0 / (EXPECTED_S - nb_shifts);
-    // ^- may be changed for a better one
-    else if (nb_shifts == EXPECTED_S && current_state == NStates) {
-      // we found it !
-      clog << "=== FOUND MACHINE ===\n"
-	   << NStates << " states, " << NSymbols << "symbols\n"
-	   << "halts after " << nb_shifts << endl
-	   << machine;
-      lastFitness = 1.0;
-    } else
-      lastFitness = 0.0;
+    // if I have no upper bound I don't know what to do :P
+    if ( !slimits<NStates,NSymbols>::has_upper ) return -1.0;
 
-    return lastFitness;
+    if ( nb_shifts <= slimits<NStates,NSymbols>::upper && current_state.ishalt() )
+      return nb_shifts;
+    else
+      return 0.0;
   }
 
   // these 5 methods returns the private member variables,
@@ -153,26 +147,31 @@ public:
     return nb_shifts;
   }
 
-  double get_fitness() const {
-    return lastFitness;
+  inline static double spacesize ( ) {
+    return turing_machine<NStates, NSymbols>::spacesize();
   }
-
-
 
   // wrappers for the functions in turing-machine.hpp
   void crossover ( living_tm& a, Random& gen, crossover_type type = TWO_POINT ) {
     this->machine.crossover( a.machine, gen, type );
-    // TODO we need also to reset the tape!!!
   }
 
   void mutate ( Random& gen ) {
     machine.mutate( gen );
-    // TODO we need also to reset the tape!!!
   }
 
-//  void generation ( uint generation ) {
-//    cout << "generation " << generation << endl;
-//  }
+  void generation ( uint generation ) {
+    if ( current_state.ishalt() ) return; // nothing to do
+
+    if ( !slimits<NStates,NSymbols>::has_upper ) {
+      do_nsteps( 10 * generation - nb_shifts ); // performs 10 steps at each generation
+      return;
+    }
+
+    // try to make the number of steps performed by the S-busy beaver
+    if ( slimits<NStates,NSymbols>::upper > nb_shifts )
+      do_nsteps( slimits<NStates,NSymbols>::upper - nb_shifts );
+  }
 
   friend ostream& operator<< ( ostream& os, const living_tm& ltm ) {
 
@@ -180,12 +179,12 @@ public:
      << "Number of symbols:\t" << NSymbols << endl
      << "Number of states:\t" << NStates << endl
      << "Age:\t\t\t" << ltm.age << endl
-     << "Current state:\t\t" << (int) ltm.current_state << endl
-     << "Current symbol:\t\t" << (int) ltm.tape[ltm.hp] << endl
+     << "Current state:\t\t" << ltm.current_state << endl
+     << "Current symbol:\t\t" << ltm.tape[ltm.hp] << endl
      << "Head position:\t\t" << ltm.hp << endl
      << "Tape size:\t\t" << ltm.tape.size() << endl
      << "Computed steps so far:\t" << ltm.nb_shifts << endl
-     << "Last computed fitness:\t" << ltm.lastFitness << endl
+     //<< "Last computed fitness:\t" << ltm.lastFitness << endl
      << "Transition table:\n"
      << ltm.machine 
      << "=========================\n";
@@ -208,30 +207,30 @@ public:
     ia >> *this;
   }
 
-  friend bool operator<(const living_tm& ltm_left, const living_tm& ltm_right) {
-    // update fitnesses and compare machines relatively to their fitness
-    // this cannot be done if they are const arguments, and I think is better to assume
-    // that when comparing the fitness is already updated
-    //ltm_right.update_fit();
-    //ltm_left.update_fit();
-    return ltm_left.get_fitness() < ltm_right.get_fitness();
-  }
+//  friend bool operator<(const living_tm& ltm_left, const living_tm& ltm_right) {
+//    // update fitnesses and compare machines relatively to their fitness
+//    // this cannot be done if they are const arguments, and I think is better to assume
+//    // that when comparing the fitness is already updated
+//    //ltm_right.update_fit();
+//    //ltm_left.update_fit();
+//    return ltm_left.get_fitness() < ltm_right.get_fitness();
+//  }
 
-  friend bool operator>(const living_tm& ltm_left, const living_tm& ltm_right) {
-    return ltm_right < ltm_left;
-  }
+//  friend bool operator>(const living_tm& ltm_left, const living_tm& ltm_right) {
+//    return ltm_right < ltm_left;
+//  }
 
-  friend bool operator<=(const living_tm& ltm_left, const living_tm& ltm_right) {
-    return ltm_left < ltm_right || ltm_left.get_fitness() == ltm_right.get_fitness();
-    // ^- evaluation of the first part of the clause will update fitness and make
-    // the second part of the clause relevant
-  }
+//  friend bool operator<=(const living_tm& ltm_left, const living_tm& ltm_right) {
+//    return ltm_left < ltm_right || ltm_left.get_fitness() == ltm_right.get_fitness();
+//    // ^- evaluation of the first part of the clause will update fitness and make
+//    // the second part of the clause relevant
+//  }
 
-  friend bool operator>=(const living_tm& ltm_left, const living_tm& ltm_right) {
-    return ltm_left > ltm_right || ltm_left.get_fitness() == ltm_right.get_fitness();
-    // ^- evaluation of the first part of the clause will update fitness and make
-    // the second part of the clause relevant
-  }
+//  friend bool operator>=(const living_tm& ltm_left, const living_tm& ltm_right) {
+//    return ltm_left > ltm_right || ltm_left.get_fitness() == ltm_right.get_fitness();
+//    // ^- evaluation of the first part of the clause will update fitness and make
+//    // the second part of the clause relevant
+//  }
 
 };
 
