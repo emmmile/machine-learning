@@ -3,6 +3,7 @@
  */
 #ifndef POPULATION_HPP
 #define POPULATION_HPP
+#define SIGMOID_LAMBDA 5
 
 #include <type_traits>
 #include "random.hpp"
@@ -186,13 +187,22 @@ public:
 
     sort( individuals.begin(), individuals.end() );
 
-    // eventually shrinking the population size if it is too big
-    for (uint j = maximumPopulation; j < individuals.size(); erase( j ) );
+    // some individuals die in an accident :
+    for (uint i = 0; i < individuals.size(); ++i) {
+      if (early_dead(i)) erase(i);
+    }
 
-//    cout << "Generation " << generationNumber << ", population size " << individuals.size() << endl;
-//    cout << "best fitness is " << individuals[0].fitness << endl;
-//    cout << *individuals[0].individual << endl;
-//    getchar();
+  }
+
+  bool early_dead(uint indiv_rank) {
+    /* decides if a given individual will die or not at this generation
+     * using a sigmoid function that gives to the worst individual
+     * (w.r.t. its fitness) a bigger probability to die.
+     * Define SIGMOID_LAMDA decides the shape of the sigmoid function
+     * /!\ assumption is made that individuals are sorted
+     */
+    
+    return (gen.real() < 1 / (1 + exp(SIGMOID_LAMBDA * ((individuals.size() - 1) / 2 - indiv_rank))));
   }
 
   friend class boost::serialization::access;
