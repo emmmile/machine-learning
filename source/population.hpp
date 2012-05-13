@@ -147,6 +147,14 @@ public:
   void genetic_operators( M mutate, C crossover ) {
     uint lastSize = individuals.size();
 
+    /* if an individual have to crossover (because of a random choice), we
+     * store a pointer (partner) to it to be able to find it when an other
+     * one will want to crossover.
+     * When this pointer is NULL, it means that nobody wants to crossover at
+     * this time.
+     */
+    static I* partner = NULL;
+
     // important: the size increases during execution, so we have to stop
     // when we finish the OLD (current) population
     for ( uint j = 0; j < lastSize; ++j ) {
@@ -160,14 +168,18 @@ public:
 
       if ( gen.real() < pcrossover ) {
         // executes crossover
-        // TODO which other individual use for crossover?
-        uint another = gen.integer() % individuals.size();
-
-        I* newone = new I( *individuals[j].individual );
-        I* newtwo = new I( *individuals[another].individual );
-        crossover( *newone, *newtwo, gen );
-        individuals.push_back( triple( newone, true ) );
-        individuals.push_back( triple( newtwo, true ) );
+	if ( !partner )
+	  // no one wants to crossover at this time so we remember that this guy wants to crossover
+	  partner = individuals[j].individual;
+	else {
+	  // someone wants to crossover
+	  I* newone = new I( *individuals[j].individual );
+	  I* newtwo = new I( *partner );
+	  crossover( *newone, *newtwo, gen );
+	  individuals.push_back( triple( newone, true ) );
+	  individuals.push_back( triple( newtwo, true ) );
+	  partner = NULL; // now, nobody wants to crossover
+	}
       }
     }
   }
@@ -189,12 +201,12 @@ public:
 
     // some individuals die in an accident :
     for (uint i = 0; i < individuals.size(); ++i) {
-      if (early_dead(i)) erase(i);
+      if (early_death(i)) erase(i);
     }
 
   }
 
-  bool early_dead(uint indiv_rank) {
+  bool early_death(uint indiv_rank) {
     /* decides if a given individual will die or not at this generation
      * using a sigmoid function that gives to the worst individual
      * (w.r.t. its fitness) a bigger probability to die.
