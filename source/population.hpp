@@ -3,7 +3,6 @@
  */
 #ifndef POPULATION_HPP
 #define POPULATION_HPP
-#define SIGMOID_LAMBDA 5
 
 #include <type_traits>
 #include "random.hpp"
@@ -210,11 +209,33 @@ public:
     /* decides if a given individual will die or not at this generation
      * using a sigmoid function that gives to the worst individual
      * (w.r.t. its fitness) a bigger probability to die.
-     * Define SIGMOID_LAMDA decides the shape of the sigmoid function
+     * lambda decides the shape of the sigmoid function :
+     * the slope of the curve at the inlflexion point is lambda/4
      * /!\ assumption is made that individuals are sorted
+     *
+     * the sigmoid function is translated to make the inflexion point
+     * correspond to the half of the population
+     *
+     * Sigmoid function : f : x -> 1 / (1 + e^(l * x))
+     * Translated function : g : x -> f(x - x0)
+     *
+     *     ^
+     *   1 |            _____
+     *     |          .-
+     *     |         /
+     * 0.5 |        .
+     *     |       /
+     *     |_____.-
+     *   0 |-------------------------->
+     *     0        x0     n-1
+     *
+     * x0 = indivuduals.size() / 2
+     * n = individuals.size()
      */
-    
-    return (gen.real() < 1 / (1 + exp(SIGMOID_LAMBDA * ((individuals.size() - 1) / 2 - indiv_rank))));
+    const static uint lambda = 5;
+    return gen.real() < 1 / ( 1 + exp( lambda *
+				       (( individuals.size() - 1 ) / 2
+					- indiv_rank )));
   }
 
   friend class boost::serialization::access;
