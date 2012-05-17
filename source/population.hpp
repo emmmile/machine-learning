@@ -58,7 +58,7 @@ struct Generation {
 // struct has_generation_fun, written above.
 // http://www.boost.org/doc/libs/1_49_0/libs/utility/enable_if.html
 template<class I>
-struct Generation<I, typename enable_if<has_generation_fun<I>::value>::type > {
+struct Generation<I, typename std::enable_if<has_generation_fun<I>::value>::type > {
   inline void operator() (I& i, uint gen ) {
     i.generation( gen );
   }
@@ -152,7 +152,8 @@ public:
      * When this pointer is NULL, it means that nobody wants to crossover at
      * this time.
      */
-    static I* partner = NULL;
+    static I* partner;
+    partner = NULL; // explicitly set to NULL at every generation, not only the first time
 
     // important: the size increases during execution, so we have to stop
     // when we finish the OLD (current) population
@@ -198,8 +199,29 @@ public:
 
     sort( individuals.begin(), individuals.end() );
 
+    // Here we have to be careful.. There was some very subdle errors.
+    // The idea is: iterate over every individual and if it has to die, delete it.
+    // There are two problems:
+    // 1) if one individual is deleted we can't increase the index i, because another individual
+    // has been moved there (from erase). So we have to call early_death also for that individual.
+    // 2) also with this correction we are actually wrong for two reasons (depending if we deleted
+    // or not the previous individual):
+    //    a) the individual now at position i can now be the last individual we had in the ranking!!
+    //    b) otherwise we are using a bigger value for the sigmoid function, because it's like if we
+    //       moved the whole population back of (number-of-erased-individuals) positions,
+    //       while we still get the value of sigmoid(i). I verified this printing the population
+    //       size, that was bigger than expected.
+    //
+    //for (uint i = 0; i < individuals.size(); ) {
+    //  if (early_death(i)) erase(i);
+    //  else  ++i;
+    //}
+    //
+    // I think that the quicker way to implement this is to simply begin the scan from the back.
+    // In this case the order of the individuals that still has to be decided, is preserved.
+
     // some individuals die in an accident :
-    for (uint i = 0; i < individuals.size(); ++i) {
+    for (int i = individuals.size()-1; i >= 0; --i) {
       if (early_death(i)) erase(i);
     }
 
@@ -229,13 +251,14 @@ public:
      *   0 |-------------------------->
      *     0        x0     n-1
      *
-     * x0 = indivuduals.size() / 2
+     * x0 = maximumPopulation - 1
      * n = individuals.size()
      */
-    const static uint lambda = 5;
+    const static double lambda = 0.05; // if it is bigger the slope is more sharp
     return gen.real() < 1 / ( 1 + exp( lambda *
-				       (( individuals.size() - 1 ) / 2
-					- indiv_rank )));
+                                      (int( maximumPopulation - 1 )
+                                       - int(indiv_rank) )));
+    // the difference was between uints, so was a very big positive number -> exp() was infinity
   }
 
   friend class boost::serialization::access;
