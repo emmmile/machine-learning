@@ -8,6 +8,16 @@
 #include "random.hpp"
 
 
+enum early_death_type {
+  // type of function used to know death rate un function of rank
+  // See function early_dead below.
+  SIGMOID, // sigmoid function
+  AFFINE,  // affine function
+  STEP,    // step function (Heaviside)
+  UNIFORM  // same rate for everyone
+};
+
+
 template<class I>
 struct Fitness {
   inline double operator() ( I& i ) {
@@ -227,38 +237,102 @@ public:
 
   }
 
-  bool early_death(uint indiv_rank) {
+  bool early_death(uint indiv_rank, early_death_type type = SIGMOID) {
     /* decides if a given individual will die or not at this generation
-     * using a sigmoid function that gives to the worst individual
-     * (w.r.t. its fitness) a bigger probability to die.
-     * lambda decides the shape of the sigmoid function :
-     * the slope of the curve at the inlflexion point is lambda/4
      * /!\ assumption is made that individuals are sorted
      *
-     * the sigmoid function is translated to make the inflexion point
-     * correspond to the half of the population
+     * we usually give the worst individual
+     * (w.r.t. its fitness) a bigger probability to die.
      *
-     * Sigmoid function : f : x -> 1 / (1 + e^(l * x))
-     * Translated function : g : x -> f(x - x0)
+     * Four functions are possible to give a dying probability. All of
+     * then are centered on the half of the population.
+     *
+     * x0 = maximumPopulation - 1
+     * n = individuals.size()
+     *
+     * Sigmoid function (type == SIGMOID) :
      *
      *     ^
      *   1 |            _____
      *     |          .-
      *     |         /
-     * 0.5 |        .
+     * 0.5 |        .  parameter : lambda
      *     |       /
      *     |_____.-
      *   0 |-------------------------->
      *     0        x0     n-1
      *
-     * x0 = maximumPopulation - 1
-     * n = individuals.size()
+     * Affine function (type == AFFINE) :
+     * 
+     *     ^
+     *   1 |           ------
+     *     |          /
+     *     |         /
+     * 0.5 |        /  slope coefficient : affine_coef
+     *     |       /
+     *     |      /
+     *   0 |-----/-------------------->
+     *     0        x0     n-1
+     *
+     * Step function (type == STEP) :
+     *
+     *     ^
+     *   1 |
+     *   h |         _______
+     *     |        |
+     * 0.5 |        | h : step_high
+     * 1-h |________|
+     *     |
+     *   0 |-------------------------->
+     *     0        x0     n-1
+     *
+     * Constant function (type == UNIFORM) :
+     *
+     *     ^
+     *   1 |
+     *     |
+     *   c |----------------- 
+     * 0.5 |
+     *     |  c : uniform_ceil
+     *     |
+     *   0 |-------------------------->
+     *     0        x0     n-1
      */
-    const static double lambda = 0.05; // if it is bigger the slope is more sharp
-    return gen.real() < 1 / ( 1 + exp( lambda *
-                                      (int( maximumPopulation - 1 )
-                                       - int(indiv_rank) )));
-    // the difference was between uints, so was a very big positive number -> exp() was infinity
+
+    // lambda : parameter for the sigmoid function. bigger -> sharper slope
+    // uniform_ceil : value returned for any individual
+    // step_high : value of the higher step
+    // affine_coef : coefficient of the slope
+    // /!\ be sure that the value is in the right range
+    // when changing coefficients
+    const static double
+      lambda = 0.005,
+      uniform_ceil = 0.5,
+      step_high = 0.8,
+      affine_coef = 0.0005;
+
+    const static int halfPop = int (maximumPopulation - 1) / 2;
+      
+    double res_value = 0.0; // ceil to know if an individual will die of not
+    // if we draw a real in [0,1] inferior to res_value, return true,
+    // else false
+    
+      switch (type) {
+      case SIGMOID:
+	res_value =  1 / ( 1 + exp( lambda * (halfPop - int(indiv_rank) )));
+	break;
+      case AFFINE:
+	res_value = affine_coef * (int(indiv_rank) - halfPop) + 0.5;
+	break;
+      case STEP:
+	if (int(indiv_rank) < halfPop) res_value = step_high;
+	else res_value = 1 - step_high;
+	break;
+      case UNIFORM:
+	res_value = uniform_ceil;
+      }
+
+      return gen.real() < res_value;
   }
 
   friend class boost::serialization::access;
