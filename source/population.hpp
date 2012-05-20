@@ -247,6 +247,7 @@ public:
      * Four functions are possible to give a dying probability. All of
      * then are centered on the half of the population.
      *
+     * Then functions can be scaled and translated on the y axis.
      * x0 = maximumPopulation - 1
      * n = individuals.size()
      *
@@ -297,19 +298,27 @@ public:
      *     |
      *   0 |-------------------------->
      *     0        x0     n-1
+     *
+     *
+     * lambda : parameter for the sigmoid function. bigger -> sharper slope
+     * uniform_ceil : value returned for any individual
+     * step_high : value of the higher step
+     * affine_coef : coefficient of the slope
+     *
+     * vert_shift : value added to the result
+     * scale : value multiplicated to the result (before adding vert_shift)
+     *
+     * /!\ be sure that the value is in the right range
+     * when changing coefficients
      */
-
-    // lambda : parameter for the sigmoid function. bigger -> sharper slope
-    // uniform_ceil : value returned for any individual
-    // step_high : value of the higher step
-    // affine_coef : coefficient of the slope
-    // /!\ be sure that the value is in the right range
-    // when changing coefficients
     const static double
       lambda = 0.005,
       uniform_ceil = 0.5,
       step_high = 0.8,
-      affine_coef = 0.0005;
+      affine_coef = 0.0005,
+      vert_shift = 0.25,
+      scale = 1;
+
 
     const static int halfPop = int (maximumPopulation - 1) / 2;
       
@@ -332,7 +341,7 @@ public:
 	res_value = uniform_ceil;
       }
 
-      return gen.real() < res_value;
+      return gen.real() < scale * res_value + vert_shift;
   }
 
   friend class boost::serialization::access;
