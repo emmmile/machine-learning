@@ -19,12 +19,74 @@ The goal of our project is to see if evolutionnary computing techiques are suita
 
 \section{Busy-beavers}
 \label{chap:bb}
+\paragraph{Busy Beaver and Max-step Functions}
+Let $\sigma : \mathcal{T} \to \N \cup \{-\infty\}$ be the function which, given a Turing machine $M$, returns:
+\begin{itemize}
+\item either the number of non-blank symbols that $M$, started on a blank tape, left on the tape after execution if $M$ halts;
+\item or minus infinity else.
+\end{itemize}
+
+Let the \emph{busy beaver function} $\Sigma$ be defined as follows:
+\[
+\Sigma : \left |
+\begin{array}{l}
+\N \times \N \to \N\\
+(m,n) \mapsto \max_{M \in \mathcal{T}_{m,n}} \sigma(M)
+\end{array}
+\right .
+\]
+
+Similarly, let $s : \mathcal{T} \to \N \cup \{-\infty\}$ be the function which, given a Turing machine $M$, returns
+\begin{itemize}
+\item either the number of steps that $M$ performs when started on a blank tape, if $M$ halts ;
+\item of infinity else.
+\end{itemize}
+
+And let \emph{max-step function} $S$ be defined by
+\[
+S : \left |
+\begin{array}{l}
+  \N \times \N \to \N\\
+(m,n) \mapsto \max_{M \in \mathcal{T}_{m,n}} s(M)
+\end{array}
+\right .
+\]
+
+Note that these four function are not computable because otherwise it would means that we can decide the halting problem \cite{rado}. Moreover there exists some relations between $S$ and $\Sigma$; for example is immediate that $\forall m,n \in \N,\ S(m,n) \geq \Sigma(m,n)$, because writing $p$ non-blank symbols on the tape require at least the execution of $p$ steps. But there is no direct connection between $S$-busy beavers and $\Sigma$-busy beavers, \ie we cannot deduce one if we find the other one.
+
+\section{Finding Machines That Reaches Bounds}
+
+The goal of this project is to find, at least for small values of $m$ and $n$, Turing machines that reaches $\Sigma(m,n)$ or $S(m,n)$, \ie finding a machine $M \in \mathcal{T}_{m,n}$ such that $\sigma(M) = \Sigma(m,n)$ or $s(M) = S(m,n)$.
+
+Such machines have already been found \cite{rado} but only for small values of $m$ and $n$ because $S$ and $\Sigma$ functions grows very fast \cite{rado}, thing that makes tests difficult.
+
+
+\paragraph{How?} This will be done using evolutionary computing techniques on a population of Turing machines coming from the same class $\mathcal{T}_{m,n}$, for fixed $m$ and $n$. The operations of crossover and mutation are made from the transition tables (the alphabet and the number of states will remain unchanged).
+
+After this, we also want to try an other approach using particle swarm optimization.
+
+\paragraph{Fitness Function}
+The main problem is to define a good fitness function. The value to maximize here is the number of steps before halting (for the max-step case), in order to reach the bound.
+
+Suppose we have a machine $M$ which halts after $p$ steps and a machine $M'$ which continues to run after $p$ steps.
+We cannot say that $M'$ is better than $M$ w.r.t.\ max-step, because we don't know if $M'$ will stop and we have no general way to know it (since the halting problem is undecidable \cite{turing}).
+However, for fixed $p \in \N$, we are able to say if a given machine will stop in less than $p$ steps. To know it, we simply run the machine during $p$ steps and watch if it is on a halting state at this time.
+
+The approach we want to try here is depends on what bound we want to reach:
+\begin{itemize}
+\item for small values of $n,m \in \N$, values of $\Sigma$ and $S$ are known \cite{rado} so a suitable fitness function is a function which, given a Turing machine $M$ that we already run on $p$ steps without leading it in the halting state, returns $- \infty$ if $p > S(m,n)$ and $\frac{1}{S(m,n) - p}$ else. With this function, Turing machines which overtake the bound are highly penalized (because we know they will never halt) and a machine which run longer (but less than $S(m,n)$) without halting than an other one get a better grade.
+
+\item for values of $n, m \in \N$ for which $\Sigma$ and $S$ are not known, we can, for growing values of $p \in \N$, find machines which halts after $p$ steps with a fitness function of the same kind as before. Then the more $p$ will be high, the more we will approximate the bound if we still find machines for this $p$. Note that we will probalbly not able to use this approach for many different values of $m$ and $n$ because known lower bounds for $S$ and $\Sigma$ grows very fast, what make the computations long.
+\end{itemize}
 
 \section{Evolutionnary Computing}
 \label{chap:ec}
 
 \chapter{Strategy}
 \label{chap:strategy}
+
+\chapter{Work Organisation}
+\label{chap:wo}
 
 \chapter{Implementation}
 \label{chap:impl}
