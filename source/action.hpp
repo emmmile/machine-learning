@@ -4,13 +4,16 @@
 #include <iostream>
 #include <iomanip>
 #include <stdlib.h>
+#include <assert.h>
 #include "random.hpp"
 #include "utils.hpp"
 using namespace std;
 
-
-
-template<uint NStates, uint NSymbols, class TState, class TSymbol, class TDirection>
+template<uint NStates,
+	 uint NSymbols,
+	 class TState = state<uchar,NStates>,
+	 class TSymbol = symbol<uchar,NSymbols>,
+	 class TDirection = direction>
 class action {
   TDirection dir;		// assume false == LEFT, true == RIGHT
   TSymbol symbol;		// symbol to write on the tape
@@ -49,6 +52,13 @@ public:
     dir = a.dir;
     symbol = a.symbol;
     state = a.state;
+  }
+
+  action (TState st, TSymbol sy, TDirection d) {
+    assert(sy < NSymbols && st <= NStates);
+    dir = d;
+    symbol = sy;
+    state = st;
   }
 
   action& random_shuffle ( Random& gen ) {
@@ -90,6 +100,7 @@ public:
   TState next_state( ) const {
     return state;
   }
+
 };
 
 

@@ -31,14 +31,14 @@ OBJ = 		$(SRC:.cpp=.o)
 
 all: $(NAME)
 
-tur: header $(OBJ)
+tur: header tur.o
 	@$(ECHO) "Linking... \t"
-	@$(LINK) $(LFLAGS) -o $@ $(OBJ) $(LIBS) $(ERR_HANDLING)
+	@$(LINK) $(LFLAGS) -o $@ tur.o $(LIBS) $(ERR_HANDLING)
 	$(ERR_PRINTING)
 
 $(NAME): header $(NAME).o
 	@$(ECHO) "Linking... \t"
-	@$(LINK) $(LFLAGS) -o $@ $(OBJ) $(LIBS) $(ERR_HANDLING)
+	@$(LINK) $(LFLAGS) -o $@ $@.o $(LIBS) $(ERR_HANDLING)
 	$(ERR_PRINTING)
 
 %.o: %.cpp turing-machine.hpp action.hpp random.hpp utils.hpp living-tm.hpp population.hpp

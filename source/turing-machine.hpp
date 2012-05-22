@@ -162,9 +162,14 @@ public:
   }
 
   void set_action(const TState st, const TSymbol sy, const action_type& a) {
+    // modify the transition table
+
+    actions[st * NSymbols + sy] = action<NStates, NSymbols>(a);
+    /*
     actions[st * NSymbols + sy].dir = a.dir;
     actions[st * NSymbols + sy].state = a.state;
     actions[st * NSymbols + sy].symbol = a.symbol;
+    */
   }
 
 };

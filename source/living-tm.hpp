@@ -208,6 +208,7 @@ public:
   }
 
   void set_action(const TState st, const TSymbol sy, const action_type& a) {
+    // modify the transition table
     machine.set_action(st, sy, a);
   }
 
