@@ -26,10 +26,15 @@ ERR_PRINTING = 	@if test -e temp.errors; \
 		else $(ECHO) "$(OK_STRING)\n"; fi; rm -f temp.errors temp.log
 
 
-SRC = 		main.c
-OBJ = 		$(SRC:.c=.o)
+SRC = 		main.cpp
+OBJ = 		$(SRC:.cpp=.o)
 
 all: $(NAME)
+
+tur: header $(OBJ)
+	@$(ECHO) "Linking... \t"
+	@$(LINK) $(LFLAGS) -o $@ $(OBJ) $(LIBS) $(ERR_HANDLING)
+	$(ERR_PRINTING)
 
 $(NAME): header $(NAME).o
 	@$(ECHO) "Linking... \t"
