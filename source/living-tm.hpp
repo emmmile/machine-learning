@@ -207,6 +207,10 @@ public:
     ia >> *this;
   }
 
+  void set_action(const TState st, const TSymbol sy, const action_type& a) {
+    machine.set_action(st, sy, a);
+  }
+
 //  friend bool operator<(const living_tm& ltm_left, const living_tm& ltm_right) {
 //    // update fitnesses and compare machines relatively to their fitness
 //    // this cannot be done if they are const arguments, and I think is better to assume
