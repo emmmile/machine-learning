@@ -315,15 +315,14 @@ public:
      * when changing coefficients
      */
     const static double
-      lambda = 0.005,
+      lambda = 0.01,
       uniform_ceil = 0.5,
       step_high = 0.8,
       affine_coef = 0.0005,
-      vert_shift = 0.25,
       scale = 1;
 
 
-    const static int halfPop = int (maximumPopulation - 1) / 2;
+    const static int popCut = int (maximumPopulation - 1);
       
     double res_value = 0.0; // ceil to know if an individual will die of not
     // if we draw a real in [0,1] inferior to res_value, return true,
@@ -331,20 +330,20 @@ public:
     
       switch (type) {
       case SIGMOID:
-	res_value =  1 / ( 1 + exp( lambda * (halfPop - int(indiv_rank) )));
+        res_value =  1 / ( 1 + exp( lambda * (popCut - int(indiv_rank) )));
 	break;
       case AFFINE:
-	res_value = affine_coef * (int(indiv_rank) - halfPop) + 0.5;
+        res_value = affine_coef * (int(indiv_rank) - popCut) + 0.5;
 	break;
       case STEP:
-	if (int(indiv_rank) < halfPop) res_value = step_high;
+        if (int(indiv_rank) < popCut) res_value = step_high;
 	else res_value = 1 - step_high;
 	break;
       case UNIFORM:
 	res_value = uniform_ceil;
       }
 
-      return gen.real() < scale * res_value + vert_shift;
+      return gen.real() < scale * res_value;
   }
 
   friend class boost::serialization::access;
