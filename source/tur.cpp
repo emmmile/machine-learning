@@ -23,6 +23,7 @@
 using namespace std;
 
 void parse_cell(char* s, uchar& symbol, uchar& state, char& c_dir) {
+  // parse a cell of the transition table
   symbol = ((int) s[0]) - '0';
   c_dir = s[1];
   if (s[3] == 'H') state = N + 1;
@@ -69,37 +70,28 @@ int main(int nArgs, char** args) {
     char s[LINE_LENGTH];
 
     // read the first (useless) line
-    //    cin.ignore(LINE_LENGTH, '\n');
-    cin.getline(s, LINE_LENGTH, '\n');
-    cout << "first line : " << s << endl;
-
-
+    cin.ignore(LINE_LENGTH, '\n');
+ 
     for (int i = 0; i < N; ++i) {
       // for all line (state)
-      cout << "i = " << i << endl;
+
       // read the first (useless) column
-      //      cin.ignore(LINE_LENGTH, '\t');
-      cin.getline(s, LINE_LENGTH, ' ');
-      cout << "ignored : " << s << endl;
+      cin.ignore(LINE_LENGTH, ' ');
 
       for (int j = 0; j < M - 1; ++j) {
 	// for all column (symbol)
 	// except the last
 
 	cin.getline(s, LINE_LENGTH, ' ');
-	cout << "read : [" << s << "]\n";
 	parse_cell(s, symbol, state, c_dir);
-	cout << "cdir = [" << c_dir << "]\n";
 	t.set_action(i, j, action<N, M>(state, symbol, c_dir == 'R'));
       }
       // last colum :
 	cin.getline(s, LINE_LENGTH);
-	cout << "read : [" << s << "]\n";
 	parse_cell(s, symbol, state, c_dir);
 	t.set_action(i, M - 1, action<N, M>(state, symbol, c_dir == 'R'));
     }
-    cout << t;
-    return 0;
+
   } else if ((nArgs == 2) && (strcmp(args[1], "-h") == 0)) {
     // prints help
 
@@ -121,7 +113,7 @@ used when printing machines\n"
     cout << "The machine is :\n" << t << endl
 	 << "How many steps (-1 for looping until the machine stops if so) ? ";
     cin >> nsteps;
-    
+    cout << "[READ] :" << nsteps;
     if (nsteps >= 0)
       running = t.do_nsteps(nsteps);
     else
@@ -135,7 +127,7 @@ used when printing machines\n"
   cout << "[HALT]\n"
        << t
        << "\n\nThis machine stopped after "
-       << t.get_nb_shifts() << endl;
+       << t.get_nb_shifts() << " shifts\n.";
   
   return EXIT_SUCCESS;
 }
