@@ -113,7 +113,7 @@ used when printing machines\n"
     cout << "The machine is :\n" << t << endl
 	 << "How many steps (-1 for looping until the machine stops if so) ? ";
     cin >> nsteps;
-    cout << "[READ] :" << nsteps;
+    cout << "OK, let's go for " << nsteps << " steps...\n";
     if (nsteps >= 0)
       running = t.do_nsteps(nsteps);
     else
@@ -127,7 +127,7 @@ used when printing machines\n"
   cout << "[HALT]\n"
        << t
        << "\n\nThis machine stopped after "
-       << t.get_nb_shifts() << " shifts\n.";
+       << t.get_nb_shifts() << " shifts.\n";
   
   return EXIT_SUCCESS;
 }
