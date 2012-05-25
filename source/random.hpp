@@ -74,6 +74,10 @@ public:
     return ( gen() << 1 ) / RAND_MAX * 2.0;
   }
 
+  int32_t operator() ( int32_t n ) {
+    return gen() % n;
+  }
+
   // change the seed
   void seed ( uint32_t seed ) {
 #if USE_BOOST

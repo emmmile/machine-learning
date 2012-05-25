@@ -126,9 +126,7 @@ public:
 
   double fitness() {
     // if I have no upper bound I don't know what to do :P
-    if ( !slimits<NStates,NSymbols>::has_upper ) return -1.0;
-
-    if ( nb_shifts <= slimits<NStates,NSymbols>::upper && current_state.ishalt() )
+    if ( current_state.ishalt() )
       return nb_shifts;
     else
       return 0.0;

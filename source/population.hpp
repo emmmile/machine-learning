@@ -83,8 +83,8 @@ class population {
     bool changed;
     double fitness;
 
-    triple( ) : changed( true ), fitness( -100 ) { }
-    triple( I* i, bool b, double d = -100.0 ) : individual(i), changed(b), fitness(d) { }
+    triple( ) : changed( true ), fitness( 0.0 ) { }
+    triple( I* i, bool b, double d = 0.0 ) : individual(i), changed(b), fitness(d) { }
     inline bool operator< (const triple& another ) const {
       return fitness > another.fitness;
     }
@@ -94,6 +94,7 @@ class population {
   Random gen;
   double pmutation;
   double pcrossover;
+  bool stationary;
 
   const static uint maximumPopulation = 400;
   const static uint initialPopulation = 100;
@@ -113,13 +114,15 @@ class population {
   }
 
 public:
-  population(uint pop_size = initialPopulation, double pc = default_pcrossover, double pm = default_pmutation) {
+  population(uint pop_size = initialPopulation, bool st = true,
+             double pc = default_pcrossover, double pm = default_pmutation) {
     individuals.resize(pop_size);
     for (uint i = 0; i < individuals.size(); ++i)
       individuals[i].individual = new I (gen); // a random initializer must exist in ::I
 
     pmutation = pm;
     pcrossover = pc;
+    stationary = st;
     gen.seed( (uint) this );
   }
 
@@ -201,7 +204,7 @@ public:
       generation( *individuals[j].individual, generationNumber );
 
       // if needed, call the fitness and store the result
-      if ( individuals[j].changed ) {
+      if ( individuals[j].changed || !stationary ) {
         individuals[j].fitness = fitness( *individuals[j].individual );
         individuals[j].changed = false;
       }
