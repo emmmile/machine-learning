@@ -55,7 +55,15 @@ public:
   }
 
   action (TState st, TSymbol sy, TDirection d) {
-    assert(sy < NSymbols && st <= NStates);
+    //  assert(sy < NSymbols && st <= NStates);
+
+    if (!(sy < NSymbols)) {
+      	cout << "/!\\ "<< sy <<" >= " << NSymbols;
+    exit(-1);
+  } else if (!(st <= NStates)) {
+	cout << "/!\\ "<< st <<" > " << NStates;
+	exit(-1);
+      }
     dir = d;
     symbol = sy;
     state = st;
