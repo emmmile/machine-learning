@@ -135,10 +135,12 @@ In particular, except the representation of the individual, the user must define
 
 \item A crossover function. We need here a function like \texttt{void I::crossover(I\&, I\&)}, that is a function that takes two individuals and modify them. In this case, if we want to keep the old individuals, we need to previously copy them.
 
-\item (Optional) A generation function. This function is used to have additional freedom during the execution of the genetic algorithm. It's something the user can decide to do on every individual, at every generation, by default a function like \texttt{void I::generation(I\&, int)}, where the second argument is the generation number.
+\item (Optional) A generation function. This function is used to have additional freedom during the execution of the genetic algorithm. It's something the user can decide to do on every individual, at every generation. By default a function like \texttt{void I::generation(I\&, int)}, where the second argument is the generation number.
 \end{enumerate}
 
-These three functions are then used in the population implementation, where needed.
+We always stated ``by default'' because it's possible also to specify other user defined functions (for example not members of the \texttt{I} type). These four functions are then used in the population implementation, where needed.
+
+The skeleton is the classical of the genetic algorithms: for every generation executes the genetic operators and then the selection.
 
 \subsection{When to crossover and when to mutate}
 
@@ -149,7 +151,7 @@ The idea should be that each individual has some probability to be mutated and s
 \item If one individual has been chosen for crossover, which other individual choose to actually perform the crossover? [TODO explain the issue 4]
 \end{enumerate}
 
-\subsection{When to evaluate the fitness?}
+\subsection{When to evaluate the fitness function}
 
 Here the point is that we need a fitness value for each individual at each generation, in order to perform selection.
 We thought at this problem because our fitness function is quite heavy to compute, and could happen that sometimes an individual remain unchanged from one generation to another. In this case a re-computation of the fitness function should be avoided.
@@ -159,12 +161,16 @@ This optimization in some cases has shown to be very effective [TODO mention som
 
 \subsection{Selection}
 
-[TODO We implemented rank selection].
+[TODO We implemented rank selection...].
 
 \begin{figure}[h]\centering
 \includegraphics{figures/decision-function.pdf}
 \caption{Sigmoid function used to decide if keep or not one individual. On the $x$ axis there is the individual rank. With this function the population size will average 400 individuals (maximum population size).}
 \end{figure}
+
+
+\section{Further work}
+
 
 \chapter{Results}
 \label{chap:results}
