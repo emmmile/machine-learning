@@ -44,7 +44,9 @@ int main() {
     if (generations < 0) break;
     
     p.run(generations);
-    cout << "Best machine:\n" << p.get_best() << endl;
+    cout << "Best machine:\n" << p.get_best()
+	 << "\nFitness of this machine :" << p.get_best_fitness()
+	 << "\nPopulation size: " << p.size() << endl;
   }
 
   cout << "You stopped evolution. You may want to save data.\n"
@@ -58,7 +60,7 @@ int main() {
   // get time to build file names
   time(&rawtime);
   timeinfo = localtime(&rawtime);
-  sprintf(time_str, "%s%d-%d-%d_%d:%d",
+  sprintf(time_str, "serialized_%s%d-%d-%d_%d:%d",
 	  SAVE_PATH,
 	  timeinfo->tm_year,
 	  timeinfo->tm_mon,

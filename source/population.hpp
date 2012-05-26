@@ -140,6 +140,10 @@ public:
       delete individuals[i].individual;
   }
 
+  uint size() {
+    return individuals.size();
+  }
+
   I& get_best ( ) const {
     return *individuals[0].individual;
   }
