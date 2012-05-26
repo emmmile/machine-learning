@@ -38,10 +38,6 @@ void crossover ( testvect& a, testvect& b, Random& gen ) {
     swap( a[i], b[i] );
 }
 
-void populationTest ( ) {
- 
-}
-
 
 int main() {
   population<testvect> test;
