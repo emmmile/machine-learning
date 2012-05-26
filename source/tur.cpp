@@ -14,11 +14,9 @@
 #include <cstring>
 #include <cstdio>
 #include "living-tm.hpp"
+#include "nm.hpp" // change machine size in this file (M: alphabet, N: states)
 
 #define LINE_LENGTH 100
-
-#define M 3 //size of the alphabet
-#define N 2 // number of states
 
 using namespace std;
 

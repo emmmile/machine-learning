@@ -29,11 +29,17 @@ ERR_PRINTING = 	@if test -e temp.errors; \
 SRC = 		main.cpp
 OBJ = 		$(SRC:.cpp=.o)
 
+
 all: $(NAME)
 
-tur: header tur.o
+tur: header tur.o nm.hpp
 	@$(ECHO) "Linking... \t"
 	@$(LINK) $(LFLAGS) -o $@ tur.o $(LIBS) $(ERR_HANDLING)
+	$(ERR_PRINTING)
+
+exp: header experiments.o
+	@$(ECHO) "Linking... \t"
+	@$(LINK) $(LFLAGS) -o $@ experiments.o $(LIBS) $(ERR_HANDLING)
 	$(ERR_PRINTING)
 
 $(NAME): header $(NAME).o

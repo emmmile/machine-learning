@@ -88,6 +88,15 @@ class population {
     inline bool operator< (const triple& another ) const {
       return fitness > another.fitness;
     }
+
+    friend class boost::serialization::access;
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version) {
+      ar & *individual;
+      ar & changed;
+      ar & fitness;
+  }
+
   };
 
   vector<triple> individuals;
@@ -129,6 +138,10 @@ public:
   ~population( ) {
     for (uint i = 0; i < individuals.size(); ++i)
       delete individuals[i].individual;
+  }
+
+  uint size() {
+    return individuals.size();
   }
 
   I& get_best ( ) const {
