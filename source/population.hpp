@@ -88,6 +88,15 @@ class population {
     inline bool operator< (const triple& another ) const {
       return fitness > another.fitness;
     }
+
+    friend class boost::serialization::access;
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version) {
+      ar & *individual;
+      ar & changed;
+      ar & fitness;
+  }
+
   };
 
   vector<triple> individuals;
