@@ -318,11 +318,21 @@ public:
       lambda = 0.01,
       uniform_ceil = 0.5,
       step_high = 0.8,
-      affine_coef = 0.0005,
-      scale = 1;
-
+      affine_coef = 0.0005;
 
     const static int popCut = int (maximumPopulation - 1);
+
+
+    static bool sigmoidTableReady = false;
+    const static uint sigmoidTableSize = 4 * maximumPopulation;
+    static double sigmoid [sigmoidTableSize]; // this should be a quite "safe" upper bound
+
+    if ( !sigmoidTableReady ) {
+      for ( uint i = 0; i < sigmoidTableSize; ++i )
+	sigmoid[i] = 1 / ( 1 + exp( lambda * (popCut - int(i) )));
+      sigmoidTableReady = true;
+    }
+
       
     double res_value = 0.0; // ceil to know if an individual will die of not
     // if we draw a real in [0,1] inferior to res_value, return true,
@@ -330,7 +340,7 @@ public:
     
       switch (type) {
       case SIGMOID:
-        res_value =  1 / ( 1 + exp( lambda * (popCut - int(indiv_rank) )));
+	res_value = sigmoid[indiv_rank];
 	break;
       case AFFINE:
         res_value = affine_coef * (int(indiv_rank) - popCut) + 0.5;
@@ -343,7 +353,7 @@ public:
 	res_value = uniform_ceil;
       }
 
-      return gen.real() < scale * res_value;
+      return gen.real() < res_value;
   }
 
   friend class boost::serialization::access;

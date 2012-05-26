@@ -19,7 +19,7 @@
 
 \section{Conventions}
 
-We assume that the reader is familiar with the notion of Turing machines. In this paper, we only deal with deterministic Turing machines which have a finite alphabet ans a finite set of states so it is what we mean when we use the expression \emph{Turing machine}. Except where otherwise stated, we use the letter $m$ to denote the cardinal of the alphabet and the letter $n$ to denote the cardinal of the states set minus one.
+We assume that the reader is familiar with the notion of Turing machines. In this paper, we only deal with deterministic Turing machines which have a finite alphabet and a finite set of states, so it is what we mean when we use the expression \emph{Turing machine}. Except where otherwise stated, we use the letter $m$ to denote the cardinality of the alphabet and the letter $n$ to denote the cardinality of the states set minus one (because of the halting state).
 
 Turing machines we deal with have only one halt state. Let $\mathcal{T}_{m,n}$ be the set of deterministic Turing machines with an alphabet of $m$ symbols which uses $n + 1$ states, one of whom is the halt state, reached at most one time (because then the machine halts). Let  $\mathcal{T} = \cup_{n,m \in \N} \mathcal{T}_{n,m}$.
 
@@ -99,6 +99,72 @@ S : \left |
 
 \chapter{Implementation}
 \label{chap:impl}
+
+\section{Turing Machine}
+[...]
+We implemented crossovers and mutations here since they depends on the representation of the individual type: the population method is not aware of \textit{how} we implement for example the transition table. Actually we could have some flags (like in Matlab) like: ``it is a string'', ``it is a bit string'', etc. But, since the key point of all our work are probably these two functions, we preferred to implement them where we have all the details of the individual representation, the Turing Machine.
+
+\subsection{Crossover}
+\label{sec:crossover}
+[TODO Crossover implementation and assumptions, or in another chapter?]
+
+\subsection{Mutation}
+\label{sec:mutation}
+[TODO Mutation implementation and assumptions, or in another chapter?]
+
+
+\section{Virtual Machine}
+
+\subsection{Fitness function}
+\label{sec:fitness}
+[TODO Fitness function implementation and assumptions, or in another chapter?]
+
+
+
+\section{Evolutionary Computing Tool}
+This tool has been implemented with the aim to be as general as possible; with C++ in fact is relatively easy to abstract from the type of the individuals. The implementation is inside the file \texttt{population.hpp}.
+
+The idea behind the tool is to hide all the common operations a population method should implement. The main task of the user is to define the type of the individuals, let's say \texttt{I} (that stands for individual), and the genetic operators between individuals (that can be of many kinds). \texttt{I} can be a geometric vector, a neural network or, in our case, a living virtual machine.
+
+In particular, except the representation of the individual, the user must define:
+
+\begin{enumerate}
+\item A fitness function. Greater values of this function means that the individual is a ``better'' solution for the problem (in other words we are trying to \textit{maximize} the fitness function). Regarding more what concerns the implementation we searches for a member function of the type \texttt{I}, in particular a function with signature \texttt{double I::fitness(I\&)}.
+
+\item A mutation function. By default the implementation searches for a function with a signature like \texttt{void I::mutate(I\&)}\footnote{Actually the signature is slightly different because we also have as argument the reference to a random number generator. Here we explain mainly the idea.}.
+
+\item A crossover function. We need here a function like \texttt{void I::crossover(I\&, I\&)}, that is a function that takes two individuals and modify them. In this case, if we want to keep the old individuals, we need to previously copy them.
+
+\item (Optional) A generation function. This function is used to have additional freedom during the execution of the genetic algorithm. It's something the user can decide to do on every individual, at every generation, by default a function like \texttt{void I::generation(I\&, int)}, where the second argument is the generation number.
+\end{enumerate}
+
+These three functions are then used in the population implementation, where needed.
+
+\subsection{When to crossover and when to mutate}
+
+The idea should be that each individual has some probability to be mutated and some probability to be crossed. The implementation of the ``with some probability'' is easy (just draw a real in $[0,1]$ and compare with a real, still in $[0,1]$, representing the wanted probability) but there are some points to clarify.
+
+\begin{enumerate}
+\item If one individual has been chosen for mutation, it can be chosen also for crossover.
+\item If one individual has been chosen for crossover, which other individual choose to actually perform the crossover? [TODO explain the issue 4]
+\end{enumerate}
+
+\subsection{When to evaluate the fitness?}
+
+Here the point is that we need a fitness value for each individual at each generation, in order to perform selection.
+We thought at this problem because our fitness function is quite heavy to compute, and could happen that sometimes an individual remain unchanged from one generation to another. In this case a re-computation of the fitness function should be avoided.
+
+So, since this is a general problem, inside the population method we used a flag to remember, for every individual, if he has been changed or not. We also save the last fitness value, that is simply a real value. If the flag says that the individual has been changed we need to re-compute the fitness function, otherwise we can use the stored result.
+This optimization in some cases has shown to be very effective [TODO mention some numbers?].
+
+\subsection{Selection}
+
+[TODO We implemented rank selection].
+
+\begin{figure}[h]\centering
+\includegraphics{figures/decision-function.pdf}
+\caption{Sigmoid function used to decide if keep or not one individual. On the $x$ axis there is the individual rank. With this function the population size will average 400 individuals (maximum population size).}
+\end{figure}
 
 \chapter{Results}
 \label{chap:results}

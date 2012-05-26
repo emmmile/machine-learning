@@ -9,3 +9,4 @@
 *.pro*
 
 source/main
+reports/*.pdf
