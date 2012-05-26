@@ -36,6 +36,11 @@ tur: header tur.o
 	@$(LINK) $(LFLAGS) -o $@ tur.o $(LIBS) $(ERR_HANDLING)
 	$(ERR_PRINTING)
 
+exp: header experiments.o
+	@$(ECHO) "Linking... \t"
+	@$(LINK) $(LFLAGS) -o $@ experiments.o $(LIBS) $(ERR_HANDLING)
+	$(ERR_PRINTING)
+
 $(NAME): header $(NAME).o
 	@$(ECHO) "Linking... \t"
 	@$(LINK) $(LFLAGS) -o $@ $@.o $(LIBS) $(ERR_HANDLING)
