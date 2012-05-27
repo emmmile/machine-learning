@@ -133,13 +133,11 @@ public:
       return 0.0;
     */
 
-    const static slimits<NStates, NSymbols> l;
-
-    if(nb_shifts == l.upper && current_state.ishalt())
+    if(nb_shifts == slimits<NStates, NSymbols>::upper && current_state.ishalt())
       return 200.0;
-    else if (nb_shifts > l.upper)
+    else if (nb_shifts > slimits<NStates, NSymbols>::upper)
       return 0.0;
-    else return ((double) nb_shifts) * 100 / l.upper;
+    else return ((double) nb_shifts) * 100 / slimits<NStates, NSymbols>::upper;
   }
 
   // these 5 methods returns the private member variables,
@@ -172,13 +170,14 @@ public:
     if ( current_state.ishalt() ) return; // nothing to do
 
     if ( !slimits<NStates,NSymbols>::has_upper ) {
-      do_nsteps( 10 * generation - nb_shifts ); // performs 10 steps at each generation
+      do_nsteps(10 * generation - nb_shifts); // performs 10 steps at each generation
       return;
     }
 
     // try to make the number of steps performed by the S-busy beaver
-    if ( slimits<NStates,NSymbols>::upper > nb_shifts )
-      do_nsteps( slimits<NStates,NSymbols>::upper - nb_shifts );
+    if (slimits<NStates,NSymbols>::upper > nb_shifts)
+      do_nsteps(generation);
+      //do_nsteps( slimits<NStates,NSymbols>::upper - nb_shifts );
   }
 
   friend ostream& operator<< ( ostream& os, const living_tm& ltm ) {

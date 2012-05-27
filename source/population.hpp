@@ -104,11 +104,12 @@ class population {
   double pmutation;
   double pcrossover;
   bool stationary;
+  unsigned long int age; // /!\ this type may be too small
 
   const static uint maximumPopulation = 400;
   const static uint initialPopulation = 100;
   constexpr static double default_pcrossover = 0.9;
-  constexpr static double default_pmutation = 0.1;
+  constexpr static double default_pmutation = 0.4;
 
 
 
@@ -123,12 +124,16 @@ class population {
   }
 
 public:
-  population(uint pop_size = initialPopulation, bool st = true,
-             double pc = default_pcrossover, double pm = default_pmutation) {
+  population(uint pop_size = initialPopulation,
+	     bool st = true,
+             double pc = default_pcrossover,
+	     double pm = default_pmutation) {
+
     individuals.resize(pop_size);
     for (uint i = 0; i < individuals.size(); ++i)
       individuals[i].individual = new I (gen); // a random initializer must exist in ::I
-
+    
+    age = 0;
     pmutation = pm;
     pcrossover = pc;
     stationary = st;
@@ -148,6 +153,10 @@ public:
     return *individuals[0].individual;
   }
 
+  unsigned long int get_age() {
+    return age;
+  }
+
   double get_best_fitness ( ) const {
     return individuals[0].fitness;
   }
@@ -162,9 +171,10 @@ public:
     for ( uint i = 0; i < generations; ++i ) {
       // this executes the genetic operators
       genetic_operators( mutate, crossover );
-
+      
       // this execute the (probabilistic) selection step
-      selection( fitness, generation, i );
+      selection( fitness, generation, age);
+      ++age;
     }
   }
 
@@ -213,6 +223,7 @@ public:
   template<typename F, typename G>
   void selection ( F fitness, G generation, uint generationNumber ) {
 
+    // run Turing machines if needed
     for (uint j = 0; j < individuals.size(); ++j) {
       generation( *individuals[j].individual, generationNumber );
 
@@ -375,6 +386,7 @@ public:
     ar & individuals;
     ar & pmutation;
     ar & pcrossover;
+    ar & age;
   }
 
 };
