@@ -157,6 +157,17 @@ public:
     return age;
   }
 
+  void get_stats(uint& n_halt, uint& best_nbshifts) {
+
+    n_halt = 0;
+    best_nbshifts = 0;
+    for (unsigned i = 0; i < individuals.size(); ++i) {
+      if (individuals[i].individual->get_state().ishalt())
+	++n_halt;
+      best_nbshifts = max(best_nbshifts, individuals[i].individual->get_nb_shifts()); 
+    }
+  }
+
   double get_best_fitness ( ) const {
     return individuals[0].fitness;
   }

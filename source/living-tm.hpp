@@ -175,8 +175,8 @@ public:
     }
 
     // try to make the number of steps performed by the S-busy beaver
-    if (slimits<NStates,NSymbols>::upper > nb_shifts)
-      do_nsteps(generation);
+    if (slimits<NStates,NSymbols>::upper > nb_shifts && nb_shifts < generation)
+      do_nsteps(generation - nb_shifts);
       //do_nsteps( slimits<NStates,NSymbols>::upper - nb_shifts );
   }
 
