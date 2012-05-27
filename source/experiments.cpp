@@ -27,6 +27,7 @@ int main() {
 
   population<ltm> p; // our population of TM
   int generations = 0;
+  int dec_gen;
 
   time_t rawtime; // used to get time to choose file names
   struct tm * timeinfo; // idem
@@ -43,8 +44,18 @@ int main() {
     cin >> generations;
     if (generations < 0) break;
     
-    p.run(generations);
-    cout << "Best machine:\n" << p.get_best()
+    cout << "Please wait...\n";
+    cout << "           ]\r[";
+    cout.flush();
+    dec_gen = generations / 10;
+    for (int i = 0; i < 10; ++i) {
+      p.run(dec_gen);
+      cout << "#";
+      cout.flush();
+    }
+    p.run(generations % 10);
+    
+    cout << "\nBest machine:\n" << p.get_best()
 	 << "\nFitness of this machine :" << p.get_best_fitness()
 	 << "\nPopulation size: " << p.size() << endl;
   }

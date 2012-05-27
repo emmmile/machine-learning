@@ -32,12 +32,12 @@ OBJ = 		$(SRC:.cpp=.o)
 
 all: $(NAME)
 
-tur: header tur.o nm.hpp
+tur: header tur.o nm.hpp turing-machine.hpp action.hpp random.hpp utils.hpp living-tm.hpp population.hpp
 	@$(ECHO) "Linking... \t"
 	@$(LINK) $(LFLAGS) -o $@ tur.o $(LIBS) $(ERR_HANDLING)
 	$(ERR_PRINTING)
 
-exp: header experiments.o
+exp: header experiments.o nm.hpp turing-machine.hpp action.hpp random.hpp utils.hpp living-tm.hpp
 	@$(ECHO) "Linking... \t"
 	@$(LINK) $(LFLAGS) -o $@ experiments.o $(LIBS) $(ERR_HANDLING)
 	$(ERR_PRINTING)
@@ -60,3 +60,5 @@ header:
 clean:
 	rm -rf *.o
 	rm -rf main
+	rm -rf exp
+	rm -rf tur

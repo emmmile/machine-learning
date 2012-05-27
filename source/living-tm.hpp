@@ -125,11 +125,21 @@ public:
   }
 
   double fitness() {
+    /*
     // if I have no upper bound I don't know what to do :P
-    if ( current_state.ishalt() )
+      if ( current_state.ishalt() )
       return nb_shifts;
-    else
+      else
       return 0.0;
+    */
+
+    const static slimits<NStates, NSymbols> l;
+
+    if(nb_shifts == l.upper && current_state.ishalt())
+      return 200.0;
+    else if (nb_shifts > l.upper)
+      return 0.0;
+    else return ((double) nb_shifts) * 100 / l.upper;
   }
 
   // these 5 methods returns the private member variables,

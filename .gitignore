@@ -9,4 +9,8 @@
 *.pro*
 
 source/main
+source/tur
+source/exp
+source/bin/*
+
 reports/*.pdf
