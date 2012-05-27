@@ -40,19 +40,9 @@ int main() {
        << "\nSearch space size:\t" << ltm::spacesize() << "\n\n";
 
   while (1) {
-    cout << "How many generations (-1 for stop, -2 for statistics) ? ";
+    cout << "How many generations (-1 for stop) ? ";
     cin >> generations;
-    if (generations == -2) {
-      uint n_halt = 0; //number of halted machines
-      uint best_nshift = 0; 
-      p.get_stats(n_halt, best_nshift);
-	
-      cout << "-> Statistics"
-	   << "\n\tMachines halted:\t" << n_halt
-	   << "\n\tHigher nb_shifts:\t" << best_nshift << endl;
-      continue;
-    }
-    else if (generations < 0) break;
+    if (generations < 0) break;
     
     cout << "Please wait...\n";
     cout << "           ]\r[";
@@ -65,11 +55,18 @@ int main() {
     }
     p.run(generations % 10);
     
+    // do statistics...
+    uint n_halt = 0; //number of halted machines
+    uint best_nshift = 0; 
+    p.get_stats(n_halt, best_nshift);
+
     cout << "] Complete.\n-> Best machine in the population:\n" << p.get_best()
 	 << "Fitness of this machine: " << p.get_best_fitness()
 	 << "\n-> Population:"
 	 << "\n\tSize:\t\t" << p.size()
 	 << "\n\tAge:\t\t" << p.get_age()
+	 << "\n\tHalted:\t\t" << n_halt << " machines"
+	 << "\n\tMax nb_shifts:\t" << best_nshift
 	 << "\n-> Known values:"
 	 << "\n\tLower bound:\t";
     if (slimits<N, M>::has_lower)
@@ -87,7 +84,7 @@ int main() {
        << "\t[2] Best machine ;\n"
        << "\t[3] Both ;\n"
        << "\t[Other number] Nothing, thanks.\n"
-       << "Your choice : ";
+       << "Your choice: ";
   cin >> generations;
 
   // get time to build file names

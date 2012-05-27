@@ -109,7 +109,7 @@ class population {
   const static uint maximumPopulation = 400;
   const static uint initialPopulation = 100;
   constexpr static double default_pcrossover = 0.9;
-  constexpr static double default_pmutation = 0.4;
+  constexpr static double default_pmutation = 0.8;
 
 
 
