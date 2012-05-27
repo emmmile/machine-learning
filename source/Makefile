@@ -30,7 +30,7 @@ SRC = 		main.cpp
 OBJ = 		$(SRC:.cpp=.o)
 
 
-all: $(NAME)
+all: $(NAME) tur exp
 
 tur: header tur.o nm.hpp turing-machine.hpp action.hpp random.hpp utils.hpp living-tm.hpp population.hpp
 	@$(ECHO) "Linking... \t"

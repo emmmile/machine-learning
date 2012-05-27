@@ -55,9 +55,21 @@ int main() {
     }
     p.run(generations % 10);
     
-    cout << "\nBest machine:\n" << p.get_best()
-	 << "\nFitness of this machine :" << p.get_best_fitness()
-	 << "\nPopulation size: " << p.size() << endl;
+    cout << "] Complete.\n-> Best machine in the population:\n" << p.get_best()
+	 << "Fitness of this machine: " << p.get_best_fitness()
+	 << "\n-> Population:"
+	 << "\n\tSize:\t\t" << p.size()
+	 << "\n\tAge:\t\t" << p.get_age()
+	 << "\n-> Known values:"
+	 << "\n\tLower bound:\t";
+    if (slimits<N, M>::has_lower)
+      cout << slimits<N, M>::lower;
+    else cout << "not known";
+    cout << "\n\tUpper bound:\t";
+    if (slimits<N, M>::has_upper)
+      cout << slimits<N, M>::upper;
+    else cout << "not known";
+    cout << endl;
   }
 
   cout << "You stopped evolution. You may want to save data.\n"
@@ -65,7 +77,7 @@ int main() {
        << "\t[2] Best machine ;\n"
        << "\t[3] Both ;\n"
        << "\t[Other number] Nothing, thanks.\n"
-       << "Your choice :";
+       << "Your choice : ";
   cin >> generations;
 
   // get time to build file names
