@@ -6,8 +6,11 @@
 using namespace std;
 
 
+#define DIMS		100
+#define GENERATIONS	3000
+
 // test with the ackley function
-typedef vect<double,20> testvect;
+typedef vect<double,DIMS> testvect;
 
 double ackley ( const testvect& v ) {
 	double a = 20;
@@ -35,30 +38,13 @@ void crossover ( testvect& a, testvect& b, Random& gen ) {
     swap( a[i], b[i] );
 }
 
-void populationTest ( ) {
-  population<testvect> test;
-  test.run( 1000, ackley, mutate, crossover );
-  cout << "Best fitness (-value of ackley function): " << test.get_best_fitness() << endl;
-}
-
 
 int main() {
-  populationTest();
-
-
-  typedef living_tm<2,3> ltm;
-
-  // test of the predicate. Try commenting/uncommenting the generation function in ltm!
-  //cout << (has_generation_fun<ltm>::value ?
-  //        "ltm has a generation function." :
-  //        "ltm doesn't have a generation function.") << endl;
-  // space size test
-  cout << "The search space of the problem contains " << ltm::spacesize() << " possibilities.\n";
-
-  // turing machine test
-  population<ltm> p;
-  p.run( 5000 );
-  cout << "Best fitness (number of steps of the machine): " << p.get_best_fitness() << endl;
+  population<testvect> test;
+  
+  cout << "Testing the ackley problem in " << DIMS << " dimensions. Running " << GENERATIONS << " generations.\n"; 
+  test.run( GENERATIONS, ackley, mutate, crossover );
+  cout << "Best fitness (-value of ackley function): " << test.get_best_fitness() << endl;
 
   return 0;
 }
