@@ -54,6 +54,30 @@ public:
     state = a.state;
   }
 
+  static uint offset ( uint index ) {
+    switch( index ) {
+      case 0:
+        return offsetof( action, dir );
+      case 1:
+        return offsetof( action, symbol );
+      case 2:
+      default:
+        return offsetof( action, state );
+    }
+  }
+
+  static uint sizeOf ( uint index ) {
+    switch( index ) {
+      case 0:
+        return sizeof( dir );
+      case 1:
+        return sizeof( symbol );
+      case 2:
+      default:
+        return sizeof( state );
+    }
+  }
+
   action (TState st, TSymbol sy, TDirection d) {
     //  assert(sy < NSymbols && st <= NStates);
 

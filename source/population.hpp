@@ -16,8 +16,8 @@ using namespace std;
 
 enum crossover_type {
   TWO_POINT,		// choose 2 actions at random and swap what is in between
-  ONE_POINT		// choose 1 action at random and swap what is at the right
-
+  ONE_POINT,		// choose 1 action at random and swap what is at the right
+  UNIFORM
 };
 
 
@@ -27,7 +27,7 @@ enum early_death_type {
   SIGMOID, // sigmoid function
   AFFINE,  // affine function
   STEP,    // step function (Heaviside)
-  UNIFORM  // same rate for everyone
+  FLAT  // same rate for everyone
 };
 
 
@@ -242,7 +242,7 @@ public:
 	  // someone wants to crossover
 	  I* newone = new I( *individuals[j].individual );
 	  I* newtwo = new I( *partner );
-	  crossover( *newone, *newtwo, gen );
+	  crossover( *newone, *newtwo, gen, TWO_POINT );
 	  individuals.push_back( triple( newone, true ) );
 	  individuals.push_back( triple( newtwo, true ) );
 	  partner = NULL; // now, nobody wants to crossover
@@ -412,7 +412,7 @@ public:
         if (int(indiv_rank) < popCut) res_value = step_high;
 	else res_value = 1 - step_high;
 	break;
-      case UNIFORM:
+      case FLAT:
         res_value = uniform_ceil;
       }
 
