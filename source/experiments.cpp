@@ -42,6 +42,7 @@ int main() {
   while (1) {
     cout << "How many generations (-1 for stop) ? ";
     cin >> generations;
+
     if (generations < 0) break;
     
     cout << "Please wait...\n";
@@ -67,6 +68,7 @@ int main() {
 	 << "\n\tAge:\t\t" << p.get_age()
 	 << "\n\tHalted:\t\t" << n_halt << " machines"
 	 << "\n\tMax nb_shifts:\t" << best_nshift
+	 << "\n\tExplored machines:\t" << p.get_explored()
 	 << "\n-> Known values:"
 	 << "\n\tLower bound:\t";
     if (slimits<N, M>::has_lower)
@@ -90,7 +92,7 @@ int main() {
   // get time to build file names
   time(&rawtime);
   timeinfo = localtime(&rawtime);
-  sprintf(time_str, "serialized_%s%d-%d-%d_%d:%d",
+  sprintf(time_str, "%sserialized_%d-%d-%d_%d:%d",
 	  SAVE_PATH,
 	  timeinfo->tm_year,
 	  timeinfo->tm_mon,
@@ -115,6 +117,8 @@ int main() {
     // build path
     strcpy(file_path, time_str);
     strcat(file_path, ".tm");
+
+    cout << file_path << endl;
 
     // create and open a character archive for output
     std::ofstream ofs(file_path);

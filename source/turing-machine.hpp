@@ -2,23 +2,9 @@
 #define TURINGMACHINE_HPP
 
 #include <assert.h>
-#include <boost/archive/text_oarchive.hpp> // for serialization
-#include <boost/archive/text_iarchive.hpp> // idem
-#include <boost/serialization/vector.hpp> // idem
-#include <boost/serialization/deque.hpp> // idem
-
-
 #include "action.hpp"
+#include "population.hpp"
 
-enum crossover_type {
-  TWO_POINT,		// choose 2 actions at random and swap what is in between
-  ONE_POINT,		// choose 1 action at random and swap what is at the right
-
-  // I don't know if these two are useful, maybe before implementing them it is useful
-  // to try the first two, and then, after, if we have time or we want to compare, try also these ones
-  TWO_POINT_IN_ACTION,	// choose 2 actions and 2 points in every of them, then swap the middle
-  ONE_POINT_IN_ACTION	// choose 1 action and 1 point inside it, then swap what is at the right
-};
 
 // TState and TSymbol are now used only for storing (inside the action class),
 // for iterating over the elements I actually use uints
@@ -116,12 +102,12 @@ public:
     switch( type ) {
     case TWO_POINT:
       return crossover_two_point( a, gen );
-    case TWO_POINT_IN_ACTION:
-      return crossover_two_point( a, gen ); // to be implemented
+    //case TWO_POINT_IN_ACTION:
+    //  return crossover_two_point( a, gen ); // to be implemented
     case ONE_POINT:
       return crossover_one_point( a, gen );
-    case ONE_POINT_IN_ACTION:
-      return crossover_one_point( a, gen ); // to be implemented
+    //case ONE_POINT_IN_ACTION:
+    //  return crossover_one_point( a, gen ); // to be implemented
     }
 
     return crossover_two_point( a, gen );

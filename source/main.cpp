@@ -1,7 +1,5 @@
 #include <iostream>
-#include "living-tm.hpp"
 #include "population.hpp"
-#include "limits.hpp"
 #include "vect.hpp"
 using namespace std;
 
