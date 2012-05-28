@@ -133,11 +133,22 @@ public:
       return 0.0;
     */
 
-    if(nb_shifts == slimits<NStates, NSymbols>::upper && current_state.ishalt())
-      return 200.0;
-    else if (nb_shifts > slimits<NStates, NSymbols>::upper)
+
+    if ( slimits<NStates, NSymbols>::has_upper ) {
+      // this means we found a machine that halts. The BB machine will have fitness 10.0
+      if( current_state.ishalt() )
+        return 10.0 * double( nb_shifts ) / slimits<NStates, NSymbols>::upper;
+      // this means that the machine will never halt
+      else if ( nb_shifts > slimits<NStates, NSymbols>::upper)
+        return 0.0;
+      // this means that we don't know. The fitness is still proportional to the shifts
+      // number, but can't exceed 1.0
+      else
+        return double( nb_shifts ) / slimits<NStates, NSymbols>::upper;
+    } else {
+      // TODO
       return 0.0;
-    else return ((double) nb_shifts) * 100 / slimits<NStates, NSymbols>::upper;
+    }
   }
 
   // these 5 methods returns the private member variables,
@@ -174,10 +185,10 @@ public:
       return;
     }
 
+    // here we know the upper bound
     // try to make the number of steps performed by the S-busy beaver
-    if (slimits<NStates,NSymbols>::upper > nb_shifts && nb_shifts < generation)
-      do_nsteps(generation - nb_shifts);
-      //do_nsteps( slimits<NStates,NSymbols>::upper - nb_shifts );
+    // if generation < upper bound, just make generation steps
+    do_nsteps( min( generation, slimits<NStates,NSymbols>::upper ) - nb_shifts );
   }
 
   friend ostream& operator<< ( ostream& os, const living_tm& ltm ) {

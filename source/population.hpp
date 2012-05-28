@@ -269,8 +269,15 @@ public:
     // In this case the order of the individuals that still has to be decided, is preserved.
 
     // some individuals die in an accident :
-    for (int i = individuals.size()-1; i >= 0; --i) {
-      if (early_death(i)) erase(i);
+
+    if ( individuals.size() < maximumPopulation ) return;
+
+    int safe = 100;
+    int nonSafe = individuals.size() - safe;
+    double threshold = double( individuals.size() - maximumPopulation ) / nonSafe;
+
+    for (int i = individuals.size()-1; i >= safe; --i) {
+      if ( gen.real() < threshold ) erase(i);
     }
 
   }
@@ -385,7 +392,7 @@ public:
 	else res_value = 1 - step_high;
 	break;
       case UNIFORM:
-	res_value = uniform_ceil;
+        res_value = uniform_ceil;
       }
 
       return gen.real() < res_value;
