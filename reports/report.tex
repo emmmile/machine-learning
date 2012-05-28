@@ -109,7 +109,7 @@ $S$ is called the \emph{max-step} function.
 We use these functions to define a busy beaver as following.
 
 \begin{Def}[busy beaver]
-\emph{busy beaver} of $\mathcal{T}_{m,n}$ is a Turing machine $M \in \mathcal{T}_{m,n}$ such that \[s(M) = S(m,n)\] In other words, it is a machine that permforms the most shifts among all machines of $\mathcal{T}_{m,n}$.  
+\emph{busy beaver} of $\mathcal{T}_{m,n}$ is a Turing machine $M \in \mathcal{T}_{m,n}$ such that \[s(M) = S(m,n)\] In other words, it is a machine that permforms the most shifts among all machines of $\mathcal{T}_{m,n}$. 
 \end{Def}
 
 
@@ -123,7 +123,7 @@ Our goal here is to find a busy beaver of $\mathcal{T}_{m,n}$ for given values $
   \left \{
     \begin{array}{l}
       0\quad \ \text{if}\ s(M) = -1\\
-      1\quad \ \text{else} 
+      1\quad \ \text{else}
     \end{array}
   \right .
   \]
@@ -131,7 +131,7 @@ Our goal here is to find a busy beaver of $\mathcal{T}_{m,n}$ for given values $
 \end{Rem}
 
 \begin{Rem}
-  Alternative definitions of busy beavers exists. For instance, we can want to find machines that leave the most symbols on the tape when halting (if so) \cite{rado}.  
+  Alternative definitions of busy beavers exists. For instance, we can want to find machines that leave the most symbols on the tape when halting (if so) \cite{rado}.
 \end{Rem}
 
 \chapter{Strategy}
@@ -238,6 +238,76 @@ This optimization in some cases has shown to be very effective [TODO mention som
 \chapter{Results}
 \label{chap:results}
 
+Results are presented in tables where lines are indexed by states and column by symbols. Operational states are called $S_0, S_1, \dots$ for easier reading and $H$ denotes the halt state. To find the transition corresponding to the reading of symbol $s$ in state $e$, look at cell in column $s$ on line $S_e$. The content of this cell is, in order, the symbol to write, the direction where to move the reading head ($L$ stands for \emph{left} and $R$ for \emph{right}) and the state to pass to.
+
+\paragraph{Busy Beaver with 2 symbols and 2 states}
+
+This machine runs for 6 steps before halting.
+
+\[
+\begin{array}[h]{|c|c|c|}
+\hline
+   &0     &1\\
+\hline
+S_0& 0RS_1& 1RH\\
+\hline
+S_1& 1LS_0& 1RS_1\\
+\hline
+\end{array}
+\]
+
+\paragraph{Busy Beaver with 2 symbols and 3 states}
+
+This machine runs for 21 steps before halting.
+
+\[
+\begin{array}[h]{|c|c|c|c|}
+\hline
+   & 0    &1\\
+\hline
+S_0& 1LS_1& 1RH\\
+\hline
+S_1& 1RS_1& 0LS_2\\
+\hline
+S_2& 1RS_2& 1RS_0\\
+\hline
+\end{array}
+\]
+
+\paragraph{Busy Beaver with 3 symbols and 2 states}
+
+This machine runs for 38 steps before halting.
+
+\[
+\begin{array}[h]{|c|c|c|c|c|}
+\hline
+0&   1&   2& 3\\
+\hline
+S_0& 2LS_1& 0RH& 1RS_1\\
+\hline
+S_1& 1RS_0& 2RS_1& 1LS_1\\
+\hline
+\end{array}
+\]
+
+\paragraph{Busy Beaver with 2 symbols and 4 states}
+
+This machine runs for 107 steps before halting.
+\[
+\begin{array}[h]{|c|c|c|c|}
+  \hline
+  &0&   1\\
+  \hline
+  S_0& 1RS_3& 1LS_3\\
+  \hline
+  S_1& 1LH& 1LS_2\\
+  \hline
+  S_2& 1RS_2& 0RS_0\\
+  \hline
+  S_3& 1LS_0& 0LS_1\\
+\hline
+\end{array}
+\]
 
 \chapter{Outcome}
 \label{chap:outcome}
