@@ -39,10 +39,10 @@ With this method, we were able to find busy beavers for small machine sizes. We 
 % Finding busy beavers becomes quickly difficult when the alphabet size and the number of states grows because of the huge number of different machines and because of the halting problem, which make us unable to know if a given machine will halt or no. Currently, busy beavers are only known for small alphabets and number of states and have only be studied by detecting ``good'' patterns on the tape or by executing different machines until it halts (if so).
 % A big issue is the computation of the fitness function, since we don't know and cannot know when a machine will halt (if it halts).
 
-\chapter{Preliminaries}
+\chapter{Definitions and Conventions}
 \label{chap:pre}
 
-\section{Conventions}
+\section{Machines}
 
 We assume that the reader is familiar with the notion of Turing machine. In this paper, we only use deterministic Turing machines so it is what we mean when we use the expression \emph{Turing machine}. The tape is infinite on both sides.
 
@@ -62,7 +62,11 @@ What is more, since states names are interchangeable (with modifying the transit
 
 
 \paragraph{Machines}
-All the assumptions we do simplifies the representation of machines. A machine $M$ of $\mathcal{T}$ is a triple $(m,n,\delta)$ where 
+All the assumptions we do simplifies the representation of machines so we can now define if easily.
+
+\begin{Def}[Turing machine]
+
+A \emph{Turing machine} $M$ of $\mathcal{T}$ is a triple $(m,n,\delta)$ where 
 \[
 \left \{
 \begin{array}{l}
@@ -72,23 +76,25 @@ All the assumptions we do simplifies the representation of machines. A machine $
 \end{array}
 \right .
 \]
-The function $\delta$ is the transition function and $\delta(a, s) = (a', s', d)$ means that if the machine is in the state $s$ and reads the symbol $a$, it writes $a'$, pass in state $s'$ and move in a direction given by $d$ where $d = 0$ means \emph{left} and $d = 1$ means \emph{right}. This function cannot be used on state $n$ since ther is no transition from the halt state.
+The function $\delta$ is the transition function and $\delta(a, s) = (a', s', d)$ means that if the machine is in the state $s$ and reads the symbol $a$, it writes $a'$, pass in state $s'$ and move in a direction given by $d$ where $d = 0$ means \emph{left} and $d = 1$ means \emph{right}. This function cannot be used on state $n$ since ther is no transition from the halt state.  
+\end{Def}
 
 
-\section{Busy-beavers}
+\section{Busy Beavers}
 \label{sec:bb}
 
-
+Busy beavers are about the number of operations performed by Turing machines so we a function to express this value.
 \begin{Def}[$s$ function]
-  
+  $s : \mathcal{T} \to \N \cup \{-1\}$ is the function which, given a Turing machine $M$, returns
+  \begin{itemize}
+  \item either the number of steps that $M$ performs when started on a blank tape, if $M$ halts ;
+  \item or minus one else.
+  \end{itemize}
 \end{Def}
-Let $s : \mathcal{T} \to \N \cup \{-1\}$ be the function which, given a Turing machine $M$, returns
-\begin{itemize}
-\item either the number of steps that $M$ performs when started on a blank tape, if $M$ halts ;
-\item or minus one else.
-\end{itemize}
 
-\noindent And let \emph{max-step function} $S$ be defined by
+We also want to be able to talk about the machine that realize this score.
+\begin{Def}[max-step function]
+$S$ is the function defined by
 \[
 S : \left |
   \begin{array}{l}
@@ -97,9 +103,18 @@ S : \left |
   \end{array}
 \right .
 \]
+$S$ is called the \emph{max-step} function.
+\end{Def}
+
+We use these functions to define a busy beaver as following.
+
+\begin{Def}[busy beaver]
+\emph{busy beaver} of $\mathcal{T}_{m,n}$ is a Turing machine $M \in \mathcal{T}_{m,n}$ such that \[s(M) = S(m,n)\] In other words, it is a machine that permforms the most shifts among all machines of $\mathcal{T}_{m,n}$.  
+\end{Def}
 
 
-\noindent A \emph{busy beaver} of $\mathcal{T}_{m,n}$ is a Turing machine $M \in \mathcal{T}_{m,n}$ such that \[s(M) = S(m,n)\] \ie a machine that permforms the most shifts among all machines of $\mathcal{T}_{m,n}$.
+Our goal here is to find a busy beaver of $\mathcal{T}_{m,n}$ for given values $m,n\in\N^**$.
+
 
 \begin{Rem}
   The functions $s$ and $S$ are not computable because otherwise it would means that we can decide the halting problem. In fact, if we assume that $s$ is computable, then the function $H : \mathcal{T} \to \{0,1\}$ such that
@@ -116,36 +131,8 @@ S : \left |
 \end{Rem}
 
 \begin{Rem}
-  Other definitions of busy beavers exists. For instance, we can want to find machines that leave the most symbols on the tape when halting (if so) \cite{rado}.  
+  Alternative definitions of busy beavers exists. For instance, we can want to find machines that leave the most symbols on the tape when halting (if so) \cite{rado}.  
 \end{Rem}
-
-% \section{Finding Machines That Reaches Bounds}
-
-% The goal of this project is to find, at least for small values of $m$ and $n$, Turing machines that reaches $\Sigma(m,n)$ or $S(m,n)$, \ie finding a machine $M \in \mathcal{T}_{m,n}$ such that $\sigma(M) = \Sigma(m,n)$ or $s(M) = S(m,n)$.
-
-% Such machines have already been found \cite{rado} but only for small values of $m$ and $n$ because $S$ and $\Sigma$ functions grows very fast \cite{rado}, thing that makes tests difficult.
-
-
-% \paragraph{How?} This will be done using evolutionary computing techniques on a population of Turing machines coming from the same class $\mathcal{T}_{m,n}$, for fixed $m$ and $n$. The operations of crossover and mutation are made from the transition tables (the alphabet and the number of states will remain unchanged).
-
-% After this, we also want to try an other approach using particle swarm optimization.
-
-% \paragraph{Fitness Function}
-% The main problem is to define a good fitness function. The value to maximize here is the number of steps before halting (for the max-step case), in order to reach the bound.
-
-% Suppose we have a machine $M$ which halts after $p$ steps and a machine $M'$ which continues to run after $p$ steps.
-% We cannot say that $M'$ is better than $M$ w.r.t.\ max-step, because we don't know if $M'$ will stop and we have no general way to know it (since the halting problem is undecidable \cite{turing}).
-% However, for fixed $p \in \N$, we are able to say if a given machine will stop in less than $p$ steps. To know it, we simply run the machine during $p$ steps and watch if it is on a halting state at this time.
-
-% The approach we want to try here is depends on what bound we want to reach:
-% \begin{itemize}
-% \item for small values of $n,m \in \N$, values of $\Sigma$ and $S$ are known \cite{rado} so a suitable fitness function is a function which, given a Turing machine $M$ that we already run on $p$ steps without leading it in the halting state, returns $- \infty$ if $p > S(m,n)$ and $\frac{1}{S(m,n) - p}$ else. With this function, Turing machines which overtake the bound are highly penalized (because we know they will never halt) and a machine which run longer (but less than $S(m,n)$) without halting than an other one get a better grade.
-
-% \item for values of $n, m \in \N$ for which $\Sigma$ and $S$ are not known, we can, for growing values of $p \in \N$, find machines which halts after $p$ steps with a fitness function of the same kind as before. Then the more $p$ will be high, the more we will approximate the bound if we still find machines for this $p$. Note that we will probalbly not able to use this approach for many different values of $m$ and $n$ because known lower bounds for $S$ and $\Sigma$ grows very fast, what make the computations long.
-% \end{itemize}
-
-\section{Evolutionary Computing}
-\label{sec:ec}
 
 \chapter{Strategy}
 \label{chap:strategy}
