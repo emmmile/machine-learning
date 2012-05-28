@@ -37,7 +37,8 @@ int main() {
   cout << "*** TUREV EXPERIMENTS ***\n\n"
        << "Size of the alphabet:\t" << M
        << "\nNumber of operational states:\t" << N
-       << "\nSearch space size:\t" << ltm::spacesize() << "\n\n";
+       << "\nSearch space size:\t" << fixed << setprecision(0)
+       << ltm::spacesize() << "\n\n";
 
   while (1) {
     cout << "How many generations (-1 for stop) ? ";
@@ -62,13 +63,14 @@ int main() {
     p.get_stats(n_halt, best_nshift);
 
     cout << "] Complete.\n-> Best machine in the population:\n" << p.get_best()
-	 << "Fitness of this machine: " << p.get_best_fitness()
+         << "Fitness of this machine: " << setprecision(4) << p.get_best_fitness()
 	 << "\n-> Population:"
 	 << "\n\tSize:\t\t" << p.size()
 	 << "\n\tAge:\t\t" << p.get_age()
 	 << "\n\tHalted:\t\t" << n_halt << " machines"
 	 << "\n\tMax nb_shifts:\t" << best_nshift
-	 << "\n\tExplored machines:\t" << p.get_explored()
+	 << "\n\tExplored machines:\t" << setprecision(0) << p.get_explored()
+	 << "\n\tMachines space size:\t" << ltm::spacesize()
 	 << "\n-> Known values:"
 	 << "\n\tLower bound:\t";
     if (slimits<N, M>::has_lower)
