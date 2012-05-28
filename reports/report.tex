@@ -12,7 +12,7 @@
 \begin{abstract}
 
   Busy beavers are Turing machines that performs ``the most operations'' before halting among all Turing machines with the same alphabet and number of states. It have been introduced in 1962 by Tibor Radó and Shen Lin, and there is theoretical issues that make finding the busy beavers a difficult problem.
-The goal of our project was to see if evolutionnary computing techiques are suitable for finding busy beavers, and we found that <!!!what we found>.
+The goal of our project was to see if evolutionary computing techniques are suitable for finding busy beavers, and we found that <!!!what we found>.
 
 \end{abstract}
 
@@ -150,6 +150,9 @@ S : \left |
 \chapter{Strategy}
 \label{chap:strategy}
 
+\section{The fitness function}
+\label{sec:fitness}
+
 \chapter{Work Organisation}
 \label{chap:wo}
 
@@ -171,7 +174,7 @@ A transition can be indexed with a given (current) state and a given (current) s
 
 Of course we enriched the implementation with several utility functions like random initialization (see \ref{sec:random}), serialization (using \texttt{boost} libraries \cite{boost-serialization}) and genetic operators.
 
-We implemented crossovers and mutations here since they depends on the representation of the individual type: the population method is not aware of \textit{how} we implement for example the transition table. Actually we could have some flags (like in Matlab) like: ``it is a string'', ``it is a bit string'', etc. But, since the key point of all our work are probably these two functions, we preferred to implement them where we have all the details of the individual representation, the Turing Machine.
+We implemented crossovers and mutations here since they depends on the representation of the individual type: the population method is not aware of \textit{how} we implement for example the transition table. Actually we could have some flags (like in Matlab) like: ``it is a string'', ``it is a bit string'', etc. But, since the key point of all our work are probably also these two functions, we preferred to implement them where we have all the details of the individual representation, the Turing Machine.
 
 \subsection{Crossover}
 \label{sec:crossover}
@@ -187,16 +190,23 @@ The first version obviously can create more new individuals than the second, sin
 
 \subsection{Mutation}
 \label{sec:mutation}
-[TODO Mutation implementation and assumptions, or in another chapter?]
+A mutation clearly is intended as a mutation of the transition table, so we implemented it in the Turing Machine class. It simply changes one single variable in the transition table (the variable changes for sure if the mutation happens, the old value cannot be chose).
+
 
 
 \section{Virtual Machine}
+The virtual machine is implemented in the file \texttt{living-tm.hpp}. It encloses a transition table and adds some vital variables for executing a Turing Machine like:
+
+\begin{enumerate}
+\item The tape. We needed a data structure that can grows dynamically both in the left and in the right direction. \texttt{std::deque} perfectly fit this task.
+\item The tape position. It is simply an index in the \texttt{deque}.
+\item The current state.
+\end{enumerate}
+
+We tested the implementation running the current 5 state, 2 symbols best busy beaver contender, that executes exactly 47176870 steps before reaching the halting state. The program, besides executing the right number of shifts, also completes very very quickly (about 1 second of calculation).
 
 \subsection{Fitness function}
-\label{sec:fitness}
-[TODO Fitness function implementation and assumptions, or in another chapter?]
-
-
+The fitness function is a relatively easy implementation, but reasoning behind it is very tricky and is better explained in \ref{sec:fitness}.
 
 \section{Evolutionary Computing Tool}
 This tool has been implemented with the aim to be as general as possible; with C++ in fact is relatively easy to abstract from the type of the individuals. The implementation is inside the file \texttt{population.hpp}.
@@ -208,7 +218,7 @@ In particular, except the representation of the individual, the user must define
 \begin{enumerate}
 \item A fitness function. Greater values of this function means that the individual is a ``better'' solution for the problem (in other words we are trying to \textit{maximize} the fitness function). Regarding more what concerns the implementation we searches for a member function of the type \texttt{I}, in particular a function with signature \texttt{double I::fitness(I\&)}.
 
-\item A mutation function. By default the implementation searches for a function with a signature like \texttt{void I::mutate(I\&)}\footnote{Actually the signature is slightly different because we also have as argument the reference to a random number generator. Here we explain mainly the idea.}.
+\item A mutation function. By default the implementation searches for a function with a signature like \texttt{void I::mutate(I\&)}\footnote{Actually the signature is slightly different because we also have as argument the reference to a random number generator. Here we only briefly explain the idea.}.
 
 \item A crossover function. We need here a function like \texttt{void I::crossover(I\&, I\&)}, that is a function that takes two individuals and modify them. In this case, if we want to keep the old individuals, we need to previously copy them.
 
@@ -221,7 +231,7 @@ The skeleton is the classical of the genetic algorithms: for every generation ex
 
 \subsection{When to crossover and when to mutate}
 
-The idea should be that each individual has some probability to be mutated and some probability to be crossed. The implementation of the ``with some probability'' is easy (just draw a real in $[0,1]$ and compare with a real, still in $[0,1]$, representing the wanted probability) but there are some points to clarify.
+The idea should be that each individual has some probability to be mutated and some probability to be crossed. The implementation of the ``with some probability'' is easy (just draw a real in $[0,1]$ and compare with another real, still in $[0,1]$, representing the wanted probability) but there are some points to clarify.
 
 \begin{enumerate}
 \item If one individual has been chosen for mutation, it can be chosen also for crossover.
@@ -231,14 +241,16 @@ The idea should be that each individual has some probability to be mutated and s
 \subsection{When to evaluate the fitness function}
 
 Here the point is that we need a fitness value for each individual at each generation, in order to perform selection.
-We thought at this problem because our fitness function is quite heavy to compute, and could happen that sometimes an individual remain unchanged from one generation to another. In this case a re-computation of the fitness function should be avoided.
+We thought at this problem because our fitness function is quite heavy to compute, and could happen that sometimes an individual remain unchanged from one generation to another. In this case a re-computation of the fitness function should be avoided, and the population method can take care of solving this.
 
-So, since this is a general problem, inside the population method we used a flag to remember, for every individual, if he has been changed or not. We also save the last fitness value, that is simply a real value. If the flag says that the individual has been changed we need to re-compute the fitness function, otherwise we can use the stored result.
-This optimization in some cases has shown to be very effective [TODO mention some numbers?].
+So, since this is a general problem, we used a flag to remember, for every individual, if he has been changed or not. We also save the last fitness value, that is simply a real value. If the flag says that the individual has been changed we need to re-compute the fitness function, otherwise we can use the stored result.
+
+This optimization in some cases has shown to be very effective. We can mention a test we made for finding the optimal value of the Ackley's function (located in zero). In this case the computation of the fitness function is relatively heavy compared to the rest of the computation (but maybe not as heavy as our busy beaver problem).
+Implementing the simple method explained above we exactly halved the completion time.
 
 \subsection{Selection}
 
-[TODO We implemented rank selection...].
+Selection is another very tricky part in this problem...
 
 \begin{figure}[h]\centering
 \includegraphics{figures/decision-function.pdf}
@@ -260,7 +272,14 @@ This optimization in some cases has shown to be very effective [TODO mention som
 \label{chap:fwork}
 
 \section{PSO}
-We had no time to test, before writing this, a PSO approach.
+We had no time to test a PSO approach, before writing this report. It would be interesting to try it, of course, but we don't think it would be radically different from the current ideas. And in every case it would be a PSO implementation that has to ``jump'', and not ``fly'', over the search space. This happens because the Turing machine's search space is not continuous, and moreover we have to define by ourselves the particle operations that PSO usually performs.
+
+Our search space is made by the genomes we used in the evolutionary computing approach, not vectors. The number of dimensions is the number of free variables in the genome, $3MN$ in total.
+In this scenario consider, for example the PSO step where the velocity of a particle is summed up with the current position. How could be implemented this operation on our Turing machines genome? A possible approach [TODO needed citation] is to interpret the velocity as a probability to change the variable corresponding to that dimension.
+
+So it's something very similar to a mutation in the evolutionary computing approach (something in between with a crossover and a mutation actually, since the velocity depends on other particles, other genomes).
+
+We don't want to say that PSO, on this problem, would be the same as using the tool we implemented; it's very difficult to make such prevision, but the ideas will be more or less the same, at least for what concerns this redefinition of the vector operators needed by it.
 
 \section{Optimizations}
 A possible optimization regards the virtual machine execution, and in particular it tries to use the following fact:
@@ -296,7 +315,8 @@ But of course the bigger is this window, the more precise is this approximation.
 Another solution could be to save an hash of the tape, instead of the full tape. This is very memory effective but, because of the hash collisions can also be inexact. Also a combination of the two approaches would be very interesting to try.
 
 
-\bibliographystyle{acm}
+
+\bibliographystyle{abbrv}
 \bibliography{report}
 
 \end{document}
