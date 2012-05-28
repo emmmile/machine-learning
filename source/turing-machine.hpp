@@ -24,6 +24,18 @@ class turing_machine {
     return gen.integer() % size();
   }
 
+  // returns a byte-offset in the actions array
+  inline uint random_variable_offset( Random& gen, uint& inclusion ) {
+    // since there are 3 variables inside every action, I choose one uniformly distributed
+    // random variable inside the actions array
+    uint pos = gen.integer() % ( 3 * size() );
+    uint action_index = pos / 3;
+    uint variable_index = pos % 3;
+
+    inclusion = action_type::sizeOf( variable_index );
+    return sizeof( action_type ) * action_index + action_type::offset( variable_index );
+  }
+
   inline turing_machine& swap_actions ( uint beg, uint end, turing_machine& a ) {
     if ( beg > end ) swap( beg, end );
     // last position MUST be inclusive, that is swap the range [beg,end], not [beg,end)
@@ -33,6 +45,21 @@ class turing_machine {
 
   // choose two cells at random
   // and swap everything that is in the middle (swap the actions)
+  inline turing_machine& crossover_two_point_in_action ( turing_machine& a, Random& gen ) {
+    uint begInclusion, endInclusion;
+    uint beg = random_variable_offset( gen, begInclusion );
+    uint end = random_variable_offset( gen, endInclusion );
+    if ( beg > end ) {
+      swap( beg, end );
+      swap( begInclusion, endInclusion );
+    }
+
+    // last position must be inclusive so I add the size of the last variable
+    end += endInclusion;
+    swap_ranges( (uchar*)(a.actions) + beg, (uchar*)(a.actions) + end, (uchar*)(actions) + beg );
+    return *this;
+  }
+
   inline turing_machine& crossover_two_point ( turing_machine& a, Random& gen ) {
     uint beg = random_pos( gen );
     uint end = random_pos( gen );
@@ -44,6 +71,13 @@ class turing_machine {
     uint beg = random_pos( gen );
     uint end = size() - 1;
     return swap_actions( beg, end, a );
+  }
+
+  inline turing_machine& crossover_uniform ( turing_machine& a, Random& gen ) {
+    for ( uint i = 0; i < size(); ++i )
+      if ( gen.real() < 0.5 )
+        swap( actions[i], a.actions[i] );
+    return *this;
   }
   
   friend class boost::serialization::access;
@@ -100,17 +134,16 @@ public:
 
   turing_machine& crossover ( turing_machine& a, Random& gen, crossover_type type = TWO_POINT ) {
     switch( type ) {
-    case TWO_POINT:
-      return crossover_two_point( a, gen );
-    //case TWO_POINT_IN_ACTION:
-    //  return crossover_two_point( a, gen ); // to be implemented
+    case UNIFORM:
+      return crossover_uniform( a, gen );
     case ONE_POINT:
       return crossover_one_point( a, gen );
-    //case ONE_POINT_IN_ACTION:
-    //  return crossover_one_point( a, gen ); // to be implemented
-    }
+    case TWO_POINT:
+    default:
+      return crossover_two_point( a, gen );
+      //return crossover_two_point_in_action( a, gen );
 
-    return crossover_two_point( a, gen );
+    }
   }
 
   // mutation: takes a single action and mutate a single variable inside it

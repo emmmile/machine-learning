@@ -31,7 +31,7 @@ void mutate ( testvect& v, Random& gen ) {
   v[gen.integer() % v.dims] += step * gen.realnegative();
 }
 
-void crossover ( testvect& a, testvect& b, Random& gen ) {
+void crossover ( testvect& a, testvect& b, Random& gen, crossover_type type = TWO_POINT ) {
   for ( uint i = gen.integer() % a.dims; i < a.dims; ++i )
     swap( a[i], b[i] );
 }
