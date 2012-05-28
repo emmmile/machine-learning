@@ -250,12 +250,16 @@ Selection is another very tricky part in this problem...
 \chapter{Results}
 \label{chap:results}
 
+We here show the results we get for different alphabet and states set sizes.
+
 Results are presented in tables where lines are indexed by states and column by symbols. Operational states are called $S_0, S_1, \dots$ for easier reading and $H$ denotes the halt state. To find the transition corresponding to the reading of symbol $s$ in state $e$, look at cell in column $s$ on line $S_e$. The content of this cell is, in order, the symbol to write, the direction where to move the reading head ($L$ stands for \emph{left} and $R$ for \emph{right}) and the state to pass to.
 
-\paragraph{Busy Beaver with 2 symbols and 2 states}
+\paragraph{Turing machines with 2 symbols and 2 states}
 
-This machine runs for 6 steps before halting.
-
+\begin{itemize}
+\item Max-step value \cite{rado}: $S(2,2) = 6$ ;
+\item Search space size: 20\,736;
+\item Machine we found:
 \[
 \begin{array}[h]{|c|c|c|}
 \hline
@@ -267,11 +271,15 @@ S_1& 1LS_0& 1RS_1\\
 \hline
 \end{array}
 \]
+\item Steps it performs before halting: 6 (so it is a busy beaver).
+\end{itemize}
 
-\paragraph{Busy Beaver with 2 symbols and 3 states}
+\paragraph{Turing machines with 2 symbols and 3 states}
 
-This machine runs for 21 steps before halting.
-
+\begin{itemize}
+\item Max-step value: $S(2,3) = 21$;
+\item Search space size: 16\,777\,216;
+\item Machine we found:
 \[
 \begin{array}[h]{|c|c|c|c|}
 \hline
@@ -285,11 +293,16 @@ S_2& 1RS_2& 1RS_0\\
 \hline
 \end{array}
 \]
+\item Steps it performs before halting: 21 (so it is a busy beaver).
+\end{itemize}
 
-\paragraph{Busy Beaver with 3 symbols and 2 states}
 
-This machine runs for 38 steps before halting.
+\paragraph{Turing machines with 3 symbols and 2 states}
 
+\begin{itemize}
+\item Max-step value: $S(3,2) = 38$;
+\item Search space size: 34\,012\,224;
+\item Machine we found:
 \[
 \begin{array}[h]{|c|c|c|c|c|}
 \hline
@@ -301,10 +314,17 @@ S_1& 1RS_0& 2RS_1& 1LS_1\\
 \hline
 \end{array}
 \]
+\item Steps it performs before halting: 38 (so it is a busy beaver).
+\end{itemize}
 
-\paragraph{Busy Beaver with 2 symbols and 4 states}
 
-This machine runs for 107 steps before halting.
+\paragraph{Turing machines with 2 symbols and 4 states}
+
+
+\begin{itemize}
+\item Max-step value: $S(2,4) = 107$;
+\item Search space size: 25\,600\,000\,000;
+\item Machine we found:
 \[
 \begin{array}[h]{|c|c|c|c|}
   \hline
@@ -320,6 +340,30 @@ This machine runs for 107 steps before halting.
 \hline
 \end{array}
 \]
+\item Steps it performs before halting: 107 (so it is a busy beaver).
+\end{itemize}
+
+\paragraph{Turing machines with 4 symbols and 2 states}
+
+
+\begin{itemize}
+\item Max-step value: not known but we know [TODO : ref] that $S(2,4) \geq 3\,932\,964$;
+\item Search space size: 110\,075\,314\,176;
+\item Machine we found at the time of writing:
+\[
+\begin{array}[h]{|c|c|c|c|c|}
+  \hline
+&0&   1&   2&   3\\
+\hline
+  S_0& 1LS_1& 1RS_0& 0RS_1& 1LH\\ 
+\hline
+  S_1& 3RS_0& 2LS_1& 3LS_0& 1LS_1\\
+\hline
+\end{array}
+\]
+\item Steps it performs before halting: 283 (so it is not a busy beaver).
+\end{itemize}
+
 
 \chapter{Outcome}
 \label{chap:outcome}
