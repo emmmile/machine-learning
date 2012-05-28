@@ -242,7 +242,7 @@ public:
 	  // someone wants to crossover
 	  I* newone = new I( *individuals[j].individual );
 	  I* newtwo = new I( *partner );
-	  crossover( *newone, *newtwo, gen, UNIFORM );
+	  crossover( *newone, *newtwo, gen, TWO_POINT );
 	  individuals.push_back( triple( newone, true ) );
 	  individuals.push_back( triple( newtwo, true ) );
 	  partner = NULL; // now, nobody wants to crossover
