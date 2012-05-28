@@ -237,15 +237,32 @@ Implementing the simple method explained above we exactly halved the completion 
 
 \subsection{Selection}
 
-Selection is another very tricky part in this problem...
+Selection is another very tricky part in this problem. We always used rank selection in our experiments, since often fitness values are not that meaningful (for example comparing halting or non halting machines is very difficult).
 
-\begin{figure}[h]\centering
+Since selection has to be probabilistic our idea has been to use a decision function $d(r)$ that takes as input the rank $r$ of an individual and returns a number in $[0,1]$. Then drawing a random number in the same interval we can decide if keep or not the current individual (that is: ``is the generated number smaller than $d(r)$?'').
+
+Initially we used a sigmoid function, as shown in figure \ref{fig:sigmoid}. We used actually an horizontally translated sigmoid, in order to have the average population we wanted\footnote{It's possible to show this matematically.}. In particular, the rank where sigmoid has value 0.5 indicates the average size the population will have after a selection step. We chose this function because we wanted more probability to choose the high-ranking individuals, and low probability for the low ranking individuals.
+This seems very nice, but in practice it is not. The problem is that it gives too high selection pressure, also if the slope of the sigmoid is very soft (as shown in figure).
+
+\begin{figure}[t]\centering
 \includegraphics{figures/decision-function.pdf}
-\caption{Sigmoid function used to decide if keep or not one individual. On the $x$ axis there is the individual rank. With this function the population size will average 400 individuals (maximum population size).}
+\caption{Example of sigmoid function used to decide if keep or not one individual. On the $x$ axis there is the individual rank. With this function the population size will average 400 individuals (our maximum population size in most tests).}
+\label{fig:sigmoid}
 \end{figure}
 
+In fact, consider the tails of the sigmoid: here the function takes values very close to zero, or very close to one (exponentially close). This implies that fittest individuals always survive and that worst individuals always get killed. In our case, non halting machines are always dropped, because they are normally in the back of the ranking. Non halting machines are important for us, because our aim is to find machines that are \textit{almost} non halting.
+Using other functions it's possible, but it remains a problem to have a very low pressure selection and keep the population size under control (not going to zero or infinity).
 
+In order to solve this problem we had also to redesign the fitness function (to give some more importance to this non halting machines), but mainly we had to find some very low pressure selection mechanism.
+What we thought is: ``what is the function with the lowest possible selection pressure?''. It is a uniform selection, that is not considering at all the fitness function value. But in this way the search becomes really random, and we don't want this. So we combined this very ``flat'' selection with elitism, and the final selection looks something like this:
 
+\begin{enumerate}
+\item Decide a certain number $S$ of individuals to save, for example one fourth of the maximum population size.
+\item If the individuals number $N$ is greater than the maximum $M$ the selection happens on the $N-S$ worst individuals. Notice: not $N-M$ (that is only the individuals that exceeds the maximum $M$), but all the individuals that have not been selected by elitism.
+\item From this $N-S$ group we kill an average of $N-M$ individuals. We do this iterating over these individuals and test if a random number in $[0,1]$ is smaller than $\frac{N-M}{N-S}$. This means that an individual is removed with probability $\frac{N-M}{N-S}$, that summed over all the $N-S$ scanned individuals gives the wanted average.
+\end{enumerate}
+
+Using this selection schema we always have a certain number of not halted machines in the population, so we have very big diversity.
 
 \chapter{Results}
 \label{chap:results}
