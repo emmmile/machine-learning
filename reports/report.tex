@@ -1,7 +1,7 @@
 \documentclass{report}
 \input{preamble.tex}
 
-\title{Machine Learning Project Report\\\textbf{Evolutionnary Computing on\\Turing machines}}
+\title{Machine Learning Project Report\\\textbf{Evolutionnary Computing\\on Turing machines}\\{\Large Solving the Busy Beaver Problem}}
 \author{Jean-Florent Raymond\\\href{mailto:jean-florent.raymond.8795@student.uu.se}{\texttt{jean-florent.raymond.8795@student.uu.se}} \and Emilio Del Tessandoro\\
   \href{mailto:emilio.del_tessandoro.4062@student.uu.se }{\texttt{emilio.del\_tessandoro.4062@student.uu.se }}}
 \date{\today}
@@ -11,16 +11,40 @@
 
 \begin{abstract}
 
-  Busy beavers are Turing machines that performs ``the most operations'' before halting among all Turing machines with the same alphabet and number of states. It have been introduced in 1962 by Tibor Radó \cite{rado}. Finding busy beavers becomes quickly difficult when the alphabet size and the number of states grows because of the huge number of different machines and because of the halting problem, which make us unable to know if a given machine will halt or no. Currently, busy beavers are only known for small alphabets and number of states and have only be studied by detecting ``good'' patterns on the tape or by executing different machines until it halts (if so).
-  The goal of our project is to see if evolutionnary computing techiques are suitable for finding busy beaver. We deal with a population of Turing machines which can mutate an crossover. A big issue is the computation of the fitness function, since we don't know and cannot know when a machine will halt (if it halts).
+  Busy beavers are Turing machines that performs ``the most operations'' before halting among all Turing machines with the same alphabet and number of states. It have been introduced in 1962 by Tibor Radó and Shen Lin, and there is theoretical issues that make finding the busy beavers a difficult problem.
+The goal of our project was to see if evolutionnary computing techiques are suitable for finding busy beavers, and we found that <!!!what we found>.
+
 \end{abstract}
 
 \chapter{Introduction}
 \label{chap:intro}
 
+Given an alphabet and a set of states, we want to find a Turing machine that performs the most shifts before halting. The usual approaches \cite{rado} to this problem are
+\begin{itemize}
+\item running different machines (eventually all is there is not too much) until it halts (if so) and keeping the best ;
+\item detecting patterns on the tape that means that the machine will stop after a certain number of shifts.
+\end{itemize}
+These methods can be improved using techniques of loop detection or by predicting the configuration of the machine in a certain number of step given the tape and the transition table.
+
+Our approach is different. We use a genetic algorithm to find busy beavers. We have a population of Turing machines and we perform operations on it until it lead to a busy beaver.
+
+For this, we designed and wrote a program to handle and execute Turing machines, and a program to simulate evolution on a population of Turing machines.
+
+With this method, we were able to find busy beavers for small machine sizes. We know that this is really busy beavers because maximum number of steps before halting is known for theses machine sizes. When the machine size grows, to search space become huge and we were out of time to run the experiments long enough to be able to find good candiates. However, no busy beaver is know for these sizes at the time of writing this paper. Only lower bounds are know for some sizes.
+
+
+% Operations are only performed on transition tables because it would be nonsense to mix or change the tapes. In the same time we perform operations on the population, we run the machines for a few steps each time, then we have an idea of how long the machines can run. We evaluate a fitness function on these machines, which is function of the number of steps performed so far. So we can use this fitness value to decide which indiviuals 
+
+
+% Finding busy beavers becomes quickly difficult when the alphabet size and the number of states grows because of the huge number of different machines and because of the halting problem, which make us unable to know if a given machine will halt or no. Currently, busy beavers are only known for small alphabets and number of states and have only be studied by detecting ``good'' patterns on the tape or by executing different machines until it halts (if so).
+% A big issue is the computation of the fitness function, since we don't know and cannot know when a machine will halt (if it halts).
+
+\chapter{Preliminaries}
+\label{chap:pre}
+
 \section{Conventions}
 
-We assume that the reader is familiar with the notion of Turing machine. In this paper, we only deal with deterministic Turing machines so it is what we mean when we use the expression \emph{Turing machine}.
+We assume that the reader is familiar with the notion of Turing machine. In this paper, we only use deterministic Turing machines so it is what we mean when we use the expression \emph{Turing machine}. The tape is infinite on both sides.
 
 \paragraph{Symbols}
 We only deal with Turing machines with a finite alphabet. So we can represent it by an initial segment of $\N$. Furthermore, we choose that $0$ is the blank symbol. Our input alphabet is always $\{0\}$ since we only start on blank tapes. 
