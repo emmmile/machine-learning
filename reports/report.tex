@@ -10,6 +10,7 @@
 \maketitle
 
 \begin{abstract}
+
   Busy beavers are Turing machines that performs ``the most operations'' before halting among all Turing machines with the same alphabet and number of states. It have been introduced in 1962 by Tibor Radó \cite{rado}. Finding busy beavers becomes quickly difficult when the alphabet size and the number of states grows because of the huge number of different machines and because of the halting problem, which make us unable to know if a given machine will halt or no. Currently, busy beavers are only known for small alphabets and number of states and have only be studied by detecting ``good'' patterns on the tape or by executing different machines until it halts (if so).
   The goal of our project is to see if evolutionnary computing techiques are suitable for finding busy beaver. We deal with a population of Turing machines which can mutate an crossover. A big issue is the computation of the fitness function, since we don't know and cannot know when a machine will halt (if it halts).
 \end{abstract}
@@ -115,7 +116,7 @@ S : \left |
 % \item for values of $n, m \in \N$ for which $\Sigma$ and $S$ are not known, we can, for growing values of $p \in \N$, find machines which halts after $p$ steps with a fitness function of the same kind as before. Then the more $p$ will be high, the more we will approximate the bound if we still find machines for this $p$. Note that we will probalbly not able to use this approach for many different values of $m$ and $n$ because known lower bounds for $S$ and $\Sigma$ grows very fast, what make the computations long.
 % \end{itemize}
 
-\section{Evolutionnary Computing}
+\section{Evolutionary Computing}
 \label{sec:ec}
 
 \chapter{Strategy}
@@ -196,14 +197,55 @@ This optimization in some cases has shown to be very effective [TODO mention som
 \end{figure}
 
 
-\section{Further work}
 
 
 \chapter{Results}
 \label{chap:results}
 
+
 \chapter{Outcome}
 \label{chap:outcome}
+
+
+\chapter{Further work}
+\label{chap:fwork}
+
+\section{PSO}
+We had no time to test, before writing this, a PSO approach.
+
+\section{Optimizations}
+A possible optimization regards the virtual machine execution, and in particular it tries to use the following fact:
+
+\begin{Thm}
+If a machine $M$ during its execution arrives twice:
+\begin{enumerate}
+\item in the same state $S$,
+\item in the same position on the tape,
+\item having the tape unchanged from last time (same size and same content),
+\end{enumerate}
+means that M will never halt.
+\end{Thm}
+\begin{proof}
+This holds since the transitions are deterministic, so if $M$ showed this behaviour once, it will repeat this infinitely many times.
+\end{proof}
+
+In other words this means that $M$ has a ``loop'' of some length $k$ (the number of shifts for going back to the same state $S$). There is a very elegant method for detecting this kind of cycles called Brent's method \cite{brent} (a variant of the Floyd algorithm, credited in \cite{knuth}).
+
+The algorithm keeps track of one previous virtual machine state (so it actually require to double the space occupied by a virtual machine). The algorithm starts saving the state after the first shift. After computing the second shift if checks if the state is the same or not: if it's the same the algorithm just detected a loop, otherwise the virtual machine can compute the next shift. This check happens at every new shift computed by the machine. When the number of shifts is a power of 2, the algorithm stores the current state for the following comparisons.
+
+In this way it's possible to detect loops of any length $k$, if the number of executed shifts is sufficiently large. The nice thing is that detecting a loop not only implies an early stop in a computation that will never end, but also gives more precise informations in terms of fitness function!
+
+But there are of course some drawbacks with this approach:
+\begin{enumerate}
+\item there is an (increasing) overhead in checking if the current state is equal to the saved one. Increasing because of course the tape size can be bigger and bigger executing the machine.
+\item the memory used doubles.
+\end{enumerate}
+
+One solution, that also make the algorithm even more effective, is to check not the whole tape, but just a window of it. This of course is an approximation: limiting the check to a certain portion of the tape can lead to wrong decisions (the machine \textit{seems} to have come back to the same state, but it is not).
+But of course the bigger is this window, the more precise is this approximation. And having a constant window size, makes the state check constant time (so not increasing with the tape size).
+
+Another solution could be to save an hash of the tape, instead of the full tape. This is very memory effective but, because of the hash collisions can also be inexact. Also a combination of the two approaches would be very interesting to try.
+
 
 \bibliographystyle{acm}
 \bibliography{report}
