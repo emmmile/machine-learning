@@ -148,7 +148,10 @@ public:
         return double( nb_shifts ) / slimits<NStates, NSymbols>::upper;
     } else {
       // TODO
-      return 0.0;
+      if( current_state.ishalt() )
+	return nb_shifts;
+      else
+	return 0.0;
     }
   }
 

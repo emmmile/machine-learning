@@ -218,8 +218,11 @@ public:
      * When this pointer is NULL, it means that nobody wants to crossover at
      * this time.
      */
+
+    /* Previous crossover
     static I* partner;
     partner = NULL; // explicitly set to NULL at every generation, not only the first time
+    */
 
     // important: the size increases during execution, so we have to stop
     // when we finish the OLD (current) population
@@ -235,6 +238,21 @@ public:
 
       if ( gen.real() < pcrossover ) {
         // executes crossover
+
+	uint partner_id;
+	do {
+	partner_id = gen.integer() % size();
+	}while (partner_id == j);
+
+	I* newone = new I( *individuals[j].individual );
+	I* newtwo = new I( *individuals[partner_id].individual );
+	crossover( *newone, *newtwo, gen, TWO_POINT );
+	individuals.push_back( triple( newone, true ) );
+	individuals.push_back( triple( newtwo, true ) );
+
+	explored +=2;
+
+	/* Previous crossover
 	if ( !partner )
 	  // no one wants to crossover at this time so we remember that this guy wants to crossover
 	  partner = individuals[j].individual;
@@ -248,10 +266,11 @@ public:
 	  partner = NULL; // now, nobody wants to crossover
 	  explored += 2;
 	}
+	*/
       }
     }
   }
-
+  
   template<typename F, typename G>
   void selection ( F fitness, G generation, uint generationNumber ) {
 
