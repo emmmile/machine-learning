@@ -152,13 +152,34 @@ S : \left |
 \chapter{Implementation}
 \label{chap:impl}
 
+\section{Random numbers}
+\label{sec:random}
+We used a small class that embeds one \texttt{boost} random number generator, in particular the Mersenne Twister generator. These implementation is very fast and provides very good quality randomness also in high dimensional spaces \cite{boost-random}, \cite{mersenne-twister}.
+
 \section{Turing Machine}
-[...]
+Our representation of a Turing Machine is simply a table of transitions. Every transition (file \texttt{action.hpp}) have three variables:
+\begin{enumerate}
+\item the direction in which move the tape.
+\item the symbol to write on the tape.
+\item the next state.
+\end{enumerate}
+A transition can be indexed with a given (current) state and a given (current) symbol. It's easier to think at a transition \textit{table} but actually we implemented it as a plain array of transitions.
+
+Of course we enriched the implementation with several utility functions like random initialization (see \ref{sec:random}), serialization (using \texttt{boost} libraries \cite{boost-serialization}) and genetic operators.
+
 We implemented crossovers and mutations here since they depends on the representation of the individual type: the population method is not aware of \textit{how} we implement for example the transition table. Actually we could have some flags (like in Matlab) like: ``it is a string'', ``it is a bit string'', etc. But, since the key point of all our work are probably these two functions, we preferred to implement them where we have all the details of the individual representation, the Turing Machine.
 
 \subsection{Crossover}
 \label{sec:crossover}
-[TODO Crossover implementation and assumptions, or in another chapter?]
+We implemented 3 types of crossover: \texttt{ONE\_POINT}, \texttt{TWO\_POINT} and \texttt{UNIFORM}, with the meaning that we gave during the course. The only thing we need to clear is ``what is a point'' for our data type, for example one can think to a bit offset in the transitions array, or to a byte offset, or more.
+We actually implemented two versions for the \texttt{TWO\_POINT} crossover, using two different genome units:
+
+\begin{enumerate}
+\item For the first, the genome unit is a variable inside the transition table. So in practice what we do is to choose the addresses of two variables in the transition table and the swap all the genome portion between them.
+\item The second correspond to see the genome as an array of transitions, so we choose two transition indexes at random and we swap all the date between them.
+\end{enumerate}
+
+The first version obviously can create more new individuals than the second, since we have more possibilities for the points to choose. But in practice we didn't notice big differences between the two, and we preferred the second one for its simplicity.
 
 \subsection{Mutation}
 \label{sec:mutation}
