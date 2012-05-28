@@ -49,7 +49,8 @@ int main() {
 	
       cout << "-> Statistics"
 	   << "\n\tMachines halted:\t" << n_halt
-	   << "\n\tHigher nb_shifts:\t" << best_nshift << endl;
+	   << "\n\tHigher nb_shifts:\t" << best_nshift
+	   << "\n\tExplored machines:\t" << p.get_explored() << endl;
       continue;
     }
     else if (generations < 0) break;
@@ -93,7 +94,7 @@ int main() {
   // get time to build file names
   time(&rawtime);
   timeinfo = localtime(&rawtime);
-  sprintf(time_str, "serialized_%s%d-%d-%d_%d:%d",
+  sprintf(time_str, "%sserialized_%d-%d-%d_%d:%d",
 	  SAVE_PATH,
 	  timeinfo->tm_year,
 	  timeinfo->tm_mon,
@@ -118,6 +119,8 @@ int main() {
     // build path
     strcpy(file_path, time_str);
     strcat(file_path, ".tm");
+
+    cout << file_path << endl;
 
     // create and open a character archive for output
     std::ofstream ofs(file_path);

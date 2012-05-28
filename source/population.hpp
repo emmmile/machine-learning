@@ -5,7 +5,20 @@
 #define POPULATION_HPP
 
 #include <type_traits>
+#include <boost/archive/text_oarchive.hpp> // for serialization
+#include <boost/archive/text_iarchive.hpp> // idem
+#include <boost/serialization/vector.hpp> // idem
+#include <boost/serialization/deque.hpp> // idem
 #include "random.hpp"
+using namespace boost;
+using namespace std;
+
+
+enum crossover_type {
+  TWO_POINT,		// choose 2 actions at random and swap what is in between
+  ONE_POINT		// choose 1 action at random and swap what is at the right
+
+};
 
 
 enum early_death_type {
@@ -105,6 +118,7 @@ class population {
   double pcrossover;
   bool stationary;
   unsigned long int age; // /!\ this type may be too small
+  unsigned long int explored; // /!\ this type may be too small
 
   const static uint maximumPopulation = 400;
   const static uint initialPopulation = 100;
@@ -134,6 +148,7 @@ public:
       individuals[i].individual = new I (gen); // a random initializer must exist in ::I
     
     age = 0;
+    explored = pop_size;
     pmutation = pm;
     pcrossover = pc;
     stationary = st;
@@ -155,6 +170,10 @@ public:
 
   unsigned long int get_age() {
     return age;
+  }
+
+  unsigned long int get_explored() {
+    return explored;
   }
 
   void get_stats(uint& n_halt, uint& best_nbshifts) {
@@ -211,6 +230,7 @@ public:
         // executes mutation on the NEW copy and push it to the end
         mutate( *newone, gen );
         individuals.push_back( triple( newone, true ) );
+        explored++;
       }
 
       if ( gen.real() < pcrossover ) {
@@ -226,6 +246,7 @@ public:
 	  individuals.push_back( triple( newone, true ) );
 	  individuals.push_back( triple( newtwo, true ) );
 	  partner = NULL; // now, nobody wants to crossover
+	  explored += 2;
 	}
       }
     }

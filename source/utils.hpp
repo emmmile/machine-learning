@@ -5,11 +5,16 @@
 #include <string>
 #include <sstream>
 #include <boost/integer_traits.hpp>
+#include <boost/archive/text_oarchive.hpp> // for serialization
+#include <boost/archive/text_iarchive.hpp> // idem
+#include <boost/serialization/vector.hpp> // idem
+#include <boost/serialization/deque.hpp> // idem
 using namespace boost;
 using namespace std;
 
 typedef unsigned int  uint;
 typedef unsigned char uchar;
+
 
 
 // to make it more fast I simply check with these constants

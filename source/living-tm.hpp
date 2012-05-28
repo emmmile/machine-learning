@@ -9,6 +9,7 @@
 #include <deque>
 #include "turing-machine.hpp"
 #include "limits.hpp"
+#include "population.hpp"
 
 #define INIT_TAPE_SIZE 101
 //#define TAPE_RESIZE_STEP 50
