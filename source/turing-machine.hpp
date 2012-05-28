@@ -115,7 +115,10 @@ public:
 
   // mutation: takes a single action and mutate a single variable inside it
   turing_machine& mutate ( Random& gen ) {
-    actions[random_pos(gen)].mutate( gen );
+    //if ( gen.real() < 0.5 )
+    //  this->random_shuffle( gen );
+    //else
+      actions[random_pos(gen)].mutate( gen );
     return *this;
   }
 
