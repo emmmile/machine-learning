@@ -19,9 +19,36 @@
 
 \section{Conventions}
 
-We assume that the reader is familiar with the notion of Turing machines. In this paper, we only deal with deterministic Turing machines which have a finite alphabet and a finite set of states, so it is what we mean when we use the expression \emph{Turing machine}. Except where otherwise stated, we use the letter $m$ to denote the cardinality of the alphabet and the letter $n$ to denote the cardinality of the states set minus one (because of the halting state).
+We assume that the reader is familiar with the notion of Turing machine. In this paper, we only deal with deterministic Turing machines so it is what we mean when we use the expression \emph{Turing machine}.
 
-Turing machines we deal with have only one halt state. Let $\mathcal{T}_{m,n}$ be the set of deterministic Turing machines with an alphabet of $m$ symbols which uses $n + 1$ states, one of whom is the halt state, reached at most one time (because then the machine halts). Let  $\mathcal{T} = \cup_{n,m \in \N} \mathcal{T}_{n,m}$.
+\paragraph{Symbols}
+We only deal with Turing machines with a finite alphabet. So we can represent it by an initial segment of $\N$. Furthermore, we choose that $0$ is the blank symbol. Our input alphabet is always $\{0\}$ since we only start on blank tapes. 
+
+\paragraph{States}
+Turing machines we are working with have a finite set of states and only one halt state.
+ Except where otherwise stated, when we write that a Turing machine have $n$ states, we mean $n$ \emph{operational} states, \ie states that are not halt states. We use to use the letter $m$ to denote the cardinality of the alphabet and the letter $n$ to denote the cardinality of the operational states set.
+
+ Let $\mathcal{T}_{m,n}$ be the set of deterministic Turing machines with an alphabet of $m$ symbols which uses $n + 1$ states, one of whom is the halt state, reached at most one time (because then the machine halts). Let  $\mathcal{T} = \cup_{n,m \in \N} \mathcal{T}_{n,m}$.
+
+Since we only deals with finite states sets, we choose without loss of generality to represent any state set by an initial segment of $\N$ of the corresponding size. For instance, a machine $M \in \mathcal{T}_{m,n}$ have $\intv{0}{n}$ as states set and $\intv{0}{m-1}$ as alphabet.
+
+What is more, since states names are interchangeable (with modifying the transition table according to this change), we choose that the start state is always state $0$ and the (maybe never reached) halting state is always state $n$.
+
+
+
+\paragraph{Machines}
+All the assumptions we do simplifies the representation of machines. A machine $M$ of $\mathcal{T}$ is a triple $(m,n,\delta)$ where 
+\[
+\left \{
+\begin{array}{l}
+  n \in \N^*\\
+  m \in \N^*\\
+  \delta : \intv{0}{m-1} \times \intv{0}{n-1} \to \intv{0}{m-1} \times \intv{0}{n} \times \{0,1\}
+\end{array}
+\right .
+\]
+The function $\delta$ is the transition function and $\delta(a, s) = (a', s', d)$ means that if the machine is in the state $s$ and reads the symbol $a$, it writes $a'$, pass in state $s'$ and move in a direction given by $d$ where $d = 0$ means \emph{left} and $d = 1$ means \emph{right}. This function cannot be used on state $n$ since ther is no transition from the halt state.
+
 
 \section{Busy-beavers}
 \label{sec:bb}
