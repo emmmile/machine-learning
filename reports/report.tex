@@ -1,5 +1,6 @@
 \documentclass{report}
 \input{preamble.tex}
+\usepackage[english,algochapter,vlined,linesnumbered]{algorithm2e}
 
 \title{Machine Learning Project Report\\\textbf{Evolutionnary Computing\\on Turing machines}\\{\Large Solving the Busy Beaver Problem}}
 \author{Jean-Florent Raymond\\\href{mailto:jean-florent.raymond.8795@student.uu.se}{\texttt{jean-florent.raymond.8795@student.uu.se}} \and Emilio Del Tessandoro\\
@@ -150,6 +151,28 @@ Our goal here is to find a busy beaver of $\mathcal{T}_{m,n}$ for given values $
 \label{sec:random}
 We used a small class that embeds one \texttt{boost} random number generator, in particular the Mersenne Twister generator. These implementation is very fast and provides very good quality randomness also in high dimensional spaces \cite{boost-random}, \cite{mersenne-twister}.
 
+We used random numbers very often in our program, especially for taking probabilistic decisions. Suppose in fact we want to implement a decision function $f$ that returns true with probability $p$. Something like this has been used in the selection procedure and in the individuals selection for crossovers and mutations.
+
+This is very easily implemented as shown in figure \ref{alg:decision}.
+
+\begin{algorithm}[t]
+\caption[Probabilistic decision]{A simple probabilistic decision procedure}
+\label{alg:decision}
+\SetKwInOut{Input}{input}
+\SetKwInOut{Output}{output}
+\SetKwFunction{random}{random}
+
+\Input{A real number $p$ representing the probability of taking the decision}
+\Begin{
+	\If{\random{} $< p $}{
+		\Return{true}\;
+	}
+	\Else{
+		\Return{false}\;	
+	}
+}
+\end{algorithm}
+
 \section{Turing Machine}
 Our representation of a Turing Machine is simply a table of transitions. Every transition (file \texttt{action.hpp}) have three variables:
 \begin{enumerate}
@@ -218,30 +241,23 @@ The skeleton is the classical of the genetic algorithms: for every generation ex
 
 \subsection{When to crossover and when to mutate}
 
-The idea should be that each individual has some probability to be mutated and some probability to be crossed. The implementation of the ``with some probability'' is easy (just draw a real in $[0,1]$ and compare with another real, still in $[0,1]$, representing the wanted probability) but there are some points to clarify.
+The idea should be that each individual has some probability to be mutated $p_M$ and some probability to be crossed $p_C$. The implementation of the ``with some probability'' is easy (see figure \ref{alg:decision}) but there are some points to clarify.
 
-\begin{enumerate}
-\item If one individual has been chosen for mutation, it can be chosen also for crossover.
-\item If one individual has been chosen for crossover, which other individual choose to actually perform the crossover? [TODO explain the issue 4]
-\end{enumerate}
+The first is that if one individual has been chosen for mutation, it can be chosen also for crossover. We thought that this shouldn't have any negative effects, so we allowed it for avoiding checks.
 
-\subsection{When to evaluate the fitness function}
+A more complex point is: if one individual has been chosen for crossover, which other individual choose to actually perform the recombination? We tried two possibilities.
 
-Here the point is that we need a fitness value for each individual at each generation, in order to perform selection.
-We thought at this problem because our fitness function is quite heavy to compute, and could happen that sometimes an individual remain unchanged from one generation to another. In this case a re-computation of the fitness function should be avoided, and the population method can take care of solving this.
+The first consists in scanning the population and, after we found probabilistically the first individual, we choose another individual uniformly at random over all the others. There are some drawbacks with this. The second individual is selected without any constraint (i.e. we don't care about the probability $p_C$), so in particular the same individual can be selected many times for crossover. The result is that the probability of crossover is also higher than $p_C$.
 
-So, since this is a general problem, we used a flag to remember, for every individual, if he has been changed or not. We also save the last fitness value, that is simply a real value. If the flag says that the individual has been changed we need to re-compute the fitness function, otherwise we can use the stored result.
-
-This optimization in some cases has shown to be very effective. We can mention a test we made for finding the optimal value of the Ackley's function (located in zero). In this case the computation of the fitness function is relatively heavy compared to the rest of the computation (but maybe not as heavy as our busy beaver problem).
-Implementing the simple method explained above we exactly halved the completion time.
+The second possibility tries to avoid this problem, using an auxiliary variable to used to store a reference to an individual. When an individual is selected for crossover and this variable is empty, we save this individual. When the next individual is found we have the two individuals where actually perform the recombination. After this, the reference variable is cleaned. Also the second approach has a problem, namely that the crossover happens on individuals with similar rankings. In fact it is very unlikely that, for example, selecting individual 0 for being crossed, we have to wait (the decision fails) until the last individual $N-1$ is reached in the loop. In other words, after selecting an individual for crossover, the second one is not selected with uniform probability among all the others.
 
 \subsection{Selection}
 
 Selection is another very tricky part in this problem. We always used rank selection in our experiments, since often fitness values are not that meaningful (for example comparing halting or non halting machines is very difficult).
 
-Since selection has to be probabilistic our idea has been to use a decision function $d(r)$ that takes as input the rank $r$ of an individual and returns a number in $[0,1]$. Then drawing a random number in the same interval we can decide if keep or not the current individual (that is: ``is the generated number smaller than $d(r)$?'').
+Since selection has to be probabilistic our idea has been to use a decision function $d(r)$ that takes as input the rank $r$ of an individual and returns a number in $[0,1]$. Then, by drawing a random number in the same interval, we can decide if keep or not the current individual (that is: ``is the generated number smaller than $d(r)$? If yes keep, otherwise kill'').
 
-Initially we used a sigmoid function, as shown in figure \ref{fig:sigmoid}. We used actually an horizontally translated sigmoid, in order to have the average population we wanted\footnote{It's possible to show this matematically.}. In particular, the rank where sigmoid has value 0.5 indicates the average size the population will have after a selection step. We chose this function because we wanted more probability to choose the high-ranking individuals, and low probability for the low ranking individuals.
+Initially we used a sigmoid function, as shown in figure \ref{fig:sigmoid}. The sigmoid is horizontally translated in order to give a certain number of individuals at every generation, on average\footnote{It's possible to show this mathematically.}. In particular, the rank where sigmoid has value 0.5 indicates the average size the population will have after a selection step. We chose this function because we wanted more probability to choose the high-ranking individuals, and low probability for the low ranking individuals.
 This seems very nice, but in practice it is not. The problem is that it gives too high selection pressure, also if the slope of the sigmoid is very soft (as shown in figure).
 
 \begin{figure}[t]\centering
@@ -254,15 +270,61 @@ In fact, consider the tails of the sigmoid: here the function takes values very 
 Using other functions it's possible, but it remains a problem to have a very low pressure selection and keep the population size under control (not going to zero or infinity).
 
 In order to solve this problem we had also to redesign the fitness function (to give some more importance to this non halting machines), but mainly we had to find some very low pressure selection mechanism.
-What we thought is: ``what is the function with the lowest possible selection pressure?''. It is a uniform selection, that is not considering at all the fitness function value. But in this way the search becomes really random, and we don't want this. So we combined this very ``flat'' selection with elitism, and the final selection looks something like this:
+What we thought is: ``what is the function with the lowest possible selection pressure?''. It is a uniform selection, that is not considering at all the fitness function value. But in this way the search becomes really random, and we don't want this. So we combined this very ``flat'' selection with elitism, and the final selection looks something like this (with reference to algorithm \ref{alg:selection}):
 
-\begin{enumerate}
+\begin{itemize}
 \item Decide a certain number $S$ of individuals to save, for example one fourth of the maximum population size.
 \item If the individuals number $N$ is greater than the maximum $M$ the selection happens on the $N-S$ worst individuals. Notice: not $N-M$ (that is only the individuals that exceeds the maximum $M$), but all the individuals that have not been selected by elitism.
-\item From this $N-S$ group we kill an average of $N-M$ individuals. We do this iterating over these individuals and test if a random number in $[0,1]$ is smaller than $\frac{N-M}{N-S}$. This means that an individual is removed with probability $\frac{N-M}{N-S}$, that summed over all the $N-S$ scanned individuals gives the wanted average.
-\end{enumerate}
+\item From this $N-S$ group we kill an average of $N-M$ individuals. As previously introduced in section
+\ref{sec:random}, we do this iterating over these individuals and test if a random number in $[0,1]$ is smaller than $\frac{N-M}{N-S}$. This means that an individual is removed with probability $\frac{N-M}{N-S}$, that summed over all the $N-S$ scanned individuals gives the wanted average.
+\end{itemize}
 
 Using this selection schema we always have a certain number of not halted machines in the population, so we have very big diversity.
+
+\begin{algorithm}[t]
+\caption[Selection procedure]{Selection procedure with elitism}
+\label{alg:selection}
+\SetKwInOut{Input}{input}
+\SetKwInOut{Output}{output}
+\SetKwFunction{random}{random}
+%\SetKwFunction{erase}{erase}
+%\SetKwFunction{sort}{sort}
+
+\Input{The population $p$, the current population size $N$, the wanted average size $M$ and the number of safe individuals $S$.}
+\Output{The remaining individuals in $p$}
+\Begin{
+	\For{$i\leftarrow 0$ \KwTo $N-1$}{
+	%\For{$i \in p[0,N)$}{
+		\If{$p[i]$ is a new individual, or is changed}{
+			$p[i].value \leftarrow$ \emph{updated fitness value of $p[i]$}\;
+		}
+	}
+	\BlankLine
+	\emph{sort $p$ based on the fitness values}\;
+	\BlankLine
+	\If{$ N < M $}{
+		\Return{}\;
+	}
+	\BlankLine
+	$threshold = \frac{N-M}{N-S}$\;
+	\For{$i\leftarrow S$ \KwTo $N-1$}{
+		\If{\random{} $< threshold$}{
+			\emph{erase $i$};
+		}
+	}
+}
+\end{algorithm}
+
+\subsection{When to evaluate the fitness function}
+
+Here the point is that we need a fitness value for each individual at each generation, in order to perform selection.
+We thought at this problem because our fitness function is quite heavy to compute, and could happen that sometimes an individual remain unchanged from one generation to another. In this case a re-computation of the fitness function should be avoided, and the population method can take care of solving this.
+
+So, since this is a general problem, we used a flag to remember, for every individual, if he has been changed or not. We also save the last fitness value, that is simply a real value. If the flag says that the individual has been changed we need to re-compute the fitness function, otherwise we can use the stored result. For the role of this part in the selection procedure see algorithm \ref{alg:selection}.
+
+This optimization in some cases has shown to be very effective. We can mention a test we made for finding the optimal value of the Ackley's function (located in zero). In this case the computation of the fitness function is relatively heavy compared to the rest of the computation (but maybe not as heavy as our busy beaver problem).
+Implementing the simple method explained above we exactly halved the completion time.
+
 
 \chapter{Results}
 \label{chap:results}
