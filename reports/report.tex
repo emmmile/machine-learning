@@ -3,7 +3,7 @@
 \usepackage[english,vlined,linesnumbered]{algorithm2e}
 \usepackage{url}
 
-\title{Machine Learning Project Report\\\textbf{Evolutionnary Computing\\on Turing machines}\\{\Large Solving the Busy Beaver Problem}}
+\title{Machine Learning Project Report\\\textbf{Evolutionary Computing\\on Turing machines}\\{\Large Solving the Busy Beaver Problem}}
 \author{Jean-Florent Raymond\\\href{mailto:jean-florent.raymond.8795@student.uu.se}{\texttt{jean-florent.raymond.8795@student.uu.se}} \and Emilio Del Tessandoro\\
   \href{mailto:emilio.del_tessandoro.4062@student.uu.se }{\texttt{emilio.del\_tessandoro.4062@student.uu.se }}}
 \date{\today}
@@ -27,17 +27,17 @@ Given an alphabet and a set of states, we want to find a Turing machine that per
 Finding these machines is very difficult for mainly two reasons: the halting problem and the huge number of possible candidates.
 The usual approaches \cite{rado} to this problem are:
 \begin{itemize}
-\item running different machines (eventually all is there is not too much) until it halts (if so) and keeping the best.
+\item running different machines (eventually all of them, if they are not too many) until it halts (if so) and keeping the best.
 \item detecting patterns on the tape that means that the machine will stop after a certain number of shifts.
 \end{itemize}
-These methods can be improved using techniques of loop detection or by predicting the configuration of the machine in a certain number of step given the tape and the transition table. The main problem of this is that the search space size hugely increase with the size of the machines, as well as the most shifts performed by a busy beaver.
+These methods can be improved using techniques of loop detection or by predicting the configuration of the machine in a certain number of steps given the tape and the transition table. The main problem of this is that the search space size hugely increases with the size of the machines, as well as the most shifts performed by a busy beaver.
 
 
 Our approach is different. We use a genetic algorithm to find busy beavers. We have a population of Turing machines and we perform operations on it until it lead to a busy beaver.
 
 For this, we designed and wrote a program to handle and execute Turing machines, and a program to simulate evolution on a population of Turing machines.
 
-With this method, we were able to find busy beavers for small machine sizes. We know that these are really busy beavers because the maximum number of steps before halting is known for theses machine sizes. When the machine size grows, we have to deal with the same problem as above; and we were out of time to run the experiments long enough to be able to find good candidates. However, no busy beaver is known for these sizes at the time of writing this paper. Only lower bounds are know for some sizes.
+With this method, we were able to find busy beavers for small machine sizes. We are sure that these are busy beavers because the maximum number of steps before halting is known for these machine sizes. When the machine size grows, we have to deal with the same problem as above; and we were out of time to run the experiments long enough to be able to find good candidates. However, no busy beaver is known for these sizes at the time of writing this paper. Only lower bounds are know for some sizes.
 
 \chapter{Definitions and Conventions}
 \label{chap:pre}
@@ -56,14 +56,14 @@ Turing machines we are working with have a finite set of states and only one hal
 
  Let $\mathcal{T}_{m,n}$ be the set of deterministic Turing machines with an alphabet of $m$ symbols which uses $n + 1$ states, one of whom is the halt state, reached at most one time (because then the machine halts). Let  $\mathcal{T} = \cup_{n,m \in \N} \mathcal{T}_{n,m}$.
 
-Since we only deals with finite states sets, we choose without loss of generality to represent any state set by an initial segment of $\N$ of the corresponding size. For instance, a machine $M \in \mathcal{T}_{m,n}$ have $\intv{0}{n}$ as states set and $\intv{0}{m-1}$ as alphabet.
+Since we only deals with finite states sets, we chose without loss of generality to represent any state set by an initial segment of $\N$ of the corresponding size. For instance, a machine $M \in \mathcal{T}_{m,n}$ have $\intv{0}{n}$ as states set and $\intv{0}{m-1}$ as alphabet.
 
-What is more, since states names are interchangeable (with modifying the transition table according to this change), we choose that the start state is always state $0$ and the (maybe never reached) halting state is always state $n$.
+What is more, since states names are interchangeable (with modifying the transition table according to this change), we chose that the start state is always state $0$ and the (maybe never reached) halting state is always state $n$.
 
 
 
 \paragraph{Machines}
-All the assumptions we do simplifies the representation of machines so we can now define if easily.
+All the assumptions we do simplifies the representation of machines so we can now define it easily.
 
 \begin{Def}[Turing machine]
 
@@ -84,16 +84,16 @@ The function $\delta$ is the transition function and $\delta(a, s) = (a', s', d)
 \section{Busy Beavers}
 \label{sec:bb}
 
-Busy beavers are about the number of operations performed by Turing machines so we a function to express this value.
+Busy beavers are about the number of operations performed by Turing machines so we need a function to express this value.
 \begin{Def}[$s$ function]
   $s : \mathcal{T} \to \N \cup \{-1\}$ is the function which, given a Turing machine $M$, returns
   \begin{itemize}
-  \item either the number of steps that $M$ performs when started on a blank tape, if $M$ halts ;
+  \item either the number of steps that $M$ performs when started on a blank tape, if $M$ halts;
   \item or minus one else.
   \end{itemize}
 \end{Def}
 
-We also want to be able to talk about the machine that realize this score.
+We also want to be able to talk about the machine that realizes this score.
 \begin{Def}[max-step function]
 $S$ is the function defined by
 \[
@@ -114,7 +114,7 @@ We use these functions to define a busy beaver as following.
 \end{Def}
 
 
-Our goal here is to find a busy beaver of $\mathcal{T}_{m,n}$ for given values $m,n\in\N^**$.
+Our goal here is to find a busy beaver of $\mathcal{T}_{m,n}$ for given values $m,n\in\N^*$.
 
 
 \begin{Rem}
@@ -128,7 +128,7 @@ Our goal here is to find a busy beaver of $\mathcal{T}_{m,n}$ for given values $
     \end{array}
   \right .
   \]
-  is computable too. This function decides the halting problem, that is absurd \cite{turing}. So $s$ is not computable we can get the same result for $S$ by the same token.
+  is computable too. This function decides the halting problem, that is absurd \cite{turing}. So $s$ is not computable and we can get the same result for $S$ by the same token.
 \end{Rem}
 
 \begin{Rem}
@@ -138,7 +138,7 @@ Our goal here is to find a busy beaver of $\mathcal{T}_{m,n}$ for given values $
 \chapter{Strategy}
 \label{chap:strategy}
 
-\section{Using a Genetic Algorithm to Find Busy Beavers}
+\section{The Genetic Algorithm}
 \label{sec:genalg}
 Given a machine size, \ie two integers $m$ (size of the alphabet) and $n$ (number of states), we use a genetic algorithm in order to find busy beavers of $\mathcal{T}_{mn}$. The procedure is the following.
 
@@ -159,10 +159,11 @@ See sections \ref{sec:crossover} (on page \pageref{sec:crossover}) and \ref{sec:
 
 \section{A Difficult Problem}
 
-Two features of busy beaver problem makes it difficult:
+Three features of busy beaver problem makes it difficult:
 \begin{enumerate}
 \item the fitness function is hard to define and to compute. This will be discussed later in section \ref{sec:fitness};
 \item \label{en:se} the search space is wide.
+\item the distribution of the machines that compute the most steps is not simple. For example for the 2 state, 4 symbol problem it has been proven \cite{michel} that there is no machine that performs a number of shifts between 7195 and 3932964 (current best contender).
 \end{enumerate}
 
 On point \ref{en:se}, we can be more accurate. As we saw in section \ref{sec:go}, the genotype of our individuals is nothing more than the transition table, so there is clearly as different individuals as there is different transition functions.
@@ -175,7 +176,7 @@ These functions are, according to section \ref{sec:ma}, of the following type
 The function $\delta$ is from a set of $|\intv{0}{m-1} \times \intv{0}{n-1}| = nm$ elements to a set of $|\intv{0}{m-1} \times \intv{0}{n} \times \{0,1\}| = 2m(n+1)$ elements. So for each of the $nm$ different possible arguments of $\delta$, we can choose between $2m(n+1)$ values.
 It follows that we can have $(2 m (n+1))^{mn}$ different transition functions.
 
-According to what we said before, this is also the size of the search space. It grows very fast, as we can see from the following table that shows its first values; lines are indexed by number of states ($n$) and colums by the alphabet size ($m$).
+According to what we said before, this is also the size of the search space. It grows very fast, as we can see from the following table that shows its first values; lines are indexed by number of states ($n$) and columns by the alphabet size ($m$).
 
 \[
 \begin{array}{|c|c|c|c|c|}
@@ -195,11 +196,11 @@ According to what we said before, this is also the size of the search space. It 
 \label{sec:fitness}
 
 Fitness functions are about what is ``good'' in an individual and what nature we want to promote or blame.
-In the case we are interested in, we wants machines which runs for long time and then halt. So we have to discard machines that loop, and, amongs non-looping machines, give best fitness to machines that runs longer.
+In the case we are interested in, we wants machines which runs for long time and then halt. So we have to discard machines that loop, and, among non-looping machines, give best fitness to machines that runs longer.
 
 However, there is a big theoretical issue that makes it impossible. Because of the halting problem \cite{turing}, there is no general way to know if a given machine will stop or not. Of course, we can see in a glance that some machines will loop for ever. But we cannot write, in general, a function that take a transition table and answer yes or no depending of if the machine loops or not. So defining a good fitness function becomes really tricky.
 
-However, previous work on busy beavers \cite{rado} \cite{allen} gives us, at least for few values of $m$ and $n$ the values the the max step function. So we know that if a machine overtake the value of this function, this machine loops for sure (because max step is the maximum number of steps performed by halting machines). Then, in the case of we know the value of max step, the fitness function can be something like
+However, previous work on busy beavers \cite{rado} \cite{allen} \cite{michel} gives us, at least for few values of $m$ and $n$ the values the the max step function. So we know that if a machine overtake the value of this function, this machine loops for sure (because max step is the maximum number of steps performed by halting machines). Then, in the case of we know the value of max step, the fitness function can be something like
 
 \[
 f : \left |
@@ -299,7 +300,7 @@ As said in section \ref{sec:fitness}, there is two different cases we have to to
 \item the max step value is not known. For each generation, we run all the machines in the population for 10 steps. When the fitness function is called, we return the number of shifts performed if the machine is halted, 0 else.
 \end{enumerate}
 
-The structure of this function is detailled in algorithm \ref{alg:fit}.
+The structure of this function is detailed in algorithm \ref{alg:fit}.
 
 \begin{algorithm}[h]
 \caption[Fitness function]{Fitness function implementation}
@@ -542,7 +543,7 @@ S_1& 1RS_0& 2RS_1& 1LS_1\\
 
 
 \begin{itemize}
-\item Max-step value: not known but we know [TODO : ref] that $S(2,4) \geq 3\,932\,964$;
+\item Max-step value: we only know \cite{michel} that $S(2,4) \geq 3\,932\,964$;
 \item Search space size: 110\,075\,314\,176;
 \item Machine we found at the time of writing:
 \[
@@ -585,11 +586,6 @@ S_1& 1RS_0& 2RS_1& 1LS_1\\
 % -> Known values:
 % 	Lower bound:	3932964
 % 	Upper bound:	not known
-
-
-\chapter{Outcome}
-\label{chap:outcome}
-
 
 \chapter{Further work}
 \label{chap:fwork}
@@ -637,6 +633,14 @@ But of course the bigger is this window, the more precise is this approximation.
 
 Another solution could be to save an hash of the tape, instead of the full tape. This is very memory effective but, because of the hash collisions can also be inexact. Also a combination of the two approaches would be very interesting to try.
 
+
+
+\chapter{Outcome}
+\label{chap:outcome}
+
+With reference to the implementation we realized a program to run Turing machines, and an evolutionary computing tool that can be used also for other contexts. Moreover the implementation seems to be quite fast.
+With these tools we found busy beavers for all known cases. The other cases are computationally very expensive and need further examination (or optimizations).
+The problem we wanted to solve is very challenging and probably we can't do much more than this: solving these complex cases with a computer simulation is not tractable in practice.
 
 
 \bibliographystyle{plain}
