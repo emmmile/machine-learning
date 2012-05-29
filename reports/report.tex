@@ -1,6 +1,6 @@
 \documentclass{report}
 \input{preamble.tex}
-\usepackage[english,algochapter,vlined,linesnumbered]{algorithm2e}
+\usepackage[english,vlined,linesnumbered]{algorithm2e}
 \usepackage{url}
 
 \title{Machine Learning Project Report\\\textbf{Evolutionnary Computing\\on Turing machines}\\{\Large Solving the Busy Beaver Problem}}
@@ -21,7 +21,9 @@ The goal of our project was to see if evolutionary computing techniques are suit
 \chapter{Introduction}
 \label{chap:intro}
 
-Given an alphabet and a set of states, we want to find a Turing machine that performs the most shifts before halting. The usual approaches \cite{rado} to this problem are
+Given an alphabet and a set of states, we want to find a Turing machine that performs the most shifts before halting. 
+Finding these machines is very difficult for mainly two reasons: the halting problem and the huge number of possible candidates.
+The usual approaches \cite{rado} to this problem are:
 \begin{itemize}
 \item running different machines (eventually all is there is not too much) until it halts (if so) and keeping the best ;
 \item detecting patterns on the tape that means that the machine will stop after a certain number of shifts.
@@ -154,7 +156,7 @@ We used a small class that embeds one \texttt{boost} random number generator, in
 
 We used random numbers very often in our program, especially for taking probabilistic decisions. Suppose in fact we want to implement a decision function $f$ that returns true with probability $p$. Something like this has been used in the selection procedure and in the individuals selection for crossovers and mutations.
 
-This is very easily implemented as shown in figure \ref{alg:decision}.
+This is very easily implemented as shown in the algorithm at page \pageref{alg:decision}.
 
 \begin{algorithm}[t]
 \caption[Probabilistic decision]{A simple probabilistic decision procedure}
@@ -256,9 +258,9 @@ The second possibility tries to avoid this problem, using an auxiliary variable 
 
 Selection is another very tricky part in this problem. We always used rank selection in our experiments, since often fitness values are not that meaningful (for example comparing halting or non halting machines is very difficult).
 
-Since selection has to be probabilistic our idea has been to use a decision function $d(r)$ that takes as input the rank $r$ of an individual and returns a number in $[0,1]$. Then, by drawing a random number in the same interval, we can decide if keep or not the current individual (that is: ``is the generated number smaller than $d(r)$? If yes keep, otherwise kill'').
+Since selection has to be probabilistic our idea has been to use a decision function $d(r)$ that takes as input the rank $r$ of an individual and returns a number in $[0,1]$; then, we proceed making a random decision (kill or not) as explained in section \ref{sec:random}.
 
-Initially we used a sigmoid function, as shown in figure \ref{fig:sigmoid}. The sigmoid is horizontally translated in order to give a certain number of individuals at every generation, on average\footnote{It's possible to show this mathematically.}. In particular, the rank where sigmoid has value 0.5 indicates the average size the population will have after a selection step. We chose this function because we wanted more probability to choose the high-ranking individuals, and low probability for the low ranking individuals.
+Initially we used a sigmoid function, as shown in figure \ref{fig:sigmoid}. The sigmoid is horizontally translated in order to give a certain average number of individuals at every generation\footnote{It's possible to show this average mathematically.}. In particular, the rank where sigmoid has value 0.5 indicates the average size the population will have after a selection step. We chose this function because we wanted more probability to choose the high-ranking individuals, and low probability for the low ranking individuals.
 This seems very nice, but in practice it is not. The problem is that it gives too high selection pressure, also if the slope of the sigmoid is very soft (as shown in figure).
 
 \begin{figure}[t]\centering
@@ -482,12 +484,12 @@ S_1& 1RS_0& 2RS_1& 1LS_1\\
 \section{PSO}
 We had no time to test a PSO approach, before writing this report. It would be interesting to try it, of course, but we don't think it would be radically different from the current ideas. And in every case it would be a PSO implementation that has to ``jump'', and not ``fly'', over the search space. This happens because the Turing machine's search space is not continuous, and moreover we have to define by ourselves the particle operations that PSO usually performs.
 
-Our search space is made by the genomes we used in the evolutionary computing approach, not vectors. The number of dimensions is the number of free variables in the genome, $3MN$ in total.
-In this scenario consider, for example the PSO step where the velocity of a particle is summed up with the current position. How could be implemented this operation on our Turing machines genome? A possible approach [TODO needed citation] is to interpret the velocity as a probability to change the variable corresponding to that dimension.
+Our search space is made by the genomes we used in the evolutionary computing approach, not vectors. Discrete and binary PSO approaches has been developed (\cite{dpso}, \cite{binary-pso}) and both of them try to give another interpretation to the vector operations PSO needs in the original version.
 
-So it's something very similar to a mutation in the evolutionary computing approach (something in between with a crossover and a mutation actually, since the velocity depends on other particles, other genomes).
+Consider for example the PSO step where the velocity of a particle is summed up with the current position. How could be implemented this operation on our Turing machines genome? A possible approach is to interpret the velocity as a probability to change the variable corresponding to that dimension.
+So it's something that correspond roughly to a mutation in the evolutionary computing approach (something in between with a crossover and a mutation actually, since the velocity depends on other particles, other genomes).
 
-We don't want to say that PSO, on this problem, would be the same as using the tool we implemented; it's very difficult to make such prevision, but the ideas will be more or less the same, at least for what concerns this redefinition of the vector operators needed by it.
+We don't want to say that PSO, on this problem, would be the same as using the tool we implemented; it's very difficult to make such prevision, but the ideas will be more or less the same, at least for what concerns this redefinition of the operators needed by it.
 
 \section{Optimizations}
 A possible optimization regards the virtual machine execution, and in particular it tries to use the following fact:
