@@ -28,7 +28,8 @@ The usual approaches \cite{rado} to this problem are:
 \item running different machines (eventually all is there is not too much) until it halts (if so) and keeping the best ;
 \item detecting patterns on the tape that means that the machine will stop after a certain number of shifts.
 \end{itemize}
-These methods can be improved using techniques of loop detection or by predicting the configuration of the machine in a certain number of step given the tape and the transition table.
+These methods can be improved using techniques of loop detection or by predicting the configuration of the machine in a certain number of step given the tape and the transition table. The main problem of this is that the search space size hugely increase with the size of the machines, as well as the most shifts performed by a busy beaver.
+
 
 Our approach is different. We use a genetic algorithm to find busy beavers. We have a population of Turing machines and we perform operations on it until it lead to a busy beaver.
 
@@ -36,17 +37,11 @@ For this, we designed and wrote a program to handle and execute Turing machines,
 
 With this method, we were able to find busy beavers for small machine sizes. We know that this is really busy beavers because maximum number of steps before halting is known for theses machine sizes. When the machine size grows, to search space become huge and we were out of time to run the experiments long enough to be able to find good candiates. However, no busy beaver is know for these sizes at the time of writing this paper. Only lower bounds are know for some sizes.
 
-
-% Operations are only performed on transition tables because it would be nonsense to mix or change the tapes. In the same time we perform operations on the population, we run the machines for a few steps each time, then we have an idea of how long the machines can run. We evaluate a fitness function on these machines, which is function of the number of steps performed so far. So we can use this fitness value to decide which indiviuals 
-
-
-% Finding busy beavers becomes quickly difficult when the alphabet size and the number of states grows because of the huge number of different machines and because of the halting problem, which make us unable to know if a given machine will halt or no. Currently, busy beavers are only known for small alphabets and number of states and have only be studied by detecting ``good'' patterns on the tape or by executing different machines until it halts (if so).
-% A big issue is the computation of the fitness function, since we don't know and cannot know when a machine will halt (if it halts).
-
 \chapter{Definitions and Conventions}
 \label{chap:pre}
 
 \section{Machines}
+\label{sec:ma}
 
 We assume that the reader is familiar with the notion of Turing machine. In this paper, we only use deterministic Turing machines so it is what we mean when we use the expression \emph{Turing machine}. The tape is infinite on both sides.
 
@@ -141,11 +136,85 @@ Our goal here is to find a busy beaver of $\mathcal{T}_{m,n}$ for given values $
 \chapter{Strategy}
 \label{chap:strategy}
 
+\section{Using a Genetic Algorithm to Find Busy Beavers}
+\label{sec:genalg}
+Given a size of machine, \ie two integers $m$ (size of the alphabet) and $n$ (number of states), we use a genetic algorithm in order to find busy beavers of $\mathcal{T}_{mn}$. The procedure is the following.
+
+\begin{enumerate}
+\item we generate a population of random individuals. Here these individuals are Turing machines of current state 0 (initial state), with a blank tape (filled with zeroes) and with a random transition table;
+\item \label{en:go} we perform genetic operations on a random part of the population (see section \ref{sec:go} for more detail);
+\item we compute the value of a fitness function (explained in section \ref{sec:fitness}) for each individual, what make possible to rank them;
+\item we pick individuals from the population and we delete it. This choice depends on the value of the fitness function for these individuals and on a random term. It simulates the natural selection of ``good'' individuals. More details about the implementation of this part can be found in section \ref{sec:select} (on page \pageref{sec:select});
+\item we continue to \ref{en:go} until we perform as much generations as we wanted or until we find a busy beaver.
+\end{enumerate}
+
+\section{Genetic Operations}
+\label{sec:go}
+
+The genotype of our individuals is only the transition table. In fact, it would be meaningless to act on the tape or the current state since the machines we are looking for (busy beavers) starts on a blank tape in state 0, so are only defined by their transition table.
+The operators we use are crossover and mutations
+See sections \ref{sec:crossover} (on page \pageref{sec:crossover}) and \ref{sec:mutation} (on page \pageref{sec:mutation}) for implementation details of the genetic operators. 
+
+\section{A Difficult Problem}
+
+Two features of busy beaver problem makes it difficult :
+\begin{enumerate}
+\item the fitness function is hard to define and to compute. This will be discussed later in section \ref{sec:fitness};
+\item \label{en:se} the search space is wide.
+\end{enumerate}
+
+On point \ref{en:se}, we can be more accurate. As we saw in section \ref{sec:go}, the genotype of our individuals is nothing more than the transition table, so there is clearly as different individuals as there is different transition functions.
+
+These functions are, according to section \ref{sec:ma}, total functions of the following type
+\[
+  \delta : \intv{0}{m-1} \times \intv{0}{n-1} \to \intv{0}{m-1} \times \intv{0}{n} \times \{0,1\}
+\]
+
+The function $\delta$ is from a set of $|\intv{0}{m-1} \times \intv{0}{n-1}| = nm$ elements to a set of $|\intv{0}{m-1} \times \intv{0}{n} \times \{0,1\}| = 2m(n+1)$ elements. So for each of the $nm$ different possible arguments of $\delta$, we can choose between $2m(n+1)$ values.
+It follows that we can have $(2 m (n+1))^{mn}$ different transition functions.
+
+According to what we said before, this is also the size of the search space. It grows very fast, what can be seen on the following table that shows its first values. Lines are indexed by number of states ($n$) and colums by the alphabet size ($m$).
+
+\[
+\begin{array}{|c|c|c|c|c|}
+  \hline
+    & 2         & 3              & 4\\
+  \hline
+  2 & 20736     &34012224          &531441000000000000\\
+  \hline
+  3 &16777216   &2641807540224     &1152921504606846976\\
+  \hline
+  4 &25600000000&531441000000000000&42949672960000000000000000\\
+  \hline
+\end{array}
+\]
+
 \section{The fitness function}
 \label{sec:fitness}
 
-\chapter{Work Organisation}
-\label{chap:wo}
+Fitness functions are about what is ``good'' in an individual and what nature we want to promote or blame.
+In the case we are interested in, we wants machines which runs for long time and then halt. So we have to discard machines that loop, and, amongs non-looping machines, give best fitness to machines that runs longer.
+
+However, there is a big theoretical issues that makes it impossible. Because of the halting problem \cite{turing}, there is no general way to know if a given machine will stop or not. Of course, we can see in a glance that some machines will loop for ever. But we cannot write a function that take a transition table and answer yes or no depending of if the machine loops or not. So defining a good fitness function becomes tricky.
+
+However, previous work on busy beavers \cite{rado} [TODO add citations] gives us, at least for few values of $m$ and $n$ the values the the max step function. So we know that if a machine overtake the value of this function, this machine loops (because max step is the maximum number of steps performed by halting machines). Then, in the case of we know the value of max step, the fitness function can be something like
+
+\[
+f : \left |
+  \begin{array}{l}
+    \mathcal{T}_{mn} \to \R\\
+    M  \mapsto \left \{
+  \begin{array}{ll}
+    0&\text{if } M \text{ is still running after } S(m,n) \text{ steps}\\
+    \frac{1}{S(m,n) - h + 1}&\text{else, if } M \text{ halts after } h \text{ steps}
+  \end{array} \right .
+  \end{array}
+\right .
+\]
+
+So we have to run machines for $S(m,n)$ steps to be able to compute their exact fitness. We do this progressively and then compute an approximation of the fitness function, as explained in the implementation chapter, section \ref{sec:fit} on page \pageref{sec:fit}.
+
+For values of $m$ and $n$ where the max step function is not known, this approach is impossible. Our implementation choice for this case is explained in the section \ref{sec:fit} on page \pageref{sec:fit}.
 
 \chapter{Implementation}
 \label{chap:impl}
@@ -219,7 +288,9 @@ The virtual machine is implemented in the file \texttt{living-tm.hpp}. It enclos
 We tested the implementation running the current 5 state, 2 symbols best busy beaver contender, that executes exactly 47176870 steps before reaching the halting state. The program, besides executing the right number of shifts, also completes very very quickly (about 1 second of calculation).
 
 \subsection{Fitness function}
+\label{sec:fit}
 The fitness function is a relatively easy implementation, but reasoning behind it is very tricky and is better explained in \ref{sec:fitness}.
+[TODO explain how it is implemented]
 
 \section{Evolutionary Computing Tool}
 This tool has been implemented with the aim to be as general as possible; with C++ in fact is relatively easy to abstract from the type of the individuals. The implementation is inside the file \texttt{population.hpp}.
@@ -255,6 +326,8 @@ The first consists in scanning the population and, after we found probabilistica
 The second possibility tries to avoid this problem, using an auxiliary variable to used to store a reference to an individual. When an individual is selected for crossover and this variable is empty, we save this individual. When the next individual is found we have the two individuals where actually perform the recombination. After this, the reference variable is cleaned. Also the second approach has a problem, namely that the crossover happens on individuals with similar rankings. In fact it is very unlikely that, for example, selecting individual 0 for being crossed, we have to wait (the decision fails) until the last individual $N-1$ is reached in the loop. In other words, after selecting an individual for crossover, the second one is not selected with uniform probability among all the others.
 
 \subsection{Selection}
+\label{sec:select}
+
 
 Selection is another very tricky part in this problem. We always used rank selection in our experiments, since often fitness values are not that meaningful (for example comparing halting or non halting machines is very difficult).
 
@@ -270,7 +343,7 @@ This seems very nice, but in practice it is not. The problem is that it gives to
 \end{figure}
 
 In fact, consider the tails of the sigmoid: here the function takes values very close to zero, or very close to one (exponentially close). This implies that fittest individuals always survive and that worst individuals always get killed. In our case, non halting machines are always dropped, because they are normally in the back of the ranking. Non halting machines are important for us, because our aim is to find machines that are \textit{almost} non halting.
-Using other functions it's possible, but it remains a problem to have a very low pressure selection and keep the population size under control (not going to zero or infinity).
+Using other functions is possible, but it remains a problem to have a very low pressure selection and keep the population size under control (not going to zero or infinity).
 
 In order to solve this problem we had also to redesign the fitness function (to give some more importance to this non halting machines), but mainly we had to find some very low pressure selection mechanism.
 What we thought is: ``what is the function with the lowest possible selection pressure?''. It is a uniform selection, that is not considering at all the fitness function value. But in this way the search becomes really random, and we don't want this. So we combined this very ``flat'' selection with elitism, and the final selection looks something like this (with reference to algorithm \ref{alg:selection}):
