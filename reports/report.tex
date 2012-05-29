@@ -37,7 +37,7 @@ Our approach is different. We use a genetic algorithm to find busy beavers. We h
 
 For this, we designed and wrote a program to handle and execute Turing machines, and a program to simulate evolution on a population of Turing machines.
 
-With this method, we were able to find busy beavers for small machine sizes. We know that these are really busy beavers because the maximum number of steps before halting is known for theses machine sizes. When the machine size grows, we have to deal with the same problem as above; and we were out of time to run the experiments long enough to be able to find good candiates. However, no busy beaver is known for these sizes at the time of writing this paper. Only lower bounds are know for some sizes.
+With this method, we were able to find busy beavers for small machine sizes. We know that these are really busy beavers because the maximum number of steps before halting is known for theses machine sizes. When the machine size grows, we have to deal with the same problem as above; and we were out of time to run the experiments long enough to be able to find good candidates. However, no busy beaver is known for these sizes at the time of writing this paper. Only lower bounds are know for some sizes.
 
 \chapter{Definitions and Conventions}
 \label{chap:pre}
@@ -77,7 +77,7 @@ A \emph{Turing machine} $M$ of $\mathcal{T}$ is a triple $(m,n,\delta)$ where
 \end{array}
 \right .
 \]
-The function $\delta$ is the transition function and $\delta(a, s) = (a', s', d)$ means that if the machine is in the state $s$ and reads the symbol $a$, it writes $a'$, pass in state $s'$ and move in a direction given by $d$ where $d = 0$ means \emph{left} and $d = 1$ means \emph{right}. This function cannot be used on state $n$ since ther is no transition from the halt state.  
+The function $\delta$ is the transition function and $\delta(a, s) = (a', s', d)$ means that if the machine is in the state $s$ and reads the symbol $a$, it writes $a'$, pass in state $s'$ and move in a direction given by $d$ where $d = 0$ means \emph{left} and $d = 1$ means \emph{right}. This function cannot be used on state $n$ since there is no transition from the halt state.  
 \end{Def}
 
 
@@ -110,7 +110,7 @@ $S$ is called the \emph{max-step} function.
 We use these functions to define a busy beaver as following.
 
 \begin{Def}[busy beaver]
-\emph{busy beaver} of $\mathcal{T}_{m,n}$ is a Turing machine $M \in \mathcal{T}_{m,n}$ such that \[s(M) = S(m,n)\] In other words, it is a machine that permforms the most shifts among all machines of $\mathcal{T}_{m,n}$. 
+\emph{busy beaver} of $\mathcal{T}_{m,n}$ is a Turing machine $M \in \mathcal{T}_{m,n}$ such that \[s(M) = S(m,n)\] In other words, it is a machine that performs the most shifts among all machines of $\mathcal{T}_{m,n}$. 
 \end{Def}
 
 
