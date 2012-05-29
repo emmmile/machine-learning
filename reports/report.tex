@@ -199,7 +199,7 @@ In the case we are interested in, we wants machines which runs for long time and
 
 However, there is a big theoretical issue that makes it impossible. Because of the halting problem \cite{turing}, there is no general way to know if a given machine will stop or not. Of course, we can see in a glance that some machines will loop for ever. But we cannot write, in general, a function that take a transition table and answer yes or no depending of if the machine loops or not. So defining a good fitness function becomes really tricky.
 
-However, previous work on busy beavers \cite{rado} [TODO add citations] gives us, at least for few values of $m$ and $n$ the values the the max step function. So we know that if a machine overtake the value of this function, this machine loops for sure (because max step is the maximum number of steps performed by halting machines). Then, in the case of we know the value of max step, the fitness function can be something like
+However, previous work on busy beavers \cite{rado} \cite{allen} gives us, at least for few values of $m$ and $n$ the values the the max step function. So we know that if a machine overtake the value of this function, this machine loops for sure (because max step is the maximum number of steps performed by halting machines). Then, in the case of we know the value of max step, the fitness function can be something like
 
 \[
 f : \left |
