@@ -27,7 +27,7 @@ Given an alphabet and a set of states, we want to find a Turing machine that per
 Finding these machines is very difficult for mainly two reasons: the halting problem and the huge number of possible candidates.
 The usual approaches \cite{rado} to this problem are:
 \begin{itemize}
-\item running different machines (eventually all is there is not too much) until it halts (if so) and keeping the best ;
+\item running different machines (eventually all is there is not too much) until it halts (if so) and keeping the best.
 \item detecting patterns on the tape that means that the machine will stop after a certain number of shifts.
 \end{itemize}
 These methods can be improved using techniques of loop detection or by predicting the configuration of the machine in a certain number of step given the tape and the transition table. The main problem of this is that the search space size hugely increase with the size of the machines, as well as the most shifts performed by a busy beaver.
@@ -37,7 +37,7 @@ Our approach is different. We use a genetic algorithm to find busy beavers. We h
 
 For this, we designed and wrote a program to handle and execute Turing machines, and a program to simulate evolution on a population of Turing machines.
 
-With this method, we were able to find busy beavers for small machine sizes. We know that this is really busy beavers because maximum number of steps before halting is known for theses machine sizes. When the machine size grows, to search space become huge and we were out of time to run the experiments long enough to be able to find good candiates. However, no busy beaver is know for these sizes at the time of writing this paper. Only lower bounds are know for some sizes.
+With this method, we were able to find busy beavers for small machine sizes. We know that these are really busy beavers because the maximum number of steps before halting is known for theses machine sizes. When the machine size grows, we have to deal with the same problem as above; and we were out of time to run the experiments long enough to be able to find good candiates. However, no busy beaver is known for these sizes at the time of writing this paper. Only lower bounds are know for some sizes.
 
 \chapter{Definitions and Conventions}
 \label{chap:pre}
@@ -140,21 +140,21 @@ Our goal here is to find a busy beaver of $\mathcal{T}_{m,n}$ for given values $
 
 \section{Using a Genetic Algorithm to Find Busy Beavers}
 \label{sec:genalg}
-Given a size of machine, \ie two integers $m$ (size of the alphabet) and $n$ (number of states), we use a genetic algorithm in order to find busy beavers of $\mathcal{T}_{mn}$. The procedure is the following.
+Given a machine size, \ie two integers $m$ (size of the alphabet) and $n$ (number of states), we use a genetic algorithm in order to find busy beavers of $\mathcal{T}_{mn}$. The procedure is the following.
 
 \begin{enumerate}
 \item we generate a population of random individuals. Here these individuals are Turing machines of current state 0 (initial state), with a blank tape (filled with zeroes) and with a random transition table;
 \item \label{en:go} we perform genetic operations on a random part of the population (see section \ref{sec:go} for more detail);
 \item we compute the value of a fitness function (explained in section \ref{sec:fitness}) for each individual, what make possible to rank them;
-\item we pick individuals from the population and we delete it. This choice depends on the value of the fitness function for these individuals and on a random term. It simulates the natural selection of ``good'' individuals. More details about the implementation of this part can be found in section \ref{sec:select} (on page \pageref{sec:select});
-\item we continue to \ref{en:go} until we perform as much generations as we wanted or until we find a busy beaver.
+\item we pick some individuals from the population and we delete it. This choice depends on the value of the fitness function for these individuals but it is also \textit{stochastic}. It simulates the natural selection of ``good'' individuals. More details about the implementation of this part can be found in section \ref{sec:select} (on page \pageref{sec:select});
+\item we come back to \ref{en:go} until we perform as much generations as we wanted or until we find a busy beaver.
 \end{enumerate}
 
 \section{Genetic Operations}
 \label{sec:go}
 
-The genotype of our individuals is only the transition table. In fact, it would be meaningless to act on the tape or the current state since the machines we are looking for (busy beavers) starts on a blank tape in state 0, so are only defined by their transition table.
-The operators we use are crossover and mutations
+The genotype of our individuals is only the transition table. In fact, it would be totally meaningless to act on the tape or the current state since the machines we are looking for (busy beavers) starts on a blank tape in state 0, so they are only defined by their transition table.
+The operators we use are crossover and mutations.
 See sections \ref{sec:crossover} (on page \pageref{sec:crossover}) and \ref{sec:mutation} (on page \pageref{sec:mutation}) for implementation details of the genetic operators. 
 
 \section{A Difficult Problem}
@@ -175,7 +175,7 @@ These functions are, according to section \ref{sec:ma}, of the following type
 The function $\delta$ is from a set of $|\intv{0}{m-1} \times \intv{0}{n-1}| = nm$ elements to a set of $|\intv{0}{m-1} \times \intv{0}{n} \times \{0,1\}| = 2m(n+1)$ elements. So for each of the $nm$ different possible arguments of $\delta$, we can choose between $2m(n+1)$ values.
 It follows that we can have $(2 m (n+1))^{mn}$ different transition functions.
 
-According to what we said before, this is also the size of the search space. It grows very fast, as we can from the following table that shows its first values. Lines are indexed by number of states ($n$) and colums by the alphabet size ($m$).
+According to what we said before, this is also the size of the search space. It grows very fast, as we can see from the following table that shows its first values; lines are indexed by number of states ($n$) and colums by the alphabet size ($m$).
 
 \[
 \begin{array}{|c|c|c|c|c|}
