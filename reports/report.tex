@@ -292,7 +292,45 @@ We tested the implementation running the current 5 state, 2 symbols best busy be
 \subsection{Fitness function}
 \label{sec:fit}
 The fitness function is a relatively easy implementation, but reasoning behind it is very tricky and is better explained in \ref{sec:fitness}.
-[TODO explain how it is implemented]
+
+As said in section \ref{sec:fitness}, there is two different cases we have to to deal with, depending on values of $m$ (alphabet size) and $n$ (number of states):
+\begin{enumerate}
+\item the max step value is known. For each generation $g\in \N$, we run all the machines in the population until it reaches $min(g, S(m,n) + 1)$ steps. If when the fitness function is called, the machine has performed $k$ steps and is halted, we return $10 \times \frac{k}{S(m,n)}$. If the machine has overtook $S(m,n)$, it get a fitness of 0. Else, if get a fitness of $\frac{k}{S(m,n)}$;
+\item the max step value is not known. For each generation, we run all the machines in the population for 10 steps. When the fitness function is called, we return the number of shifts performed if the machine is halted, 0 else.
+\end{enumerate}
+
+The structure of this function is detailled in algorithm \ref{alg:fit}.
+
+\begin{algorithm}[h]
+\caption[Fitness function]{Fitness function implementation}
+\label{alg:fit}
+\SetKwInOut{Input}{input}
+\SetKwInOut{Output}{output}
+\SetKwFunction{random}{random}
+
+\Input{The individual $I$ to evaluate.}
+\Output{The fitness given to $I$}
+\Begin{
+	\If{$S(m,n)$ is known}{
+          \If{$i$ is in halt state}{
+            \Return{$10 \times \frac{i.\texttt{nb\_shifts}}{S(m,n)}$};
+          }\Else{
+            \If{$i.\texttt{nb\_shifts} > S(m,n)$}{
+            \Return{0}
+            } \Else{
+              \Return{$\frac{i.\texttt{nb\_shifts}}{S(m,n)}$};
+            }
+          }
+	} \Else{
+          \If{$i$ is in halt state}{
+            \Return{$i.\texttt{nb\_shifts}$}
+          }
+          \Else{
+            \Return{0}
+          }
+        }
+}
+\end{algorithm}
 
 \section{Evolutionary Computing Tool}
 This tool has been implemented with the aim to be as general as possible; with C++ in fact is relatively easy to abstract from the type of the individuals. The implementation is inside the file \texttt{population.hpp}.

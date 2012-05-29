@@ -192,7 +192,7 @@ public:
     // here we know the upper bound
     // try to make the number of steps performed by the S-busy beaver
     // if generation < upper bound, just make generation steps
-    do_nsteps( min( generation, slimits<NStates,NSymbols>::upper ) - nb_shifts );
+    do_nsteps( min( generation, slimits<NStates,NSymbols>::upper + 1) - nb_shifts );
   }
 
   friend ostream& operator<< ( ostream& os, const living_tm& ltm ) {
