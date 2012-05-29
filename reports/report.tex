@@ -432,16 +432,43 @@ S_1& 1RS_0& 2RS_1& 1LS_1\\
 \[
 \begin{array}[h]{|c|c|c|c|c|}
   \hline
-&0&   1&   2&   3\\
-\hline
-  S_0& 1LS_1& 1RS_0& 0RS_1& 1LH\\ 
-\hline
-  S_1& 3RS_0& 2LS_1& 3LS_0& 1LS_1\\
-\hline
+  &  0&   1&   2&   3\\
+  \hline
+  S_0& 2LS_1& 1RS_0& 3RS_0& 2RH\\
+  \hline
+  S_1& 3RS_0& 3RS_1& 3LS_1& 1LS_1\\
+  \hline
 \end{array}
 \]
-\item Steps it performs before halting: 283 (so it is not a busy beaver).
+\item Steps it performs before halting: 770 (so it is not a busy beaver).
 \end{itemize}
+
+% -> Best machine in the population:
+% =========================
+% Number of symbols:	4
+% Number of states:	2
+% Age:			0
+% Current state:		H
+% Current symbol:		0
+% Head position:		74
+% Tape size:		101
+% Computed steps so far:	770
+% Transition table:
+%     0:   1:   2:   3:
+% S0: 2LS1 1RS0 3RS0 2RSH 
+% S1: 3RS0 3RS1 3LS1 1LS1 
+% =========================
+% Fitness of this machine: 770.0000
+% -> Population:
+% 	Size:		396
+% 	Age:		8000
+% 	Halted:		309 machines
+% 	Max nb_shifts:	79990
+% 	Explored machines:	8320157
+% 	Machines space size:	110075314176
+% -> Known values:
+% 	Lower bound:	3932964
+% 	Upper bound:	not known
 
 
 \chapter{Outcome}
