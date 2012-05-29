@@ -157,7 +157,7 @@ See sections \ref{sec:crossover} (on page \pageref{sec:crossover}) and \ref{sec:
 
 \section{A Difficult Problem}
 
-Two features of busy beaver problem makes it difficult :
+Two features of busy beaver problem makes it difficult:
 \begin{enumerate}
 \item the fitness function is hard to define and to compute. This will be discussed later in section \ref{sec:fitness};
 \item \label{en:se} the search space is wide.
@@ -165,7 +165,7 @@ Two features of busy beaver problem makes it difficult :
 
 On point \ref{en:se}, we can be more accurate. As we saw in section \ref{sec:go}, the genotype of our individuals is nothing more than the transition table, so there is clearly as different individuals as there is different transition functions.
 
-These functions are, according to section \ref{sec:ma}, total functions of the following type
+These functions are, according to section \ref{sec:ma}, of the following type
 \[
   \delta : \intv{0}{m-1} \times \intv{0}{n-1} \to \intv{0}{m-1} \times \intv{0}{n} \times \{0,1\}
 \]
@@ -173,7 +173,7 @@ These functions are, according to section \ref{sec:ma}, total functions of the f
 The function $\delta$ is from a set of $|\intv{0}{m-1} \times \intv{0}{n-1}| = nm$ elements to a set of $|\intv{0}{m-1} \times \intv{0}{n} \times \{0,1\}| = 2m(n+1)$ elements. So for each of the $nm$ different possible arguments of $\delta$, we can choose between $2m(n+1)$ values.
 It follows that we can have $(2 m (n+1))^{mn}$ different transition functions.
 
-According to what we said before, this is also the size of the search space. It grows very fast, what can be seen on the following table that shows its first values. Lines are indexed by number of states ($n$) and colums by the alphabet size ($m$).
+According to what we said before, this is also the size of the search space. It grows very fast, as we can from the following table that shows its first values. Lines are indexed by number of states ($n$) and colums by the alphabet size ($m$).
 
 \[
 \begin{array}{|c|c|c|c|c|}
@@ -195,9 +195,9 @@ According to what we said before, this is also the size of the search space. It 
 Fitness functions are about what is ``good'' in an individual and what nature we want to promote or blame.
 In the case we are interested in, we wants machines which runs for long time and then halt. So we have to discard machines that loop, and, amongs non-looping machines, give best fitness to machines that runs longer.
 
-However, there is a big theoretical issues that makes it impossible. Because of the halting problem \cite{turing}, there is no general way to know if a given machine will stop or not. Of course, we can see in a glance that some machines will loop for ever. But we cannot write a function that take a transition table and answer yes or no depending of if the machine loops or not. So defining a good fitness function becomes tricky.
+However, there is a big theoretical issue that makes it impossible. Because of the halting problem \cite{turing}, there is no general way to know if a given machine will stop or not. Of course, we can see in a glance that some machines will loop for ever. But we cannot write, in general, a function that take a transition table and answer yes or no depending of if the machine loops or not. So defining a good fitness function becomes really tricky.
 
-However, previous work on busy beavers \cite{rado} [TODO add citations] gives us, at least for few values of $m$ and $n$ the values the the max step function. So we know that if a machine overtake the value of this function, this machine loops (because max step is the maximum number of steps performed by halting machines). Then, in the case of we know the value of max step, the fitness function can be something like
+However, previous work on busy beavers \cite{rado} [TODO add citations] gives us, at least for few values of $m$ and $n$ the values the the max step function. So we know that if a machine overtake the value of this function, this machine loops for sure (because max step is the maximum number of steps performed by halting machines). Then, in the case of we know the value of max step, the fitness function can be something like
 
 \[
 f : \left |
