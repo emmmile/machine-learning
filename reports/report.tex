@@ -1,6 +1,7 @@
 \documentclass{report}
 \input{preamble.tex}
 \usepackage[english,algochapter,vlined,linesnumbered]{algorithm2e}
+\usepackage{url}
 
 \title{Machine Learning Project Report\\\textbf{Evolutionnary Computing\\on Turing machines}\\{\Large Solving the Busy Beaver Problem}}
 \author{Jean-Florent Raymond\\\href{mailto:jean-florent.raymond.8795@student.uu.se}{\texttt{jean-florent.raymond.8795@student.uu.se}} \and Emilio Del Tessandoro\\
@@ -149,7 +150,7 @@ Our goal here is to find a busy beaver of $\mathcal{T}_{m,n}$ for given values $
 
 \section{Random numbers}
 \label{sec:random}
-We used a small class that embeds one \texttt{boost} random number generator, in particular the Mersenne Twister generator. These implementation is very fast and provides very good quality randomness also in high dimensional spaces \cite{boost-random}, \cite{mersenne-twister}.
+We used a small class that embeds one \texttt{boost} random number generator, in particular the Mersenne Twister generator. This implementation is very fast and provides very good quality randomness also in high dimensional spaces \cite{boost-random}, \cite{mersenne-twister}.
 
 We used random numbers very often in our program, especially for taking probabilistic decisions. Suppose in fact we want to implement a decision function $f$ that returns true with probability $p$. Something like this has been used in the selection procedure and in the individuals selection for crossovers and mutations.
 
@@ -516,14 +517,14 @@ But there are of course some drawbacks with this approach:
 \item the memory used doubles.
 \end{enumerate}
 
-One solution, that also make the algorithm even more effective, is to check not the whole tape, but just a window of it. This of course is an approximation: limiting the check to a certain portion of the tape can lead to wrong decisions (the machine \textit{seems} to have come back to the same state, but it is not).
+One solution, that also makes the algorithm even more effective, is to check not the whole tape, but just a window of it. This of course is an approximation: limiting the check to a certain portion of the tape can lead to wrong decisions (the machine \textit{seems} to have come back to the same state, but it is not).
 But of course the bigger is this window, the more precise is this approximation. And having a constant window size, makes the state check constant time (so not increasing with the tape size).
 
 Another solution could be to save an hash of the tape, instead of the full tape. This is very memory effective but, because of the hash collisions can also be inexact. Also a combination of the two approaches would be very interesting to try.
 
 
 
-\bibliographystyle{abbrv}
+\bibliographystyle{plain}
 \bibliography{report}
 
 \end{document}
