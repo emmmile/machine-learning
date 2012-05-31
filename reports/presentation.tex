@@ -1,12 +1,10 @@
 \documentclass{beamer}
 \input{preamble.tex}
-\usecolortheme{beaver}
-%\usetheme{Montpellier}
-%\useinnertheme{rectangles}
+%\usecolortheme{beaver}
+\usetheme{Berlin}
 
 \title{\textbf{Evolutionary Computing\\on Turing machines}}
 \subtitle{Solving the Busy Beaver Problem}
-%\author{Jean-Florent Raymond\newline\texttt{jean-florent.raymond.8795@student.uu.se} \and Emilio Del Tessandoro\newline\texttt{emilio.del\_tessandoro.4062@student.uu.se}}
 \author{Jean-Florent Raymond \and Emilio Del Tessandoro}
 \institute[Uppsala University]{Uppsala University}
 \date{\today}
@@ -17,6 +15,63 @@
 
 \begin{frame}
 \titlepage
+\end{frame}
+
+\section{Introduction}
+
+\begin{frame}
+\frametitle{What is Turing Machine}
+%\framesubtitle{}
+%they said to say briefly what it is, I think a picture is needed
+\begin{figure}
+\includegraphics[scale=0.5]{figures/turingMachine.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{The Busy Beaver problem}
+%\framesubtitle{}
+\end{frame}
+
+\begin{frame}
+\frametitle{Why it is so hard}
+%add another slide with the table, maybe two tables
+%one fore the search space size, the other for the number of steps computed by the beavers
+\begin{itemize}
+\item The size is exponential in $n$, $m$
+\item The halting problem, $S$ is not even computable
+\item How the ``good'' machines are distributed is not known and not easy
+\item $S(n,m)$ grows extremely fast
+\end{itemize}
+\end{frame}
+
+\section{Possible solutions}
+
+\begin{frame}
+\frametitle{Other approaches}
+%brute force.. cycles detection.. PSO
+\end{frame}
+
+\begin{frame}
+\frametitle{Our approach}
+%why we used EC
+\end{frame}
+
+\begin{frame}
+\frametitle{Our solution}
+%C++ implementation, TM virtual machine and the EC tool
+\end{frame}
+
+\section{Results}
+
+\begin{frame}
+\frametitle{What we found}
+\end{frame}
+
+\section{Conclusions}
+
+\begin{frame}
+\frametitle{Conclusions}
 \end{frame}
 
 \end{document}

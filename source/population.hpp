@@ -176,13 +176,17 @@ public:
     return explored;
   }
 
-  void get_stats(uint& n_halt, uint& best_nbshifts) {
+  void get_stats(uint& n_halt, uint& best_nbshifts, uint& best_halted) {
 
     n_halt = 0;
     best_nbshifts = 0;
+    best_halted = 0;
     for (unsigned i = 0; i < individuals.size(); ++i) {
-      if (individuals[i].individual->get_state().ishalt())
+      if (individuals[i].individual->get_state().ishalt()) {
 	++n_halt;
+	if (individuals[i].individual->get_nb_shifts() > best_halted)
+	  best_halted = individuals[i].individual->get_nb_shifts();
+      }
       best_nbshifts = max(best_nbshifts, individuals[i].individual->get_nb_shifts()); 
     }
   }

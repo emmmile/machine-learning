@@ -60,7 +60,8 @@ int main() {
     // do statistics...
     uint n_halt = 0; //number of halted machines
     uint best_nshift = 0; 
-    p.get_stats(n_halt, best_nshift);
+    uint best_halted = 0;
+    p.get_stats(n_halt, best_nshift, best_halted);
 
     cout << "] Complete.\n-> Best machine in the population:\n" << p.get_best()
          << "Fitness of this machine: " << setprecision(4) << p.get_best_fitness()
@@ -68,6 +69,7 @@ int main() {
 	 << "\n\tSize:\t\t" << p.size()
 	 << "\n\tAge:\t\t" << p.get_age()
 	 << "\n\tHalted:\t\t" << n_halt << " machines"
+	 << "\n\tBest halted:\t" << best_halted << " shifts"
 	 << "\n\tMax nb_shifts:\t" << best_nshift
 	 << "\n\tExplored machines:\t" << setprecision(0) << p.get_explored()
 	 << "\n\tMachines space size:\t" << ltm::spacesize()

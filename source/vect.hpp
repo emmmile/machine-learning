@@ -46,6 +46,10 @@ public:
 	}
 #endif
 
+	T* bits ( ) {
+		return values;
+	}
+
 	// returns a reference to the i-th component. I avoid checks for more speed
 	T& operator[] ( uint i ) {
 		return values[i];
