@@ -52,6 +52,43 @@
 
 \begin{frame}{Why It Is So Hard, Continued}
 
+
+\only<1>{
+\framesubtitle{Order of magnitude of the search space}
+
+\begin{center}
+\begin{tabular}[h!]{|c|c|c|c|c|}
+  \hline
+    & 2 symbols & 3 symbols  & 4 symbols\\
+  \hline
+  2 states&$10^4$ &$10^7$   &$10^{17}$\\
+  \hline
+  3 states&$10^7$ &$10^{12}$ &$10^{18}$\\
+  \hline
+  4 states&$10^8$ &$10^{17}$ &$10^{25}$\\
+  \hline
+\end{tabular}
+\[
+\left (2 \times M \times(N+1) \right ) ^{MN}
+\]
+\end{center}
+}\only<2>{
+\framesubtitle{Values and lower bounds for $S$}
+
+\begin{center}
+\begin{tabular}[h!]{|c|c|c|c|c|}
+  \hline
+          & 2 symbols & 3 symbols  & 4 symbols\\
+  \hline
+  2 states&6          &38          &$>10^6$\\
+  \hline
+  3 states&21         & $> 10^{17}$ &$>10^{13036}$\\
+  \hline
+  4 states&107        &$>10^{14072}$ &?\\
+  \hline
+\end{tabular}
+\end{center}
+}
 \end{frame}
 
 \section{Possible Solutions}
