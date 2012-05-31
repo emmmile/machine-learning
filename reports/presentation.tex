@@ -3,7 +3,7 @@
 %\usecolortheme{beaver}
 \usetheme{Berlin}
 
-\title{\textbf{Evolutionary Computing\\on Turing machines}}
+\title{\textbf{Evolutionary Computing \\on Turing Machines}}
 \subtitle{Solving the Busy Beaver Problem}
 \author{Jean-Florent Raymond \and Emilio Del Tessandoro}
 \institute[Uppsala University]{Uppsala University}
@@ -15,26 +15,31 @@
 
 \begin{frame}
 \titlepage
+%dont know if it's a good idea to add the university logo :
+\vspace{-2cm}
+\begin{flushright}
+\includegraphics[scale=0.3]{figures/uu_logo.png}  
+\end{flushright}
+
 \end{frame}
 
 \section{Introduction}
 
-\begin{frame}
-\frametitle{What is Turing Machine}
-%\framesubtitle{}
+\begin{frame}{What Is a Turing Machine ?}
+
+
 %they said to say briefly what it is, I think a picture is needed
 \begin{figure}
 \includegraphics[scale=0.5]{figures/turingMachine.png}
 \end{figure}
 \end{frame}
 
-\begin{frame}
-\frametitle{The Busy Beaver problem}
-%\framesubtitle{}
+\begin{frame}{The Busy Beaver Problem}
+
 \end{frame}
 
-\begin{frame}
-\frametitle{Why it is so hard}
+\begin{frame}{Why It Is So Hard}
+
 %add another slide with the table, maybe two tables
 %one fore the search space size, the other for the number of steps computed by the beavers
 \begin{itemize}
@@ -45,33 +50,54 @@
 \end{itemize}
 \end{frame}
 
-\section{Possible solutions}
+\begin{frame}{Why It Is So Hard, Continued}
 
-\begin{frame}
-\frametitle{Other approaches}
-%brute force.. cycles detection.. PSO
 \end{frame}
 
-\begin{frame}
-\frametitle{Our approach}
-%why we used EC
+\section{Possible Solutions}
+
+\begin{frame}{Other Approaches}
+
+\begin{itemize}
+\item Naïve method : run different machines and keep to one who halts after the more steps ; %improved if we detect loops
+\item Detect patterns on the tape to predict future action.
+\end{itemize}
+
 \end{frame}
 
-\begin{frame}
-\frametitle{Our solution}
+\begin{frame}{Our Approach}
+
+We used a genetic algorithm.
+\end{frame}
+
+\begin{frame}{What We Did}
+
 %C++ implementation, TM virtual machine and the EC tool
+\begin{enumerate}
+\item we did a C++ imlementation :
+  \begin{itemize}
+  \item program to handle and run TM ;
+  \item genetic algorithm.
+  \end{itemize}
+\item we run tests ;
+\item we get results.
+\end{enumerate}
 \end{frame}
 
 \section{Results}
 
-\begin{frame}
-\frametitle{What we found}
+\begin{frame}{What We Found}
+Busy beavers for the instances (2,2), (2,3), (3,2)
+\end{frame}
+
+\begin{frame}{Actual Results}
+% we found all known busy beavers
 \end{frame}
 
 \section{Conclusions}
 
-\begin{frame}
-\frametitle{Conclusions}
+\begin{frame}{Conclusions}
+We did a great work and then deserve the best grade, and maybe a Gödel prize.
 \end{frame}
 
 \end{document}
