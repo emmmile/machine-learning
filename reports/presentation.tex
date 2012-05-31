@@ -111,7 +111,7 @@
 \begin{frame}{Other Approaches}
 
 \begin{itemize}
-\item Naïve method : run different machines and keep to one who halts after the more steps ; %improved if we detect loops
+\item Naive method : run different machines and keep the one who halts after the more steps ; %improved if we detect loops
 \item Detect patterns on the tape to predict future action.
 \end{itemize}
 
@@ -126,7 +126,7 @@
 \item fitness:
   \begin{itemize}
   \item 0 if $S$ is overtaken ;
-  \item inverse of distance to the $S$ else.
+  \item inverse of distance to the $S$ else (the closer, the better).
   \end{itemize}
 \item fitness of 1 means that we found a busy beaver.
 \end{itemize}
@@ -158,11 +158,33 @@ Busy beavers for the instances (2,2), (2,3), (3,2) and (2,4)
 Busy beavers for the instances (2,2), (2,3), (3,2) and (2,4)
 \end{frame}
 
-\section{Conclusions}
+\section{Conclusion}
 
-\begin{frame}{Conclusions}
-Using a genetic algorithm made us able to find all currently known busy beavers much more faster than using bruteforce.
-Solving the other cases seems impossible with our current implementation, but we have a lot of optimization ideas.
+\begin{frame}{Conclusion}
+
+With our genetic algorithm,
+  \begin{itemize}
+  \item we found all curently known busy beavers;
+  \item we were unable to go further because of:
+    \begin{enumerate}
+    \item $S$;
+    \item search space;
+    \item distribution of halted machines.
+    \end{enumerate}
+  \end{itemize}
+
+\vspace{1cm} % bad, I know
+However we have a lot of ideas of optimizations for exploring the other cases.
+\end{frame}
+
+\begin{frame}{The End}
+  Thank you for your attention !
+Do you have questions ?
+
+\vspace{2cm} % bad, I know
+
+If you want to try our program (or to use it for other problems) :
+\url{https://github.com/emmmile/machine-learning}
 \end{frame}
 
 \end{document}
