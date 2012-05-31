@@ -1,7 +1,10 @@
 \documentclass{beamer}
 \input{preamble.tex}
+\usepackage{wallpaper}
 %\usecolortheme{beaver}
 \usetheme{Berlin}
+
+
 
 \title{\textbf{Evolutionary Computing \\on Turing Machines}}
 \subtitle{Solving the Busy Beaver Problem}
@@ -9,6 +12,9 @@
 \institute[Uppsala University]{Uppsala University}
 \date{\today}
 
+\usebackgroundtemplate{%
+  \vbox to \paperheight{\vspace{5cm}\hbox to \paperwidth{\hfil\includegraphics[width=3cm]{figures/uu_logo_transparent.png}\hfil}}
+}
 
 
 \begin{document}
@@ -16,13 +22,12 @@
 \begin{frame}
 \titlepage
 %dont know if it's a good idea to add the university logo :
-\vspace{-2cm}
-\begin{flushright}
-\includegraphics[scale=0.3]{figures/uu_logo.png}  
-\end{flushright}
+%\vspace{-2cm}
+%\begin{flushright}
+%\includegraphics[scale=0.3]{figures/uu_logo.png}  
+%\end{flushright}
 
 \end{frame}
-
 \section{Introduction}
 
 \begin{frame}
