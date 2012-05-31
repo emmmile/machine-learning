@@ -25,15 +25,27 @@
 
 \section{Introduction}
 
-\begin{frame}{What Is a Turing Machine ?}
-
-
-%they said to say briefly what it is, I think a picture is needed
-%yes, good
-\begin{figure}
-\includegraphics[scale=0.5]{figures/turingMachine.png}
-\end{figure}
+\begin{frame}
+\frametitle{What Is a Turing Machine?}
+\begin{columns}[c]
+	\begin{column}{5.5cm}
+		\begin{figure}
+		\includegraphics[width=5.5cm]{figures/turingMachine.png}
+		\end{figure}
+	\end{column}
+	\begin{column}{6cm}
+		Is an \textbf{hypothetical device} with:
+		\begin{itemize}
+		\item an internal state $S \in Q$
+		\item an infinite tape (symbols in $\Sigma$)
+		\item a transition function $\delta$
+		\end{itemize}
+		
+		\[\delta : Q \times \Sigma \to Q \times \Sigma \times \{L,R\}\]
+	\end{column}
+\end{columns}
 \end{frame}
+
 
 \begin{frame}{The Busy Beaver Problem}
 
@@ -43,9 +55,9 @@
 
 \begin{itemize}
 \item The size of the search space is exponential in the size of the machines;
-\item $S$ is not computable (halting problem);
-\item How the halting machines are distributed is not known and not easy;
-\item $S$ grows extremely fast.
+\item $S$ grows extremely fast, even faster than the search sapce;
+\item Because of the halting problem, $S$ is not computable;
+\item How the halting machines are distributed is not known and not easy.
 \end{itemize}
 \end{frame}
 
