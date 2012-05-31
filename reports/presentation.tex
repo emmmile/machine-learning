@@ -29,6 +29,7 @@
 
 
 %they said to say briefly what it is, I think a picture is needed
+%yes, good
 \begin{figure}
 \includegraphics[scale=0.5]{figures/turingMachine.png}
 \end{figure}
@@ -40,13 +41,11 @@
 
 \begin{frame}{Why It Is So Hard}
 
-%add another slide with the table, maybe two tables
-%one fore the search space size, the other for the number of steps computed by the beavers
 \begin{itemize}
-\item The size is exponential in $n$, $m$
-\item The halting problem, $S$ is not even computable
-\item How the ``good'' machines are distributed is not known and not easy
-\item $S(n,m)$ grows extremely fast
+\item The size of the search space is exponential in the size of the machines;
+\item $S$ is not computable (halting problem);
+\item How the halting machines are distributed is not known and not easy;
+\item $S$ grows extremely fast.
 \end{itemize}
 \end{frame}
 
@@ -73,7 +72,7 @@
 \]
 \end{center}
 }\only<2>{
-\framesubtitle{Values and lower bounds for $S$}
+\framesubtitle{Values and lower bounds for $S$ (max step function)}
 
 \begin{center}
 \begin{tabular}[h!]{|c|c|c|c|c|}
@@ -103,8 +102,19 @@
 \end{frame}
 
 \begin{frame}{Our Approach}
+\framesubtitle{A Genetic Algorithm}
 
-We used a genetic algorithm.
+\begin{itemize}
+\item on a population of Turing machines;
+\item operations : mutation, crossover;
+\item fitness:
+  \begin{itemize}
+  \item 0 if $S$ is overtaken ;
+  \item inverse of distance to the $S$ else.
+  \end{itemize}
+\item fitness of 1 means that we found a busy beaver.
+\end{itemize}
+
 \end{frame}
 
 \begin{frame}{What We Did}
@@ -124,17 +134,19 @@ We used a genetic algorithm.
 \section{Results}
 
 \begin{frame}{What We Found}
-Busy beavers for the instances (2,2), (2,3), (3,2)
+Busy beavers for the instances (2,2), (2,3), (3,2) and (2,4)
 \end{frame}
 
 \begin{frame}{Actual Results}
 % we found all known busy beavers
+Busy beavers for the instances (2,2), (2,3), (3,2) and (2,4)
 \end{frame}
 
 \section{Conclusions}
 
 \begin{frame}{Conclusions}
-We did a great work and then deserve the best grade, and maybe a Gödel prize.
+Using a genetic algorithm made us able to find all currently known busy beavers much more faster than using bruteforce.
+Solving the other cases seems impossible with our current implementation, but we have a lot of optimization ideas.
 \end{frame}
 
 \end{document}
