@@ -152,7 +152,7 @@ public:
     pmutation = pm;
     pcrossover = pc;
     stationary = st;
-    gen.seed( (uint) this );
+    gen.seed( time( NULL ) );
   }
 
   ~population( ) {

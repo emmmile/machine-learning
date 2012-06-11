@@ -1,7 +1,7 @@
 NAME = 		main
 CXX =		g++
 DEFINES = 
-CXXFLAGS =	-O3 -pipe -ffast-math -funroll-loops -march=i686 -Wall -std=c++11
+CXXFLAGS =	-O3 -pipe -ffast-math -funroll-loops -march=native -Wall -std=c++11
 LINK =		g++
 LFLAGS =	-O3 -s
 LIBS =		-lboost_serialization
@@ -47,7 +47,17 @@ $(NAME): header $(NAME).o
 	@$(LINK) $(LFLAGS) -o $@ $@.o $(LIBS) $(ERR_HANDLING)
 	$(ERR_PRINTING)
 
-%.o: %.cpp turing-machine.hpp action.hpp random.hpp utils.hpp living-tm.hpp population.hpp
+tur.o: tur.cpp limits.hpp living-tm.hpp turing-machine.hpp action.hpp random.hpp utils.hpp population.hpp nm.hpp
+	@$(ECHO) "Compiling $<... \t"
+	@$(CXX) $(CXXFLAGS) $(INCPATH) -c -o $@ $< $(ERR_HANDLING)
+	$(ERR_PRINTING)
+
+main.o: main.cpp population.hpp random.hpp vect.hpp
+	@$(ECHO) "Compiling $<... \t"
+	@$(CXX) $(CXXFLAGS) $(INCPATH) -c -o $@ $< $(ERR_HANDLING)
+	$(ERR_PRINTING)
+
+experiments.o: experiments.cpp living-tm.hpp turing-machine.hpp action.hpp random.hpp utils.hpp population.hpp limits.hpp vect.hpp nm.hpp
 	@$(ECHO) "Compiling $<... \t"
 	@$(CXX) $(CXXFLAGS) $(INCPATH) -c -o $@ $< $(ERR_HANDLING)
 	$(ERR_PRINTING)
