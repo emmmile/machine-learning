@@ -1,0 +1,119 @@
+\documentclass{report}
+\input{preamble.tex}
+\usepackage{pgf}
+\usepackage{pgfplots}
+
+\pgfplotsset{
+	legend style={rounded corners=2pt},
+}
+
+\title{Machine Learning Project Report\\\textbf{Evolutionary Computing\\on Turing machines}\\{\Large Solving the Busy Beaver Problem}}
+\author{Jean-Florent Raymond\\\href{mailto:jean-florent.raymond.8795@student.uu.se}{\texttt{jean-florent.raymond.8795@student.uu.se}} \and Emilio Del Tessandoro\\
+  \href{mailto:emilio.del_tessandoro.4062@student.uu.se }{\texttt{emilio.del\_tessandoro.4062@student.uu.se }}}
+\date{\today}
+
+\begin{document}
+%\maketitle
+
+We investigated the efficiency of the evolutionary computing approach over the pure random search adjusting the crossover probability. Setting this probability to 0 means that the algorithm proceed only by mutations, \ie it becomes a random search.
+
+The only cases we tested are:
+\begin{itemize}
+\item $N = 3$, $M = 2$ (plots \ref{plot32} and \ref{plot32good}),
+\item $N = 4$, $M = 2$ (plot \ref{plot42}),
+\item $N = 2$, $M = 3$ (plots \ref{plot23}),
+\end{itemize}
+
+that are the most difficult ones where the upper bound of the $S$ function is known. The cases where the upper bound is not known are too difficult to solve and hasn't been investigated.
+
+Plot \ref{plot32} show a simple comparison of the two approaches. %In this case the best machine(s) computes 21 steps and the search space size is 16\,777\,216.
+Fixed the generations number, the random search obviously explore less compared to the normal evolutionary approach (because no crossovers are performed), so the normal approach should be always more effective. In fact the random search produces on average one third of the machines produced by the plain evolutionary approach (using the same number of generations and a crossover probability of 0.9).
+But also considering this fact, the random search is instead more effective.
+This happens because it's true that crossovers introduce more ``good'' machines, but is also true that, since the population size is limited, these machines are selected in preference of other ones (machines that instead are kept in the random search).
+
+A more fair comparison is shown in plot \ref{plot32good}. This time the number of steps of the best machine found (average) is plotted against the number of explored machines (average)\footnote{This is not exact. The number of explored machines is strictly less than the shown numbers because we can generate more times the same machine (we didn't add a check for this fact).}. In this case is evident that random search is always better.
+
+Notice that random search is better not only in terms of the ratio ``how good is the found machine'' versus ``number of explored machines'', but also in time complexity. This because producing a new machine via crossover can take time proportional to the transition table size (\ie $O(MN)$), while a mutation is always $O(1)$ in our implementation.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+    \begin{semilogxaxis}[
+        xlabel=generations,
+        ylabel=best found (average),
+	%width=\textwidth,
+	legend pos=south east]
+		
+	\addplot[smooth,color=red]   table[x=generations,y=averageSteps] {../results/statistics/3.2.statistics};
+	\addlegendentry{normal}
+	\addplot[smooth,color=blue] table[x=generations,y=averageSteps] {../results/statistics/3.2.statistics.random};
+	\addlegendentry{only random}
+    \end{semilogxaxis}
+\end{tikzpicture}
+\caption[]{Statistics for the case $N=3$, $M=2$. Best machine found (an average over 200 program executions) versus the generations number. This comparison it's not fair since the normal algorithm produces a lot more machines than the (only) random version. But, also considering this fact, the plot shows that the random search is more effective.}
+\label{plot32}
+\end{figure}
+
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+    \begin{semilogxaxis}[
+        xlabel=explored machines,
+        ylabel=best found (average),
+	%width=\textwidth,
+	legend pos=south east]
+		
+	\addplot[smooth,color=red]   table[x=averageExplored,y=averageSteps] {../results/statistics/3.2.statistics};
+	\addlegendentry{normal}
+	\addplot[smooth,color=blue] table[x=averageExplored,y=averageSteps] {../results/statistics/3.2.statistics.random};
+	\addlegendentry{only random}
+    \end{semilogxaxis}
+\end{tikzpicture}
+\caption[]{Statistics for the case $N=3$, $M=2$. Best machine found (an average over 200 program executions) versus the number of explored machines (average). This is a more fair comparison w.r.t the previous plot.}
+\label{plot32good}
+\end{figure}
+
+
+
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+    \begin{semilogxaxis}[
+        xlabel=explored machines,
+        ylabel=best found (average),
+	%width=\textwidth,
+	legend pos=south east]
+		
+	\addplot[smooth,color=red]   table[x=averageExplored,y=averageSteps] {../results/statistics/4.2.statistics};
+	\addlegendentry{normal}
+	\addplot[smooth,color=blue] table[x=averageExplored,y=averageSteps] {../results/statistics/4.2.statistics.random};
+	\addlegendentry{only random}
+    \end{semilogxaxis}
+\end{tikzpicture}
+\caption[]{Statistics for the case $N=4$, $M=2$. The idea is the same as figure \ref{plot32good} except that here the average is made over 500 program executions.}
+\label{plot42}
+\end{figure}
+
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+    \begin{semilogxaxis}[
+        xlabel=explored machines,
+        ylabel=best found (average),
+	%width=\textwidth,
+	legend pos=south east]
+		
+	\addplot[smooth,color=red]   table[x=averageExplored,y=averageSteps] {../results/statistics/2.3.statistics};
+	\addlegendentry{normal}
+	\addplot[smooth,color=blue] table[x=averageExplored,y=averageSteps] {../results/statistics/2.3.statistics.random};
+	\addlegendentry{only random}
+    \end{semilogxaxis}
+\end{tikzpicture}
+\caption[]{Statistics for the case $N=2$, $M=3$. Again what is shown is an average over 500 program executions.}
+\label{plot23}
+\end{figure}
+
+\end{document}

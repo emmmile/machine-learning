@@ -138,7 +138,7 @@ class population {
   }
 
 public:
-  population(uint pop_size = initialPopulation,
+  population(uint seed = clock() + time(NULL), uint pop_size = initialPopulation,
 	     bool st = true,
              double pc = default_pcrossover,
 	     double pm = default_pmutation) {
@@ -152,7 +152,7 @@ public:
     pmutation = pm;
     pcrossover = pc;
     stationary = st;
-    gen.seed( time( NULL ) );
+    gen.seed( seed ); // clock()
   }
 
   ~population( ) {
