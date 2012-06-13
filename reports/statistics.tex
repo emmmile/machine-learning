@@ -41,12 +41,13 @@ Notice that random search is better not only in terms of the ratio ``how good is
     \begin{semilogxaxis}[
         xlabel=generations,
         ylabel=best found (average),
-	%width=\textwidth,
+	xmin=10,
+	xmax=1000,
 	legend pos=south east]
 		
-	\addplot[smooth,color=red]   table[x=generations,y=averageSteps] {../results/statistics/3.2.statistics};
+	\addplot[smooth,color=red]   table[x=generations,y=averageSteps] {../results/statistics-non-stationary/3.2.statistics};
 	\addlegendentry{normal}
-	\addplot[smooth,color=blue] table[x=generations,y=averageSteps] {../results/statistics/3.2.statistics.random};
+	\addplot[smooth,color=blue] table[x=generations,y=averageSteps] {../results/statistics-non-stationary/3.2.statistics.random};
 	\addlegendentry{only random}
     \end{semilogxaxis}
 \end{tikzpicture}
@@ -55,18 +56,20 @@ Notice that random search is better not only in terms of the ratio ``how good is
 \end{figure}
 
 
-\begin{figure}[t]
+\begin{figure}[b]
 \centering
 \begin{tikzpicture}
     \begin{semilogxaxis}[
         xlabel=explored machines,
         ylabel=best found (average),
 	%width=\textwidth,
+	xmin=3000,
+	xmax=600000,
 	legend pos=south east]
 		
-	\addplot[smooth,color=red]   table[x=averageExplored,y=averageSteps] {../results/statistics/3.2.statistics};
+	\addplot[smooth,color=red]   table[x=averageExplored,y=averageSteps] {../results/statistics-non-stationary/3.2.statistics};
 	\addlegendentry{normal}
-	\addplot[smooth,color=blue] table[x=averageExplored,y=averageSteps] {../results/statistics/3.2.statistics.random};
+	\addplot[smooth,color=blue] table[x=averageExplored,y=averageSteps] {../results/statistics-non-stationary/3.2.statistics.random};
 	\addlegendentry{only random}
     \end{semilogxaxis}
 \end{tikzpicture}
@@ -77,43 +80,124 @@ Notice that random search is better not only in terms of the ratio ``how good is
 
 
 
-\begin{figure}[t]
+\begin{figure}[h]
 \centering
 \begin{tikzpicture}
     \begin{semilogxaxis}[
         xlabel=explored machines,
         ylabel=best found (average),
 	%width=\textwidth,
+	xmin=3000,
+	xmax=2000000,
 	legend pos=south east]
 		
-	\addplot[smooth,color=red]   table[x=averageExplored,y=averageSteps] {../results/statistics/4.2.statistics};
+	\addplot[smooth,color=red]   table[x=averageExplored,y=averageSteps] {../results/statistics-non-stationary/4.2.statistics};
 	\addlegendentry{normal}
-	\addplot[smooth,color=blue] table[x=averageExplored,y=averageSteps] {../results/statistics/4.2.statistics.random};
+	\addplot[smooth,color=blue] table[x=averageExplored,y=averageSteps] {../results/statistics-non-stationary/4.2.statistics.random};
 	\addlegendentry{only random}
     \end{semilogxaxis}
 \end{tikzpicture}
-\caption[]{Statistics for the case $N=4$, $M=2$. The idea is the same as figure \ref{plot32good} except that here the average is made over 500 program executions.}
+\caption[]{Statistics for the case $N=4$, $M=2$.}
 \label{plot42}
 \end{figure}
 
 
-\begin{figure}[t]
+\begin{figure}[h]
 \centering
 \begin{tikzpicture}
     \begin{semilogxaxis}[
         xlabel=explored machines,
         ylabel=best found (average),
 	%width=\textwidth,
+	xmin=3000,
+	xmax=2000000,
 	legend pos=south east]
 		
-	\addplot[smooth,color=red]   table[x=averageExplored,y=averageSteps] {../results/statistics/2.3.statistics};
+	\addplot[smooth,color=red]   table[x=averageExplored,y=averageSteps] {../results/statistics-non-stationary/2.3.statistics};
 	\addlegendentry{normal}
-	\addplot[smooth,color=blue] table[x=averageExplored,y=averageSteps] {../results/statistics/2.3.statistics.random};
+	\addplot[smooth,color=blue] table[x=averageExplored,y=averageSteps] {../results/statistics-non-stationary/2.3.statistics.random};
 	\addlegendentry{only random}
     \end{semilogxaxis}
 \end{tikzpicture}
-\caption[]{Statistics for the case $N=2$, $M=3$. Again what is shown is an average over 500 program executions.}
+\caption[]{Statistics for the case $N=2$, $M=3$. Exploring $10^6$ machines correspond to use about 3000 generations in the random search: with these settings an optimal machine is found 80\% of the times.}
 \label{plot23}
+\end{figure}
+
+
+
+
+
+
+\section*{With stationary fitness function}
+The tests made until now use a non stationary fitness function that, in the first generations, compute only a certain number of steps on the machine, increasing this number of steps in the following generations.
+
+The situation becomes slightly better using a stationary fitness function, approach that is possible since we know the value of the $S$ function for these cases (figures \ref{plot32stationary}, \ref{plot42stationary}, \ref{plot23stationary}). The efficiency of the algorithm, in terms of how many generations are needed for finding a machine that compute $n$ steps, is higher in both cases. Also the difference between the two approaches becomes smaller.
+
+An interesting situation is shown in figure \ref{plot23stationary} where, for some settings, the evolutionary approach is better than the random search.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+    \begin{semilogxaxis}[
+        xlabel=explored machines,
+        ylabel=best found (average),
+	%width=\textwidth,
+	xmin=3000,
+	xmax=600000,
+	legend pos=south east]
+		
+	\addplot[smooth,color=red]   table[x=averageExplored,y=averageSteps] {../results/statistics-stationary/3.2.statistics};
+	\addlegendentry{normal}
+	\addplot[smooth,color=blue] table[x=averageExplored,y=averageSteps] {../results/statistics-stationary/3.2.statistics.random};
+	\addlegendentry{only random}
+    \end{semilogxaxis}
+\end{tikzpicture}
+\caption[]{Statistics for the case $N=3$, $M=2$, stationary fitness function.}
+\label{plot32stationary}
+\end{figure}
+
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+    \begin{semilogxaxis}[
+        xlabel=explored machines,
+        ylabel=best found (average),
+	%width=\textwidth,
+	xmin=3000,
+	xmax=1000000,
+	legend pos=south east]
+		
+	\addplot[smooth,color=red]   table[x=averageExplored,y=averageSteps] {../results/statistics-stationary/4.2.statistics};
+	\addlegendentry{normal}
+	\addplot[smooth,color=blue] table[x=averageExplored,y=averageSteps] {../results/statistics-stationary/4.2.statistics.random};
+	\addlegendentry{only random}
+    \end{semilogxaxis}
+\end{tikzpicture}
+\caption[]{Statistics for the case $N=4$, $M=2$, stationary fitness function. The idea is the same as figure \ref{plot32stationary} except that here the average is made over 500 program executions.}
+\label{plot42stationary}
+\end{figure}
+
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+    \begin{semilogxaxis}[
+        xlabel=explored machines,
+        ylabel=best found (average),
+	%width=\textwidth,
+	xmin=3000,
+	xmax=3000000,
+	legend pos=south east]
+		
+	\addplot[smooth,color=red]   table[x=averageExplored,y=averageSteps] {../results/statistics-stationary/2.3.statistics};
+	\addlegendentry{normal}
+	\addplot[smooth,color=blue] table[x=averageExplored,y=averageSteps] {../results/statistics-stationary/2.3.statistics.random};
+	\addlegendentry{only random}
+    \end{semilogxaxis}
+\end{tikzpicture}
+\caption[]{Statistics for the case $N=2$, $M=3$, stationary fitness function. Again what is shown is an average over 500 program executions. This is the only case where the normal approach shows some advantages in respect to the pure random search; but increasing more the number of generations random search becomes better again.}
+\label{plot23stationary}
 \end{figure}
 
 \end{document}
