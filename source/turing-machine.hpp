@@ -185,13 +185,20 @@ public:
 
   void set_action(const TState st, const TSymbol sy, const action_type& a) {
     // modify the transition table
-
     actions[st * NSymbols + sy] = action<NStates, NSymbols>(a);
-    /*
-    actions[st * NSymbols + sy].dir = a.dir;
-    actions[st * NSymbols + sy].state = a.state;
-    actions[st * NSymbols + sy].symbol = a.symbol;
-    */
+  }
+
+  void set_action(const TState st, const TSymbol sy, const TSymbol symbol, const bool dir, const Tsymbol state) {
+    // modify the transition table
+    actions[st * NSymbols + sy].dir = dir;
+    actions[st * NSymbols + sy].state = state;
+    actions[st * NSymbols + sy].symbol = symbol;
+  }
+  
+  void next_machine() {
+    // return the next machine in a TM enumeration
+    // ...
+    
   }
 
 };

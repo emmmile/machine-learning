@@ -90,6 +90,22 @@ public:
     //lastFitness = fitness();
   }
 
+  living_tm(int rank) {
+    age = 0;
+    current_state = 0;
+    tape.resize(INIT_TAPE_SIZE, 0);
+    hp = INIT_TAPE_SIZE / 2;
+    nb_shifts = 0;
+    action_type a;
+    for (n = 0; n < NStates; ++n) {
+      for (m = 0; m < NSymbols; ++m) {
+	machine.set_action(n, m, a);
+      }
+    }
+    for (int i = 0; i < rank; ++i)
+      machine.next_machine();
+  }
+  
   bool do_nsteps(_int nsteps) {
     /* execute nsteps steps, return true is the machine is still
      * running, false else
