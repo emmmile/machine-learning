@@ -19,7 +19,7 @@ int main() {
 
   typedef living_tm<N, M> ltm;
 
-  
+  cout << "Hello\n";  
 
   return EXIT_SUCCESS;
 }

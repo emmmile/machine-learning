@@ -42,9 +42,15 @@ exp: header experiments.o
 	@$(LINK) $(LFLAGS) -o $@ experiments.o $(LIBS) $(ERR_HANDLING)
 	$(ERR_PRINTING)
 
+
 stats: header statistics.o
 	@$(ECHO) "Linking... \t"
 	@$(LINK) $(LFLAGS) -o $@ statistics.o $(LIBS) $(ERR_HANDLING)
+	$(ERR_PRINTING)
+
+distrib: header distrib.o nm.hpp turing-machine.hpp action.hpp random.hpp utils.hpp living-tm.hpp
+	@$(ECHO) "Linking... \t"
+	@$(LINK) $(LFLAGS) -o $@ distrib.o $(LIBS) $(ERR_HANDLING)
 	$(ERR_PRINTING)
 
 $(NAME): header $(NAME).o

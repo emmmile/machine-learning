@@ -97,8 +97,8 @@ public:
     hp = INIT_TAPE_SIZE / 2;
     nb_shifts = 0;
     action_type a;
-    for (n = 0; n < NStates; ++n) {
-      for (m = 0; m < NSymbols; ++m) {
+    for (unsigned n = 0; n < NStates; ++n) {
+      for (unsigned m = 0; m < NSymbols; ++m) {
 	machine.set_action(n, m, a);
       }
     }
