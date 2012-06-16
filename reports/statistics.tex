@@ -7,31 +7,43 @@
 	legend style={rounded corners=2pt},
 }
 
-\title{Machine Learning Project Report\\\textbf{Evolutionary Computing\\on Turing machines}\\{\Large Solving the Busy Beaver Problem}}
+\title{Machine Learning Project Questions\\\textbf{Evolutionary Computing\\on Turing machines}\\{\Large Solving the Busy Beaver Problem}}
 \author{Jean-Florent Raymond\\\href{mailto:jean-florent.raymond.8795@student.uu.se}{\texttt{jean-florent.raymond.8795@student.uu.se}} \and Emilio Del Tessandoro\\
   \href{mailto:emilio.del_tessandoro.4062@student.uu.se }{\texttt{emilio.del\_tessandoro.4062@student.uu.se }}}
 \date{\today}
 
 \begin{document}
-%\maketitle
+\maketitle
 
-We investigated the efficiency of the evolutionary computing approach over the pure random search adjusting the crossover probability. Setting this probability to 0 means that the algorithm proceed only by mutations, \ie it becomes a random search.
+\section*{Question 1}
+
+``The results are somewhat brief; it's good that you were able to find
+    the known busy beavers, but you don't give an idea how difficult it
+    is to locate them. How does the performance of your algorithm
+    compare with a simple random search? You could emulate random
+    searching by turning off crossover and using mutation only to
+    explore the space, and then give a comparison as to how much more
+    quickly your algorithm converged to the best solution.''
+
+\section*{Answer to Question 1} We investigated the efficiency of the evolutionary computing approach over the pure random search adjusting the crossover probability. Setting this probability to 0 means that the algorithm proceed only by mutations, \ie it becomes a random search.
 
 The only cases we tested are:
 \begin{itemize}
-\item $N = 3$, $M = 2$ (plots \ref{plot32} and \ref{plot32good}),
-\item $N = 4$, $M = 2$ (plot \ref{plot42}),
-\item $N = 2$, $M = 3$ (plots \ref{plot23}),
+\item $N = 3$, $M = 2$ (plots \ref{plot32} on page \pageref{plot32} and \ref{plot32good} on page \pageref{plot32good}),
+\item $N = 4$, $M = 2$ (plot \ref{plot42} on page \pageref{plot42}),
+\item $N = 2$, $M = 3$ (plots \ref{plot23} on page \pageref{plot23}),
 \end{itemize}
 
 that are the most difficult ones where the upper bound of the $S$ function is known. The cases where the upper bound is not known are too difficult to solve and hasn't been investigated.
 
+
+\subsection*{With Non-Stationary Fitness Function}
 Plot \ref{plot32} show a simple comparison of the two approaches. %In this case the best machine(s) computes 21 steps and the search space size is 16\,777\,216.
 Fixed the generations number, the random search obviously explore less compared to the normal evolutionary approach (because no crossovers are performed), so the normal approach should be always more effective. In fact the random search produces on average one third of the machines produced by the plain evolutionary approach (using the same number of generations and a crossover probability of 0.9).
 But also considering this fact, the random search is instead more effective.
 This happens because it's true that crossovers introduce more ``good'' machines, but is also true that, since the population size is limited, these machines are selected in preference of other ones (machines that instead are kept in the random search).
 
-A more fair comparison is shown in plot \ref{plot32good}. This time the number of steps of the best machine found (average) is plotted against the number of explored machines (average)\footnote{This is not exact. The number of explored machines is strictly less than the shown numbers because we can generate more times the same machine (we didn't add a check for this fact).}. In this case is evident that random search is always better.
+A more fair comparison is shown in plot \ref{plot32good} (on page \pageref{plot32good}). This time the number of steps of the best machine found (average) is plotted against the number of explored machines (average)\footnote{This is not exact. The number of explored machines is strictly less than the shown numbers because we can generate more times the same machine (we didn't add a check for this fact).}. In this case is evident that random search is always better.
 
 Notice that random search is better not only in terms of the ratio ``how good is the found machine'' versus ``number of explored machines'', but also in time complexity. This because producing a new machine via crossover can take time proportional to the transition table size (\ie $O(MN)$), while a mutation is always $O(1)$ in our implementation.
 
@@ -128,12 +140,12 @@ Notice that random search is better not only in terms of the ratio ``how good is
 
 
 
-\section*{With stationary fitness function}
+\subsection*{With Stationary Fitness Function}
 The tests made until now use a non stationary fitness function that, in the first generations, compute only a certain number of steps on the machine, increasing this number of steps in the following generations.
 
-The situation becomes slightly better using a stationary fitness function, approach that is possible since we know the value of the $S$ function for these cases (figures \ref{plot32stationary}, \ref{plot42stationary}, \ref{plot23stationary}). The efficiency of the algorithm, in terms of how many generations are needed for finding a machine that compute $n$ steps, is higher in both cases. Also the difference between the two approaches becomes smaller.
+The situation becomes slightly better using a stationary fitness function, approach that is possible since we know the value of the $S$ function for these cases (figures \ref{plot32stationary} on page \pageref{plot32stationary}, \ref{plot42stationary} on page \pageref{plot42stationary}, \ref{plot23stationary} on page \pageref{plot23stationary}). The efficiency of the algorithm, in terms of how many generations are needed for finding a machine that compute $n$ steps, is higher in both cases. Also the difference between the two approaches becomes smaller.
 
-An interesting situation is shown in figure \ref{plot23stationary} where, for some settings, the evolutionary approach is better than the random search.
+An interesting situation is shown in figure \ref{plot23stationary} (on page \pageref{plot23stationary}) where, for some settings, the evolutionary approach is better than the random search.
 
 \begin{figure}[h]
 \centering
@@ -199,5 +211,48 @@ An interesting situation is shown in figure \ref{plot23stationary} where, for so
 \caption[]{Statistics for the case $N=2$, $M=3$, stationary fitness function. Again what is shown is an average over 500 program executions. This is the only case where the normal approach shows some advantages in respect to the pure random search; but increasing more the number of generations random search becomes better again.}
 \label{plot23stationary}
 \end{figure}
+
+\section*{Question 2}
+``The best individuals seem to be highly separated, and even small
+    changes can make a strong contender into a weak one. That fact
+    doesn't make PSO seem like a good choice of meta-heuristic (the
+    swarm would likely have trouble 'knowing' when it had found a
+    promising area); at the same time, it makes designing a good
+    crossover operator challenging. Evolutionary programming might be a
+    better way to go here, especially since it doesn't use crossover
+    (just mutation) --- it would have been interesting to see a
+    discussion of the possible merits of EP as applied to this problem.''
+
+\section*{Answer to Question 2}
+
+In this problem, we hope that the application of genetic operators on individuals will lead to better individuals, and at the end, to a solution (a busy beaver).
+We used two different genetic operators:
+\begin{enumerate}
+\item the mutation. This is the simplest genetic operator and there is no different ways to do it : we just randomly changed symbols in the transition table. We know that it may lead to a better solution since it randomly changes the genome, so it may mutate it to the genome of a better individual (w.r.t\ the fitness function).
+\item the crossover. This is a genetic operator inspired by nature but we don't know:
+  \begin{itemize}
+  \item if it is relevant in this problem (and why);
+  \item what kind of crossover to use (\texttt{ONE\_POINT}, \texttt{TWO\_POINT}, \texttt{UNIFORM}, or other types).
+  \end{itemize}
+\end{enumerate}
+
+\paragraph{Defining Crossover}
+The most difficult problem, after deciding a way to compute the fitness, is here to choose a good crossover operator. We have no way to know how we should mix the transition tables to obtain a good machine: crossover may be meaningful when the two parents execution follows close steps but in the other (and much more probable) cases, it is more like a weird mutation than a way to take the best from the parents.
+We used crossover because it is always used in genetic algorithms and it is closer to what nature does. In fact, since it seems meaningless, it is probably better to remove crossover. 
+Without this operator, this way of doing (genetic algorithm) becomes closer to evolutionnary programming.
+
+\paragraph{Genome Structure}
+The genome of our individuals does not follows the linear representation usually used in genetic algorithms, it is the transition table directly comming from the definition of a Turing machine. In this way it is closer to evolutionnary programming than to common genetic algorithms.
+
+\paragraph{Mutations}
+Evolutionnary programming often uses a variable mutation strength: the closer the individual is to the solution, the less important is the mutation. Since we did not run tests with evolutionnary programming, it is hard to say if modulating mutations is helpful in the problem we are instereted in. Nevertheless, we can say two things:
+\begin{enumerate}
+\item using small mutations when the individual is close to the optimum is good because at least we are sure that in the general case, a strong mutation will not improve the fitness;
+\item using strong mutations when the individual is far away to the optimum can be seen as deleting the individual and randomly drawing a new one; in this way it operates an elitist selection which is good.
+\end{enumerate}
+
+
+
+To conclude, evolutionnary programming seems a better choice for solving this problem: it avoids the difficult definition of crossover and the mutation modulation may be helpful.
 
 \end{document}
