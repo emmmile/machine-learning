@@ -143,7 +143,7 @@ Notice that random search is better not only in terms of the ratio ``how good is
 \subsection*{With Stationary Fitness Function}
 The tests made until now use a non stationary fitness function that, in the first generations, compute only a certain number of steps on the machine, increasing this number of steps in the following generations.
 
-The situation becomes slightly better using a stationary fitness function, approach that is possible since we know the value of the $S$ function for these cases (figures \ref{plot32stationary} on page \pageref{plot32stationary}, \ref{plot42stationary} on page \pageref{plot42stationary}, \ref{plot23stationary} on page \pageref{plot23stationary}). The efficiency of the algorithm, in terms of how many generations are needed for finding a machine that compute $n$ steps, is higher in both cases. Also the difference between the two approaches becomes smaller.
+The situation becomes slightly better using a stationary fitness function, approach that is possible since we know the value of the $S$ function for these cases (figures \ref{plot32stationary} on page \pageref{plot32stationary}, \ref{plot42stationary} on page \pageref{plot42stationary}, \ref{plot23stationary} on page \pageref{plot23stationary}). The efficiency of the algorithm, in terms of how many generations are needed for finding a machine that compute $n$ steps, is higher in both cases. Also the gap between the two approaches becomes smaller.
 
 An interesting situation is shown in figure \ref{plot23stationary} (on page \pageref{plot23stationary}) where, for some settings, the evolutionary approach is better than the random search.
 
@@ -220,15 +220,15 @@ An interesting situation is shown in figure \ref{plot23stationary} (on page \pag
     promising area); at the same time, it makes designing a good
     crossover operator challenging. Evolutionary programming might be a
     better way to go here, especially since it doesn't use crossover
-    (just mutation) --- it would have been interesting to see a
+    (just mutation) -- it would have been interesting to see a
     discussion of the possible merits of EP as applied to this problem.''
 
 \section*{Answer to Question 2}
 
-In this problem, we hope that the application of genetic operators on individuals will lead to better individuals, and at the end, to a solution (a busy beaver).
+In this problem, we hoped that the application of genetic operators on individuals will lead to better individuals, and at the end, to a solution (a busy beaver).
 We used two different genetic operators:
 \begin{enumerate}
-\item the mutation. This is the simplest genetic operator and there is no different ways to do it : we just randomly changed symbols in the transition table. We know that it may lead to a better solution since it randomly changes the genome, so it may mutate it to the genome of a better individual (w.r.t\ the fitness function).
+\item the mutation. This is the simplest genetic operator and there are no different ways to do it\footnote{We could ``play'' with different random distributions but it's not assured that selecting a small numerical mutation we end up in a machine with a behaviour similar to the parent (and vice versa, if the mutation is numerically big). The same argument can be applied when speaking about mutating multiple points in the genome.}, we just randomly changed symbols in the transition table. We know that it may lead to a better solution since it randomly changes the genome, so it may mutate it to the genome of a better individual (w.r.t\ the fitness function).
 \item the crossover. This is a genetic operator inspired by nature but we don't know:
   \begin{itemize}
   \item if it is relevant in this problem (and why);
@@ -239,13 +239,19 @@ We used two different genetic operators:
 \paragraph{Defining Crossover}
 The most difficult problem, after deciding a way to compute the fitness, is here to choose a good crossover operator. We have no way to know how we should mix the transition tables to obtain a good machine: crossover may be meaningful when the two parents execution follows close steps but in the other (and much more probable) cases, it is more like a weird mutation than a way to take the best from the parents.
 We used crossover because it is always used in genetic algorithms and it is closer to what nature does. In fact, since it seems meaningless, it is probably better to remove crossover. 
-Without this operator, this way of doing (genetic algorithm) becomes closer to evolutionnary programming.
+Without this operator, this way of doing (genetic algorithm) becomes closer to evolutionary programming.
 
 \paragraph{Genome Structure}
-The genome of our individuals does not follows the linear representation usually used in genetic algorithms, it is the transition table directly comming from the definition of a Turing machine. In this way it is closer to evolutionnary programming than to common genetic algorithms.
+The genome of our individuals does not follows the linear representation usually used in genetic algorithms, it is the transition table directly coming from the definition of a Turing machine. In this way it is closer to evolutionary programming than to common genetic algorithms.
+
+\paragraph{Selection}
+Evolutionary programming normally uses a $(\mu + \mu)$ tournament selection \cite{introtoec}, that is deterministic, but often is used in a stochastic variation as follows. From a population of $\mu$ individuals generate by mutations a offspring of other $\mu$ new individuals. From the whole population of $2\mu$ individuals select the fittest $\mu$ using a rank-based tournament procedure: every individual is compared (in terms of fitness value) with other $q$ randomly selected individuals. The individuals who ``win'' the most after these tournaments are the selected ones. 
+
+So this is an elitism strategy: the best individuals for sure will have a high score after the tournaments. This is not really what we have done in the previous tests, but it shouldn't change at all the general trend of the experiment.
 
 \paragraph{Mutations}
-Evolutionnary programming often uses a variable mutation strength: the closer the individual is to the solution, the less important is the mutation. Since we did not run tests with evolutionnary programming, it is hard to say if modulating mutations is helpful in the problem we are instereted in. Nevertheless, we can say two things:
+Evolutionary programming often uses a variable mutation strategy: the closer the individual is to the solution, the less important is the mutation. Since we did not run tests with evolutionary programming, it is hard to say if modulating mutations is helpful in the problem we are interested in. Nevertheless, we can say two things:
+%I don't agree too much on this point. I'm quite sure that small mutations doesn't imply close fitness values (it is the point they asked us to clear): Joe said "and even small changes can make a strong contender into a weak one"..
 \begin{enumerate}
 \item using small mutations when the individual is close to the optimum is good because at least we are sure that in the general case, a strong mutation will not improve the fitness;
 \item using strong mutations when the individual is far away to the optimum can be seen as deleting the individual and randomly drawing a new one; in this way it operates an elitist selection which is good.
@@ -253,6 +259,9 @@ Evolutionnary programming often uses a variable mutation strength: the closer th
 
 
 
-To conclude, evolutionnary programming seems a better choice for solving this problem: it avoids the difficult definition of crossover and the mutation modulation may be helpful.
+To conclude, evolutionary programming seems a better choice for solving this problem: it avoids the difficult definition of crossover and the mutation modulation may be helpful.
+
+\bibliographystyle{plain}
+\bibliography{statistics}
 
 \end{document}
