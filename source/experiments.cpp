@@ -22,10 +22,38 @@
 
 using namespace std;
 
+  typedef living_tm<N, M> ltm;
+
+void print_stats(population<ltm>& p){
+// do statistics...
+    uint n_halt = 0; //number of halted machines
+    uint best_nshift = 0; 
+    uint best_halted = 0;
+    p.get_stats(n_halt, best_nshift, best_halted);
+
+    cout << "-> Best machine in the population:\n" << p.get_best()
+         << "Fitness of this machine: " << setprecision(4) << p.get_best_fitness()
+	 << "\n-> Population:"
+	 << "\n\tSize:\t\t" << p.size()
+	 << "\n\tAge:\t\t" << p.get_age()
+	 << "\n\tHalted:\t\t" << n_halt << " machines"
+	 << "\n\tBest halted:\t" << best_halted << " shifts"
+	 << "\n\tMax nb_shifts:\t" << best_nshift
+	 << "\n\tExplored machines:\t" << setprecision(0) << p.get_explored()
+	 << "\n\tMachines space size:\t" << ltm::spacesize()
+	 << "\n-> Known values:"
+	 << "\n\tLower bound:\t";
+    if (slimits<N, M>::has_lower)
+      cout << slimits<N, M>::lower;
+    else cout << "not known";
+    cout << "\n\tUpper bound:\t";
+    if (slimits<N, M>::has_upper)
+      cout << slimits<N, M>::upper;
+    else cout << "not known";
+    cout << endl;
+}
 
 int main() {
-
-  typedef living_tm<N, M> ltm;
 
   population<ltm> p; // our population of TM
   int generations = 0;
@@ -62,33 +90,8 @@ int main() {
       cout.flush();
     }
     p.run(generations % 10);
-    
-    // do statistics...
-    uint n_halt = 0; //number of halted machines
-    uint best_nshift = 0; 
-    uint best_halted = 0;
-    p.get_stats(n_halt, best_nshift, best_halted);
-
-    cout << "] Complete.\n-> Best machine in the population:\n" << p.get_best()
-         << "Fitness of this machine: " << setprecision(4) << p.get_best_fitness()
-	 << "\n-> Population:"
-	 << "\n\tSize:\t\t" << p.size()
-	 << "\n\tAge:\t\t" << p.get_age()
-	 << "\n\tHalted:\t\t" << n_halt << " machines"
-	 << "\n\tBest halted:\t" << best_halted << " shifts"
-	 << "\n\tMax nb_shifts:\t" << best_nshift
-	 << "\n\tExplored machines:\t" << setprecision(0) << p.get_explored()
-	 << "\n\tMachines space size:\t" << ltm::spacesize()
-	 << "\n-> Known values:"
-	 << "\n\tLower bound:\t";
-    if (slimits<N, M>::has_lower)
-      cout << slimits<N, M>::lower;
-    else cout << "not known";
-    cout << "\n\tUpper bound:\t";
-    if (slimits<N, M>::has_upper)
-      cout << slimits<N, M>::upper;
-    else cout << "not known";
-    cout << endl;
+    cout << "] Complete.\n";    
+    print_stats(p);
   }
 
   cout << "You stopped evolution. You may want to save data.\n"
@@ -143,14 +146,14 @@ int main() {
     do {
       p.run(10);
       generations += 10;
-    }while(!p.get_best().get_state().ishalt() || p.get_best().get_nb_shifts() != slimits<N, M>::upper);
+    }while(generations < 100000 &&( !p.get_best().get_state().ishalt() || p.get_best().get_nb_shifts() != slimits<N, M>::upper));
   }
   else {
     cout << "Only implemented when upper bound is known...\n";
     return EXIT_FAILURE;
   }
-  cout << "Found machine in " << generations << " generations:\n"
-       << p.get_best(); 
+  cout << "Found machine in " << generations << " generations:\n";
+  print_stats(p);
 
 #endif // !BENCHMARK
 
