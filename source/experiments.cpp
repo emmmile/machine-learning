@@ -18,6 +18,8 @@
 #define SAVE_PATH "../results/" //place where to save data
 // ^--- /!\ don't omit final slash
 
+#define BENCHMARK
+
 using namespace std;
 
 
@@ -27,12 +29,15 @@ int main() {
 
   population<ltm> p; // our population of TM
   int generations = 0;
+
+#ifndef BENCHMARK
   int dec_gen;
 
   time_t rawtime; // used to get time to choose file names
   struct tm * timeinfo; // idem
   char file_path[PATH_SIZE];
   char time_str[PATH_SIZE];
+#endif
 
   cout << "*** TUREV EXPERIMENTS ***\n\n"
        << "Size of the alphabet:\t" << M
@@ -40,6 +45,7 @@ int main() {
        << "\nSearch space size:\t" << fixed << setprecision(0)
        << ltm::spacesize() << "\n\n";
 
+#ifndef BENCHMARK
   while (1) {
     cout << "How many generations (-1 for stop) ? ";
     cin >> generations;
@@ -130,6 +136,23 @@ int main() {
     oa << p.get_best(); // serialize
     ofs.close();
   }
+
+#else
+  if (slimits<N, M>::has_upper){
+    generations = 0;
+    do {
+      p.run(10);
+      generations += 10;
+    }while(!p.get_best().get_state().ishalt() || p.get_best().get_nb_shifts() != slimits<N, M>::upper);
+  }
+  else {
+    cout << "Only implemented when upper bound is known...\n";
+    return EXIT_FAILURE;
+  }
+  cout << "Found machine in " << generations << " generations:\n"
+       << p.get_best(); 
+
+#endif // !BENCHMARK
 
   return EXIT_SUCCESS;
 }

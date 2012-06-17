@@ -26,8 +26,8 @@ int main() {
     do {
       m = ltm(gen);
       ++explored;
-      if (explored % 1000 == 0)
-	cout << "\rExplored more than " << explored << " machines..."; 
+      //      if (explored % 1000 == 0)
+      //	cout << "\rExplored more than " << explored << " machines..."; 
       
       m.do_nsteps(slimits<N, M>::upper);
 
@@ -37,7 +37,7 @@ int main() {
       return EXIT_FAILURE;
     }
 
-  cout << "\nFound a machine :\n" << m; 
+  cout << "\nFound a machine after " << explored << " tries:\n" << m; 
 
   return EXIT_SUCCESS;
 }
