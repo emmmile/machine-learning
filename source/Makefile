@@ -53,6 +53,11 @@ distrib: header distrib.o nm.hpp turing-machine.hpp action.hpp random.hpp utils.
 	@$(LINK) $(LFLAGS) -o $@ distrib.o $(LIBS) $(ERR_HANDLING)
 	$(ERR_PRINTING)
 
+random_search: header random_search.o nm.hpp turing-machine.hpp action.hpp random.hpp utils.hpp living-tm.hpp
+	@$(ECHO) "Linking... \t"
+	@$(LINK) $(LFLAGS) -o $@ random_search.o $(LIBS) $(ERR_HANDLING)
+	$(ERR_PRINTING)
+
 $(NAME): header $(NAME).o
 	@$(ECHO) "Linking... \t"
 	@$(LINK) $(LFLAGS) -o $@ $@.o $(LIBS) $(ERR_HANDLING)
