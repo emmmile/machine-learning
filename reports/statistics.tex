@@ -247,7 +247,7 @@ The genome of our individuals does not follows the linear representation usually
 \paragraph{Selection}
 Evolutionary programming normally uses a $(\mu + \mu)$ tournament selection \cite{introtoec}, that is deterministic, but often is used in a stochastic variation as follows. From a population of $\mu$ individuals generate by mutations a offspring of other $\mu$ new individuals. From the whole population of $2\mu$ individuals select the fittest $\mu$ using a rank-based tournament procedure: every individual is compared (in terms of fitness value) with other $q$ randomly selected individuals. The individuals who ``win'' the most after these tournaments are the selected ones. 
 
-So this is an elitism strategy: the best individuals for sure will have a high score after the tournaments. This is not really what we have done in the previous tests, but it shouldn't change at all the general trend of the experiment.
+So this is an elitism strategy (the best individuals for sure will have a high score after the tournaments) and it is actually quite similar to what we implemented (elitism on a certain number of individuals and stochastic selection on the rest). At the end this shouldn't change at all the general trend of the experiments we have done in the previous section.
 
 \paragraph{Mutations}
 Evolutionary programming often uses a variable mutation strategy: the closer the individual is to the solution, the less important is the mutation. Since we did not run tests with evolutionary programming, it is hard to say if modulating mutations is helpful in the problem we are interested in. Nevertheless, we can say two things:
