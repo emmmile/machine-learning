@@ -185,15 +185,32 @@ public:
 
   void set_action(const TState st, const TSymbol sy, const action_type& a) {
     // modify the transition table
-
     actions[st * NSymbols + sy] = action<NStates, NSymbols>(a);
-    /*
-    actions[st * NSymbols + sy].dir = a.dir;
-    actions[st * NSymbols + sy].state = a.state;
-    actions[st * NSymbols + sy].symbol = a.symbol;
-    */
   }
 
+  void set_action(const TState st, const TSymbol sy, const TSymbol symbol, const bool dir, const TSymbol state) {
+    // modify the transition table
+    actions[st * NSymbols + sy].dir = dir;
+    actions[st * NSymbols + sy].state = state;
+    actions[st * NSymbols + sy].symbol = symbol;
+  }
+  
+  void next_machine(unsigned startpos = 0) {
+    // return the next machine in a TM enumeration
+    
+    if (actions[startpos] == action<NStates, NSymbols>(NStates, NSymbols - 1, true)) {
+      set_action(startpos / NSymbols, startpos % NSymbols, action<NStates, NSymbols>(0, 0, false));
+      next_machine(startpos + 1);
+    }
+    else
+      set_action(startpos / NSymbols,
+		 startpos % NSymbols,
+		 action<NStates, NSymbols>((actions[startpos].next_state() + 1) % (NStates + 1),
+					   (actions[startpos].next_symbol() + (actions[startpos].next_state() + 1) / (NStates + 1)) % NSymbols,
+					   false && (actions[startpos].next_symbol() == NSymbols - 1)
+					   )
+		 );
+  }
 };
 
 #endif // TURINGMACHINE_HPP

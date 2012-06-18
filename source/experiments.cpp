@@ -18,52 +18,20 @@
 #define SAVE_PATH "../results/" //place where to save data
 // ^--- /!\ don't omit final slash
 
+#define BENCHMARK
+
 using namespace std;
-
-
-int main() {
 
   typedef living_tm<N, M> ltm;
 
-  population<ltm> p; // our population of TM
-  int generations = 0;
-  int dec_gen;
-
-  time_t rawtime; // used to get time to choose file names
-  struct tm * timeinfo; // idem
-  char file_path[PATH_SIZE];
-  char time_str[PATH_SIZE];
-
-  cout << "*** TUREV EXPERIMENTS ***\n\n"
-       << "Size of the alphabet:\t" << M
-       << "\nNumber of operational states:\t" << N
-       << "\nSearch space size:\t" << fixed << setprecision(0)
-       << ltm::spacesize() << "\n\n";
-
-  while (1) {
-    cout << "How many generations (-1 for stop) ? ";
-    cin >> generations;
-
-    if (generations < 0) break;
-    
-    cout << "Please wait...\n";
-    cout << "           ]\r[";
-    cout.flush();
-    dec_gen = generations / 10;
-    for (int i = 0; i < 10; ++i) {
-      p.run(dec_gen);
-      cout << "#";
-      cout.flush();
-    }
-    p.run(generations % 10);
-    
-    // do statistics...
+void print_stats(population<ltm>& p){
+// do statistics...
     uint n_halt = 0; //number of halted machines
     uint best_nshift = 0; 
     uint best_halted = 0;
     p.get_stats(n_halt, best_nshift, best_halted);
 
-    cout << "] Complete.\n-> Best machine in the population:\n" << p.get_best()
+    cout << "-> Best machine in the population:\n" << p.get_best()
          << "Fitness of this machine: " << setprecision(4) << p.get_best_fitness()
 	 << "\n-> Population:"
 	 << "\n\tSize:\t\t" << p.size()
@@ -83,6 +51,47 @@ int main() {
       cout << slimits<N, M>::upper;
     else cout << "not known";
     cout << endl;
+}
+
+int main() {
+
+  population<ltm> p; // our population of TM
+  int generations = 0;
+
+#ifndef BENCHMARK
+  int dec_gen;
+
+  time_t rawtime; // used to get time to choose file names
+  struct tm * timeinfo; // idem
+  char file_path[PATH_SIZE];
+  char time_str[PATH_SIZE];
+#endif
+
+  cout << "*** TUREV EXPERIMENTS ***\n\n"
+       << "Size of the alphabet:\t" << M
+       << "\nNumber of operational states:\t" << N
+       << "\nSearch space size:\t" << fixed << setprecision(0)
+       << ltm::spacesize() << "\n\n";
+
+#ifndef BENCHMARK
+  while (1) {
+    cout << "How many generations (-1 for stop) ? ";
+    cin >> generations;
+
+    if (generations < 0) break;
+    
+    cout << "Please wait...\n";
+    cout << "           ]\r[";
+    cout.flush();
+    dec_gen = generations / 10;
+    for (int i = 0; i < 10; ++i) {
+      p.run(dec_gen);
+      cout << "#";
+      cout.flush();
+    }
+    p.run(generations % 10);
+    cout << "] Complete.\n";    
+    print_stats(p);
   }
 
   cout << "You stopped evolution. You may want to save data.\n"
@@ -130,6 +139,23 @@ int main() {
     oa << p.get_best(); // serialize
     ofs.close();
   }
+
+#else
+  if (slimits<N, M>::has_upper){
+    generations = 0;
+    do {
+      p.run(10);
+      generations += 10;
+    }while( !p.get_best().get_state().ishalt() || p.get_best().get_nb_shifts() != slimits<N, M>::upper);
+  }
+  else {
+    cout << "Only implemented when upper bound is known...\n";
+    return EXIT_FAILURE;
+  }
+  cout << "Found machine in " << generations << " generations:\n";
+  print_stats(p);
+
+#endif // !BENCHMARK
 
   return EXIT_SUCCESS;
 }

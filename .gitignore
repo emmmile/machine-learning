@@ -7,10 +7,16 @@
 *.out
 *.bbl
 *.pro*
+*.gz
+*.config
+*.creator*
+*.files
+*.includes
 
 source/main
 source/tur
 source/exp
+source/stats
 source/bin/*
 
 reports/*.pdf

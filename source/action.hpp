@@ -54,6 +54,12 @@ public:
     state = a.state;
   }
 
+  action(const TSymbol sym, const bool d, const TSymbol st) {
+    dir = d;
+    sym = symbol;
+    state = st;
+  }
+
   static uint offset ( uint index ) {
     switch( index ) {
       case 0:
