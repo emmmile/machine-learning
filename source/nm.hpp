@@ -5,7 +5,7 @@
 #ifndef NM_HPP
 #define NM_HPP
 
-#define M 2 //size of the alphabet
-#define N 3 // number of states
+#define M 3 //size of the alphabet
+#define N 2 // number of states
 
 #endif // NM_HPP

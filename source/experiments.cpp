@@ -146,7 +146,7 @@ int main() {
     do {
       p.run(10);
       generations += 10;
-    }while(generations < 100000 &&( !p.get_best().get_state().ishalt() || p.get_best().get_nb_shifts() != slimits<N, M>::upper));
+    }while( !p.get_best().get_state().ishalt() || p.get_best().get_nb_shifts() != slimits<N, M>::upper);
   }
   else {
     cout << "Only implemented when upper bound is known...\n";

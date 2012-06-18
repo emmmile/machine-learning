@@ -17,203 +17,43 @@
 
 \section*{Question 1}
 
-``The results are somewhat brief; it's good that you were able to find
+\emph{``The results are somewhat brief; it's good that you were able to find
     the known busy beavers, but you don't give an idea how difficult it
     is to locate them. How does the performance of your algorithm
     compare with a simple random search? You could emulate random
     searching by turning off crossover and using mutation only to
     explore the space, and then give a comparison as to how much more
-    quickly your algorithm converged to the best solution.''
+    quickly your algorithm converged to the best solution.''}
 
-\section*{Answer to Question 1} We investigated the efficiency of the evolutionary computing approach over the pure random search adjusting the crossover probability. Setting this probability to 0 means that the algorithm proceed only by mutations, \ie it becomes a random search.
+\section*{Answer to Question 1 : Random Search \emph{vs} Genetic Algorithm}
 
-The only cases we tested are:
-\begin{itemize}
-\item $N = 3$, $M = 2$ (plots \ref{plot32} on page \pageref{plot32} and \ref{plot32good} on page \pageref{plot32good}),
-\item $N = 4$, $M = 2$ (plot \ref{plot42} on page \pageref{plot42}),
-\item $N = 2$, $M = 3$ (plots \ref{plot23} on page \pageref{plot23}),
-\end{itemize}
-
-that are the most difficult ones where the upper bound of the $S$ function is known. The cases where the upper bound is not known are too difficult to solve and hasn't been investigated.
-
-
-\subsection*{With Non-Stationary Fitness Function}
-Plot \ref{plot32} show a simple comparison of the two approaches. %In this case the best machine(s) computes 21 steps and the search space size is 16\,777\,216.
-Fixed the generations number, the random search obviously explore less compared to the normal evolutionary approach (because no crossovers are performed), so the normal approach should be always more effective. In fact the random search produces on average one third of the machines produced by the plain evolutionary approach (using the same number of generations and a crossover probability of 0.9).
-But also considering this fact, the random search is instead more effective.
-This happens because it's true that crossovers introduce more ``good'' machines, but is also true that, since the population size is limited, these machines are selected in preference of other ones (machines that instead are kept in the random search).
-
-A more fair comparison is shown in plot \ref{plot32good} (on page \pageref{plot32good}). This time the number of steps of the best machine found (average) is plotted against the number of explored machines (average)\footnote{This is not exact. The number of explored machines is strictly less than the shown numbers because we can generate more times the same machine (we didn't add a check for this fact).}. In this case is evident that random search is always better.
-
-Notice that random search is better not only in terms of the ratio ``how good is the found machine'' versus ``number of explored machines'', but also in time complexity. This because producing a new machine via crossover can take time proportional to the transition table size (\ie $O(MN)$), while a mutation is always $O(1)$ in our implementation.
+By random search, we mean randomly drawing a new Turing machine until we find a busy beaver.
+We present here the measures of the time taken by finding a busy beaver with random search versus finding a busy beaver with the genetic algorithm we wrote for the project. Sadly, these measures shows that random search is faster. Doing these benchmarks before writing the report would have change the conclusion: GA seems not suitable for efficiently finding busy beavers. We found some, probably because the search space is small enough to make busy beavers appears in a population in a reasonable time. Results for the case $n = 3$ and $m = 2$ are on page \pageref{plot:rnd}, figure \ref{plot:rnd}.
 
 \begin{figure}[t]
 \centering
 \begin{tikzpicture}
-    \begin{semilogxaxis}[
-        xlabel=generations,
-        ylabel=best found (average),
-	xmin=10,
-	xmax=1000,
+    \begin{semilogyaxis}[
+        xlabel=executions,
+        ylabel=time (s),
+	xmin=0,
+	xmax=3,
 	legend pos=south east]
-		
-	\addplot[smooth,color=red]   table[x=generations,y=averageSteps] {../results/statistics-non-stationary/3.2.statistics};
+        \addplot[only marks,color=red] table[x=exp,y=t] {../results/times};
 	\addlegendentry{normal}
-	\addplot[smooth,color=blue] table[x=generations,y=averageSteps] {../results/statistics-non-stationary/3.2.statistics.random};
-	\addlegendentry{only random}
-    \end{semilogxaxis}
+	\addplot[only marks, color=blue]   table[x=rnd,y=time] {../results/times};
+	\addlegendentry{random search}
+    \end{semilogyaxis}
 \end{tikzpicture}
-\caption[]{Statistics for the case $N=3$, $M=2$. Best machine found (an average over 200 program executions) versus the generations number. This comparison it's not fair since the normal algorithm produces a lot more machines than the (only) random version. But, also considering this fact, the plot shows that the random search is more effective.}
-\label{plot32}
-\end{figure}
-
-
-\begin{figure}[b]
-\centering
-\begin{tikzpicture}
-    \begin{semilogxaxis}[
-        xlabel=explored machines,
-        ylabel=best found (average),
-	%width=\textwidth,
-	xmin=3000,
-	xmax=600000,
-	legend pos=south east]
-		
-	\addplot[smooth,color=red]   table[x=averageExplored,y=averageSteps] {../results/statistics-non-stationary/3.2.statistics};
-	\addlegendentry{normal}
-	\addplot[smooth,color=blue] table[x=averageExplored,y=averageSteps] {../results/statistics-non-stationary/3.2.statistics.random};
-	\addlegendentry{only random}
-    \end{semilogxaxis}
-\end{tikzpicture}
-\caption[]{Statistics for the case $N=3$, $M=2$. Best machine found (an average over 200 program executions) versus the number of explored machines (average). This is a more fair comparison w.r.t the previous plot.}
-\label{plot32good}
+\caption[]{Statistics for the case $N=3$, $M=2$.}
+\label{plot:rnd}
 \end{figure}
 
 
 
-
-\begin{figure}[h]
-\centering
-\begin{tikzpicture}
-    \begin{semilogxaxis}[
-        xlabel=explored machines,
-        ylabel=best found (average),
-	%width=\textwidth,
-	xmin=3000,
-	xmax=2000000,
-	legend pos=south east]
-		
-	\addplot[smooth,color=red]   table[x=averageExplored,y=averageSteps] {../results/statistics-non-stationary/4.2.statistics};
-	\addlegendentry{normal}
-	\addplot[smooth,color=blue] table[x=averageExplored,y=averageSteps] {../results/statistics-non-stationary/4.2.statistics.random};
-	\addlegendentry{only random}
-    \end{semilogxaxis}
-\end{tikzpicture}
-\caption[]{Statistics for the case $N=4$, $M=2$.}
-\label{plot42}
-\end{figure}
-
-
-\begin{figure}[h]
-\centering
-\begin{tikzpicture}
-    \begin{semilogxaxis}[
-        xlabel=explored machines,
-        ylabel=best found (average),
-	%width=\textwidth,
-	xmin=3000,
-	xmax=2000000,
-	legend pos=south east]
-		
-	\addplot[smooth,color=red]   table[x=averageExplored,y=averageSteps] {../results/statistics-non-stationary/2.3.statistics};
-	\addlegendentry{normal}
-	\addplot[smooth,color=blue] table[x=averageExplored,y=averageSteps] {../results/statistics-non-stationary/2.3.statistics.random};
-	\addlegendentry{only random}
-    \end{semilogxaxis}
-\end{tikzpicture}
-\caption[]{Statistics for the case $N=2$, $M=3$. Exploring $10^6$ machines correspond to use about 3000 generations in the random search: with these settings an optimal machine is found 80\% of the times.}
-\label{plot23}
-\end{figure}
-
-
-
-
-
-
-\subsection*{With Stationary Fitness Function}
-The tests made until now use a non stationary fitness function that, in the first generations, compute only a certain number of steps on the machine, increasing this number of steps in the following generations.
-
-The situation becomes slightly better using a stationary fitness function, approach that is possible since we know the value of the $S$ function for these cases (figures \ref{plot32stationary} on page \pageref{plot32stationary}, \ref{plot42stationary} on page \pageref{plot42stationary}, \ref{plot23stationary} on page \pageref{plot23stationary}). The efficiency of the algorithm, in terms of how many generations are needed for finding a machine that compute $n$ steps, is higher in both cases. Also the gap between the two approaches becomes smaller.
-
-An interesting situation is shown in figure \ref{plot23stationary} (on page \pageref{plot23stationary}) where, for some settings, the evolutionary approach is better than the random search.
-
-\begin{figure}[h]
-\centering
-\begin{tikzpicture}
-    \begin{semilogxaxis}[
-        xlabel=explored machines,
-        ylabel=best found (average),
-	%width=\textwidth,
-	xmin=3000,
-	xmax=600000,
-	legend pos=south east]
-		
-	\addplot[smooth,color=red]   table[x=averageExplored,y=averageSteps] {../results/statistics-stationary/3.2.statistics};
-	\addlegendentry{normal}
-	\addplot[smooth,color=blue] table[x=averageExplored,y=averageSteps] {../results/statistics-stationary/3.2.statistics.random};
-	\addlegendentry{only random}
-    \end{semilogxaxis}
-\end{tikzpicture}
-\caption[]{Statistics for the case $N=3$, $M=2$, stationary fitness function.}
-\label{plot32stationary}
-\end{figure}
-
-
-\begin{figure}[h]
-\centering
-\begin{tikzpicture}
-    \begin{semilogxaxis}[
-        xlabel=explored machines,
-        ylabel=best found (average),
-	%width=\textwidth,
-	xmin=3000,
-	xmax=1000000,
-	legend pos=south east]
-		
-	\addplot[smooth,color=red]   table[x=averageExplored,y=averageSteps] {../results/statistics-stationary/4.2.statistics};
-	\addlegendentry{normal}
-	\addplot[smooth,color=blue] table[x=averageExplored,y=averageSteps] {../results/statistics-stationary/4.2.statistics.random};
-	\addlegendentry{only random}
-    \end{semilogxaxis}
-\end{tikzpicture}
-\caption[]{Statistics for the case $N=4$, $M=2$, stationary fitness function. The idea is the same as figure \ref{plot32stationary} except that here the average is made over 500 program executions.}
-\label{plot42stationary}
-\end{figure}
-
-
-\begin{figure}[h]
-\centering
-\begin{tikzpicture}
-    \begin{semilogxaxis}[
-        xlabel=explored machines,
-        ylabel=best found (average),
-	%width=\textwidth,
-	xmin=3000,
-	xmax=3000000,
-	legend pos=south east]
-		
-	\addplot[smooth,color=red]   table[x=averageExplored,y=averageSteps] {../results/statistics-stationary/2.3.statistics};
-	\addlegendentry{normal}
-	\addplot[smooth,color=blue] table[x=averageExplored,y=averageSteps] {../results/statistics-stationary/2.3.statistics.random};
-	\addlegendentry{only random}
-    \end{semilogxaxis}
-\end{tikzpicture}
-\caption[]{Statistics for the case $N=2$, $M=3$, stationary fitness function. Again what is shown is an average over 500 program executions. This is the only case where the normal approach shows some advantages in respect to the pure random search; but increasing more the number of generations random search becomes better again.}
-\label{plot23stationary}
-\end{figure}
 
 \section*{Question 2}
-``The best individuals seem to be highly separated, and even small
+\emph{``The best individuals seem to be highly separated, and even small
     changes can make a strong contender into a weak one. That fact
     doesn't make PSO seem like a good choice of meta-heuristic (the
     swarm would likely have trouble 'knowing' when it had found a
@@ -221,7 +61,7 @@ An interesting situation is shown in figure \ref{plot23stationary} (on page \pag
     crossover operator challenging. Evolutionary programming might be a
     better way to go here, especially since it doesn't use crossover
     (just mutation) -- it would have been interesting to see a
-    discussion of the possible merits of EP as applied to this problem.''
+    discussion of the possible merits of EP as applied to this problem.''}
 
 \section*{Answer to Question 2}
 
@@ -256,6 +96,196 @@ Evolutionary programming often uses a variable mutation strategy: the closer the
 \item using small mutations when the individual is close to the optimum is good because at least we are sure that in the general case, a strong mutation will not improve the fitness;
 \item using strong mutations when the individual is far away to the optimum can be seen as deleting the individual and randomly drawing a new one; in this way it operates an elitist selection which is good.
 \end{enumerate}
+
+
+\section*{An Accidental EP Implementation}
+
+When trying to run random search versus GA, we first set the crossover probability to 0. Later, we thougth it was not pure random search, but something close to evolutionnary programming. We present here the results we found.
+
+The only cases we tested are:
+\begin{itemize}
+\item $N = 3$, $M = 2$ (plots \ref{plot32} on page \pageref{plot32} and \ref{plot32good} on page \pageref{plot32good}),
+\item $N = 4$, $M = 2$ (plot \ref{plot42} on page \pageref{plot42}),
+\item $N = 2$, $M = 3$ (plots \ref{plot23} on page \pageref{plot23}),
+\end{itemize}
+
+that are the most difficult ones where the upper bound of the $S$ function is known. The cases where the upper bound is not known are too difficult to solve and hasn't been investigated.
+
+
+\subsection*{With Non-Stationary Fitness Function}
+Plot \ref{plot32} show a simple comparison of the two approaches. %In this case the best machine(s) computes 21 steps and the search space size is 16\,777\,216.
+Fixed the generations number, the EP obviously explore less compared to the normal evolutionary approach (because no crossovers are performed), so the normal approach should be always more effective. In fact the EP produces on average one third of the machines produced by the plain evolutionary approach (using the same number of generations and a crossover probability of 0.9).
+But also considering this fact, the EP is instead more effective.
+This happens because it's true that crossovers introduce more ``good'' machines, but is also true that, since the population size is limited, these machines are selected in preference of other ones (machines that instead are kept in the EP).
+
+A more fair comparison is shown in plot \ref{plot32good} (on page \pageref{plot32good}). This time the number of steps of the best machine found (average) is plotted against the number of explored machines (average)\footnote{This is not exact. The number of explored machines is strictly less than the shown numbers because we can generate more times the same machine (we didn't add a check for this fact).}. In this case is evident that EP is always better.
+
+Notice that EP is better not only in terms of the ratio ``how good is the found machine'' versus ``number of explored machines'', but also in time complexity. This because producing a new machine via crossover can take time proportional to the transition table size (\ie $O(MN)$), while a mutation is always $O(1)$ in our implementation.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+    \begin{semilogxaxis}[
+        xlabel=generations,
+        ylabel=best found (average),
+	xmin=10,
+	xmax=1000,
+	legend pos=south east]
+        
+	\addplot[smooth,color=red]   table[x=generations,y=averageSteps] {../results/statistics-non-stationary/3.2.statistics};
+	\addlegendentry{normal}
+	\addplot[smooth,color=blue] table[x=generations,y=averageSteps] {../results/statistics-non-stationary/3.2.statistics.random};
+	\addlegendentry{only mutations}
+    \end{semilogxaxis}
+\end{tikzpicture}
+\caption[]{Statistics for the case $N=3$, $M=2$. Best machine found (an average over 200 program executions) versus the generations number. This comparison it's not fair since the normal algorithm produces a lot more machines than the (only) random version. But, also considering this fact, the plot shows that the EP is more effective.}
+\label{plot32}
+\end{figure}
+
+
+\begin{figure}[b]
+\centering
+\begin{tikzpicture}
+    \begin{semilogxaxis}[
+        xlabel=explored machines,
+        ylabel=best found (average),
+	%width=\textwidth,
+	xmin=3000,
+	xmax=600000,
+	legend pos=south east]
+		
+	\addplot[smooth,color=red]   table[x=averageExplored,y=averageSteps] {../results/statistics-non-stationary/3.2.statistics};
+	\addlegendentry{normal}
+	\addplot[smooth,color=blue] table[x=averageExplored,y=averageSteps] {../results/statistics-non-stationary/3.2.statistics.random};
+	\addlegendentry{only mutations}
+    \end{semilogxaxis}
+\end{tikzpicture}
+\caption[]{Statistics for the case $N=3$, $M=2$. Best machine found (an average over 200 program executions) versus the number of explored machines (average). This is a more fair comparison w.r.t the previous plot.}
+\label{plot32good}
+\end{figure}
+
+
+
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+    \begin{semilogxaxis}[
+        xlabel=explored machines,
+        ylabel=best found (average),
+	%width=\textwidth,
+	xmin=3000,
+	xmax=2000000,
+	legend pos=south east]
+		
+	\addplot[smooth,color=red]   table[x=averageExplored,y=averageSteps] {../results/statistics-non-stationary/4.2.statistics};
+	\addlegendentry{normal}
+	\addplot[smooth,color=blue] table[x=averageExplored,y=averageSteps] {../results/statistics-non-stationary/4.2.statistics.random};
+	\addlegendentry{only mutations}
+    \end{semilogxaxis}
+\end{tikzpicture}
+\caption[]{Statistics for the case $N=4$, $M=2$.}
+\label{plot42}
+\end{figure}
+
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+    \begin{semilogxaxis}[
+        xlabel=explored machines,
+        ylabel=best found (average),
+	%width=\textwidth,
+	xmin=3000,
+	xmax=2000000,
+	legend pos=south east]
+		
+	\addplot[smooth,color=red]   table[x=averageExplored,y=averageSteps] {../results/statistics-non-stationary/2.3.statistics};
+	\addlegendentry{normal}
+	\addplot[smooth,color=blue] table[x=averageExplored,y=averageSteps] {../results/statistics-non-stationary/2.3.statistics.random};
+	\addlegendentry{only mutations}
+    \end{semilogxaxis}
+\end{tikzpicture}
+\caption[]{Statistics for the case $N=2$, $M=3$. Exploring $10^6$ machines correspond to use about 3000 generations in the EP: with these settings an optimal machine is found 80\% of the times.}
+\label{plot23}
+\end{figure}
+
+
+
+
+
+
+\subsection*{With Stationary Fitness Function}
+The tests made until now use a non stationary fitness function that, in the first generations, compute only a certain number of steps on the machine, increasing this number of steps in the following generations.
+
+The situation becomes slightly better using a stationary fitness function, approach that is possible since we know the value of the $S$ function for these cases (figures \ref{plot32stationary} on page \pageref{plot32stationary}, \ref{plot42stationary} on page \pageref{plot42stationary}, \ref{plot23stationary} on page \pageref{plot23stationary}). The efficiency of the algorithm, in terms of how many generations are needed for finding a machine that compute $n$ steps, is higher in both cases. Also the gap between the two approaches becomes smaller.
+
+An interesting situation is shown in figure \ref{plot23stationary} (on page \pageref{plot23stationary}) where, for some settings, the evolutionary approach is better than the EP.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+    \begin{semilogxaxis}[
+        xlabel=explored machines,
+        ylabel=best found (average),
+	%width=\textwidth,
+	xmin=3000,
+	xmax=600000,
+	legend pos=south east]
+		
+	\addplot[smooth,color=red]   table[x=averageExplored,y=averageSteps] {../results/statistics-stationary/3.2.statistics};
+	\addlegendentry{normal}
+	\addplot[smooth,color=blue] table[x=averageExplored,y=averageSteps] {../results/statistics-stationary/3.2.statistics.random};
+	\addlegendentry{only mutations}
+    \end{semilogxaxis}
+\end{tikzpicture}
+\caption[]{Statistics for the case $N=3$, $M=2$, stationary fitness function.}
+\label{plot32stationary}
+\end{figure}
+
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+    \begin{semilogxaxis}[
+        xlabel=explored machines,
+        ylabel=best found (average),
+	%width=\textwidth,
+	xmin=3000,
+	xmax=1000000,
+	legend pos=south east]
+		
+	\addplot[smooth,color=red]   table[x=averageExplored,y=averageSteps] {../results/statistics-stationary/4.2.statistics};
+	\addlegendentry{normal}
+	\addplot[smooth,color=blue] table[x=averageExplored,y=averageSteps] {../results/statistics-stationary/4.2.statistics.random};
+	\addlegendentry{only mutations}
+    \end{semilogxaxis}
+\end{tikzpicture}
+\caption[]{Statistics for the case $N=4$, $M=2$, stationary fitness function. The idea is the same as figure \ref{plot32stationary} except that here the average is made over 500 program executions.}
+\label{plot42stationary}
+\end{figure}
+
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+    \begin{semilogxaxis}[
+        xlabel=explored machines,
+        ylabel=best found (average),
+	%width=\textwidth,
+	xmin=3000,
+	xmax=3000000,
+	legend pos=south east]
+		
+	\addplot[smooth,color=red]   table[x=averageExplored,y=averageSteps] {../results/statistics-stationary/2.3.statistics};
+	\addlegendentry{normal}
+	\addplot[smooth,color=blue] table[x=averageExplored,y=averageSteps] {../results/statistics-stationary/2.3.statistics.random};
+	\addlegendentry{only mutations}
+    \end{semilogxaxis}
+\end{tikzpicture}
+\caption[]{Statistics for the case $N=2$, $M=3$, stationary fitness function. Again what is shown is an average over 500 program executions. This is the only case where the normal approach shows some advantages in respect to the pure EP; but increasing more the number of generations EP becomes better again.}
+\label{plot23stationary}
+\end{figure}
 
 
 
