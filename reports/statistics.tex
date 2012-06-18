@@ -25,27 +25,28 @@
     explore the space, and then give a comparison as to how much more
     quickly your algorithm converged to the best solution.''}
 
-\section*{Answer to Question 1 : Random Search \emph{vs} Genetic Algorithm}
+\section*{Answer to Question 1: Random Search \emph{vs} Genetic Algorithm}
 
 By random search, we mean randomly drawing a new Turing machine until we find a busy beaver.
-We present here the measures of the time taken by finding a busy beaver with random search versus finding a busy beaver with the genetic algorithm we wrote for the project. Sadly, these measures shows that random search is faster. Doing these benchmarks before writing the report would have change the conclusion: GA seems not suitable for efficiently finding busy beavers. We found some, probably because the search space is small enough to make busy beavers appears in a population in a reasonable time. Results for the case $n = 3$ and $m = 2$ are on page \pageref{plot:rnd}, figure \ref{plot:rnd}.
+We present here the measures of the time taken by finding a busy beaver with random search versus finding a busy beaver with the genetic algorithm we wrote for the project. Sadly, these measures shows that random search is faster. Doing these benchmarks before writing the report would have change the conclusion: GA seems not suitable for efficiently finding busy beavers. We found some, probably because the search space is small enough to make busy beavers appears in a population in a reasonable time. Results for the case $N = 3$ and $M = 2$ are on page \pageref{plot:rnd}, figure \ref{plot:rnd}.
 
 \begin{figure}[t]
 \centering
 \begin{tikzpicture}
     \begin{semilogyaxis}[
-        xlabel=executions,
+        xlabel=execution number,
         ylabel=time (s),
+	ymin=1,
 	xmin=0,
-	xmax=3,
-	legend pos=south east]
-        \addplot[only marks,color=red] table[x=exp,y=t] {../results/times};
+	xmax=14,
+	legend pos=north west]
+        \addplot[color=red] table[x expr=\coordindex,y=t] {../results/times};
 	\addlegendentry{normal}
-	\addplot[only marks, color=blue]   table[x=rnd,y=time] {../results/times};
+	\addplot[color=blue]   table[x expr=\coordindex,y=time] {../results/times};
 	\addlegendentry{random search}
     \end{semilogyaxis}
 \end{tikzpicture}
-\caption[]{Statistics for the case $N=3$, $M=2$.}
+\caption[]{Completion time for some executions of the case $N=3$, $M=2$. These completion times are the time needed for the program to find a busy beaver. The plot shows how variable (and higher) is the completion time of the EC approach.}
 \label{plot:rnd}
 \end{figure}
 
@@ -90,12 +91,13 @@ Evolutionary programming normally uses a $(\mu + \mu)$ tournament selection \cit
 So this is an elitism strategy (the best individuals for sure will have a high score after the tournaments) and it is actually quite similar to what we implemented (elitism on a certain number of individuals and stochastic selection on the rest). At the end this shouldn't change at all the general trend of the experiments we have done in the previous section.
 
 \paragraph{Mutations}
-Evolutionary programming often uses a variable mutation strategy: the closer the individual is to the solution, the less important is the mutation. Since we did not run tests with evolutionary programming, it is hard to say if modulating mutations is helpful in the problem we are interested in. Nevertheless, we can say two things:
+Evolutionary programming often uses a variable mutation strategy: the closer the individual is to the solution, the less important is the mutation. Since we did not run extensive tests with evolutionary programming, it is hard to say if modulating mutations is helpful in the problem we are interested in. But since crossovers are not useful we can argue that this variable mutation strategy is not very useful as well. 
+%Nevertheless, we can say two things:
 %I don't agree too much on this point. I'm quite sure that small mutations doesn't imply close fitness values (it is the point they asked us to clear): Joe said "and even small changes can make a strong contender into a weak one"..
-\begin{enumerate}
-\item using small mutations when the individual is close to the optimum is good because at least we are sure that in the general case, a strong mutation will not improve the fitness;
-\item using strong mutations when the individual is far away to the optimum can be seen as deleting the individual and randomly drawing a new one; in this way it operates an elitist selection which is good.
-\end{enumerate}
+%\begin{enumerate}
+%\item using small mutations when the individual is close to the optimum is good because at least we are sure that in the general case, a strong mutation will not improve the fitness;
+%\item using strong mutations when the individual is far away to the optimum can be seen as deleting the individual and randomly drawing a new one; in this way it operates an elitist selection which is good.
+%\end{enumerate}
 
 
 \section*{An Accidental EP Implementation}
