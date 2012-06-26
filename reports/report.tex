@@ -2,6 +2,13 @@
 \input{preamble.tex}
 \usepackage[english,vlined,linesnumbered]{algorithm2e}
 \usepackage{url}
+\usepackage{pgf}
+\usepackage{pgfplots}
+
+
+\pgfplotsset{
+	legend style={rounded corners=2pt},
+}
 
 \title{Machine Learning Project Report\\\textbf{Evolutionary Computing\\on Turing machines}\\{\Large Solving the Busy Beaver Problem}}
 \author{Jean-Florent Raymond\\\href{mailto:jean-florent.raymond.8795@student.uu.se}{\texttt{jean-florent.raymond.8795@student.uu.se}} \and Emilio Del Tessandoro\\
@@ -642,6 +649,10 @@ With reference to the implementation we realized a program to run Turing machine
 With these tools we found busy beavers for all known cases. The other cases are computationally very expensive and need further examination (or optimizations).
 The problem we wanted to solve is very challenging and probably we can't do much more than this: solving these complex cases with a computer simulation is not tractable in practice.
 
+\appendix
+\chapter{Additional Work}
+
+\input{statistics.tex}
 
 \bibliographystyle{plain}
 \bibliography{report}
