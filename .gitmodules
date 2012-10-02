@@ -1,0 +1,6 @@
+[submodule "source/random"]
+	path = source/random
+	url = git@github.com:emmmile/random.git
+[submodule "source/ec"]
+	path = source/ec
+	url = git@github.com:emmmile/ec.git

@@ -2,6 +2,7 @@ NAME = 		main
 CXX =		g++
 DEFINES = 
 CXXFLAGS =	-O3 -pipe -ffast-math -funroll-loops -march=native -Wall -std=c++11
+INCPATH = -I ./ec -I ./random
 LINK =		g++
 LFLAGS =	-O3 -s
 LIBS =		-lboost_serialization
@@ -63,22 +64,22 @@ $(NAME): header $(NAME).o
 	@$(LINK) $(LFLAGS) -o $@ $@.o $(LIBS) $(ERR_HANDLING)
 	$(ERR_PRINTING)
 
-tur.o: tur.cpp limits.hpp living-tm.hpp turing-machine.hpp action.hpp random.hpp utils.hpp population.hpp nm.hpp
+tur.o: tur.cpp limits.hpp living-tm.hpp turing-machine.hpp action.hpp random/random.hpp utils.hpp ec/population.hpp nm.hpp
 	@$(ECHO) "Compiling $<... \t"
 	@$(CXX) $(CXXFLAGS) $(INCPATH) -c -o $@ $< $(ERR_HANDLING)
 	$(ERR_PRINTING)
 
-main.o: main.cpp population.hpp random.hpp vect.hpp
+main.o: main.cpp ec/population.hpp random/random.hpp vect.hpp
 	@$(ECHO) "Compiling $<... \t"
 	@$(CXX) $(CXXFLAGS) $(INCPATH) -c -o $@ $< $(ERR_HANDLING)
 	$(ERR_PRINTING)
 
-experiments.o: experiments.cpp living-tm.hpp turing-machine.hpp action.hpp random.hpp utils.hpp population.hpp limits.hpp vect.hpp nm.hpp
+experiments.o: experiments.cpp living-tm.hpp turing-machine.hpp action.hpp random/random.hpp utils.hpp ec/population.hpp limits.hpp vect.hpp nm.hpp
 	@$(ECHO) "Compiling $<... \t"
 	@$(CXX) $(CXXFLAGS) $(INCPATH) -c -o $@ $< $(ERR_HANDLING)
 	$(ERR_PRINTING)
 
-statistics.o: statistics.cpp population.hpp random.hpp living-tm.hpp turing-machine.hpp action.hpp utils.hpp limits.hpp nm.hpp
+statistics.o: statistics.cpp ec/population.hpp random/random.hpp living-tm.hpp turing-machine.hpp action.hpp utils.hpp limits.hpp nm.hpp
 	@$(ECHO) "Compiling $<... \t"
 	@$(CXX) $(CXXFLAGS) $(INCPATH) -c -o $@ $< $(ERR_HANDLING)
 	$(ERR_PRINTING)
